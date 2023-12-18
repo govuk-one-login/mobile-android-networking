@@ -1,5 +1,5 @@
-# This is the CODEOWNERS file. These owners will be the default owners for everything in the DI-MOBILE-ANDROID-ONELOGIN-APP repository
+# This is the CODEOWNERS file. These owners will be the default owners for everything in the MOBILE-ANDROID-NETWORK repository
 # The following below will be requested for review when someone opens a pull request.
 
 
-* @govuk-one-login/mobile-platform
+* @govuk-one-login/mobile-common-android
