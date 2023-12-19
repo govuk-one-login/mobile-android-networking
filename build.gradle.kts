@@ -29,26 +29,10 @@ buildscript {
     val packageVersion by rootProject.extra { findPackageVersion() }
 
     dependencies {
-        classpath(
-            "org.jacoco",
-            "org.jacoco.core",
-            jacocoVersion,
-        )
-        classpath(
-            "org.jacoco",
-            "org.jacoco.ant",
-            jacocoVersion,
-        )
-        classpath(
-            "org.jacoco",
-            "org.jacoco.report",
-            jacocoVersion,
-        )
-        classpath(
-            "org.jacoco",
-            "org.jacoco.agent",
-            jacocoVersion,
-        )
+        classpath("org.jacoco", "org.jacoco.core", jacocoVersion)
+        classpath("org.jacoco", "org.jacoco.ant", jacocoVersion)
+        classpath("org.jacoco", "org.jacoco.report", jacocoVersion)
+        classpath("org.jacoco", "org.jacoco.agent", jacocoVersion)
     }
 }
 
@@ -56,8 +40,8 @@ plugins {
     id("maven-publish")
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.library) apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.0" apply false
-    id("io.gitlab.arturbosch.detekt") version "1.23.1" apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.detekt) apply false
     id("org.sonarqube") version "4.3.0.3225"
     //id("uk.gov.network.sonarqube-root-config")
 }

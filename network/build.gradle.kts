@@ -4,8 +4,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("org.jlleitschuh.gradle.ktlint")
-    id("io.gitlab.arturbosch.detekt")
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
     id("jacoco")
     id("kotlin-parcelize")
     id("maven-publish")
