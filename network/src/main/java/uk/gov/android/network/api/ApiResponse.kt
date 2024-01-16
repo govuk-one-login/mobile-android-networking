@@ -1,4 +1,4 @@
-package uk.gov.android.network.model
+package uk.gov.android.network.api
 
 sealed class ApiResponse {
     data class Success<T>(val response: T) : ApiResponse()

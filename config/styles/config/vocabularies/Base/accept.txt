@@ -51,3 +51,9 @@ refreshVersions
 runBlocking
 vararg
 veriff
+appName
+versionName
+sdkVersion
+clientName
+clientVersion
+apiRequest

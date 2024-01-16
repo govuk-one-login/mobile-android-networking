@@ -12,6 +12,7 @@ plugins {
     id("uk.gov.network.jvm-toolchains")
     // id("uk.gov.network.sonarqube-module-config")
     id("uk.gov.network.jacoco-module-config")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
@@ -99,12 +100,22 @@ dependencies {
     listOf(
         libs.core.ktx,
         libs.appcompat,
-        libs.material
+        libs.material,
+        libs.ktor.client.android,
+        libs.ktor.client.core,
+        libs.ktor.client.contentnegotiation,
+        libs.ktor.client.logging,
+        libs.ktor.serialization.kotlinx.json
     ).forEach { dependency ->
         implementation(dependency)
     }
 
-    testImplementation(libs.junit)
+    listOf(
+        libs.junit,
+        libs.ktor.client.mock
+    ).forEach { dependency ->
+        testImplementation(dependency)
+    }
 
     listOf(
         libs.ext.junit,

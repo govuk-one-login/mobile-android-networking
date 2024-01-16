@@ -44,6 +44,7 @@ plugins {
     alias(libs.plugins.detekt) apply false
     id("org.sonarqube") version "4.3.0.3225"
     //id("uk.gov.network.sonarqube-root-config")
+    alias(libs.plugins.kotlin.serialization) apply false
 }
 
 apply {
