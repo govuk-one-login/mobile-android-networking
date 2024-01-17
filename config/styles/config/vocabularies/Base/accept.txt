@@ -57,3 +57,5 @@ sdkVersion
 clientName
 clientVersion
 apiRequest
+Github
+github

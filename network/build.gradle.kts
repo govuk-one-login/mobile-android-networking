@@ -1,5 +1,4 @@
-import java.io.FileInputStream
-import java.util.Properties
+import org.gradle.api.internal.provider.MissingValueException
 
 plugins {
     alias(libs.plugins.android.library)
@@ -105,7 +104,8 @@ dependencies {
         libs.ktor.client.core,
         libs.ktor.client.contentnegotiation,
         libs.ktor.client.logging,
-        libs.ktor.serialization.kotlinx.json
+        libs.ktor.serialization.kotlinx.json,
+        libs.logback.classic
     ).forEach { dependency ->
         implementation(dependency)
     }
@@ -135,23 +135,35 @@ publishing {
         }
     }
     repositories {
-        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-network") {
-            if (file("${rootProject.projectDir.path}/github.properties").exists()) {
-                val propsFile = File("${rootProject.projectDir.path}/github.properties")
-                val props = Properties().also { it.load(FileInputStream(propsFile)) }
-                val ghUsername = props["username"] as String?
-                val ghToken = props["token"] as String?
+        maven(
+            "https://maven.pkg.github.com/govuk-one-login/mobile-android-network",
+            setupGithubCredentials()
+        )
+    }
+}
 
-                credentials {
-                    username = ghUsername
-                    password = ghToken
-                }
-            } else {
-                credentials {
-                    username = System.getenv("USERNAME")
-                    password = System.getenv("TOKEN")
-                }
-            }
-        }
+fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit = {
+    val (credUser, credToken) = fetchGithubCredentials()
+    credentials {
+        username = credUser
+        password = credToken
+    }
+}
+
+fun fetchGithubCredentials(): Pair<String, String> {
+    val gprUser = providers.gradleProperty("gpr.user")
+    val gprToken = providers.gradleProperty("gpr.token")
+
+    return try {
+        gprUser.get() to gprToken.get()
+    } catch (exception: MissingValueException) {
+        logger.warn(
+            "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
+                "location for instructions:\n\n" +
+                "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
+            exception
+        )
+
+        System.getenv("USERNAME") to System.getenv("TOKEN")
     }
 }
