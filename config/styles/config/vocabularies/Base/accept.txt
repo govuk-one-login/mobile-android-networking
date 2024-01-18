@@ -30,7 +30,6 @@ Snackbar
 VIZes
 Zsh
 alphagov
-asm
 async
 avdmanager
 clazz
@@ -40,7 +39,6 @@ coroutines
 crashlytics
 enum
 gov
-gradle
 iProov
 mockito
 [Kk]otlin
