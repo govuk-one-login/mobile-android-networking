@@ -36,7 +36,7 @@ runs:
 
     - name: Install brew dependencies
       run: |
-        brew upgrade rbenv ruby-build
+        brew upgrade vale rbenv ruby-build
         brew install npm
         vale --version
       shell: bash
