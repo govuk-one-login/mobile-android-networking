@@ -38,6 +38,7 @@ runs:
       run: |
         brew install vale rbenv ruby-build
         brew install npm
+        vale --version
       shell: bash
       if: runner.os == 'macOS'
 
