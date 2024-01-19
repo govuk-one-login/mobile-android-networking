@@ -22,11 +22,7 @@ jobs:
   onPullRequestJob:
     name: Verify code base when pull request is published/updated
     runs-on: macos-latest
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
+
     steps:
       - name: Run checkout github action
         uses: actions/checkout@v4
