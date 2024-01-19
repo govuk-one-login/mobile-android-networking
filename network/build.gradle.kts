@@ -9,7 +9,7 @@ plugins {
     id("kotlin-parcelize")
     id("maven-publish")
     id("uk.gov.network.jvm-toolchains")
-    // id("uk.gov.network.sonarqube-module-config")
+    id("uk.gov.network.sonarqube-module-config")
     id("uk.gov.network.jacoco-module-config")
     alias(libs.plugins.kotlin.serialization)
 }
