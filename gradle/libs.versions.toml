@@ -4,8 +4,9 @@ appcompat = "1.6.1"
 coreKtx = "1.12.0"
 detektPlugin = "1.18.1"
 espressoCore = "3.5.1"
-junit = "4.13.2"
+junit = "5.10.1"
 junitVersion = "1.1.5"
+junitJupiter = "5.10.1"
 kotlinAndroidPlugin = "1.9.10"
 kotlinParcelize = "1.6.0-M1"
 ktlintPlugin = "11.6.1"
@@ -15,13 +16,18 @@ ktor = "2.3.7"
 # Latest version (1.4.11) of logback causes crashes: https://youtrack.jetbrains.com/issue/KTOR-5227
 logback = "1.2.11"
 material = "1.11.0"
+mockitoCore = "5.9.0"
+mockitoKotlin = "4.0.0"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
-junit = { module = "junit:junit", version.ref = "junit" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiter" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -30,6 +36,8 @@ ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "kotlinSerialization" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
 [plugins]
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

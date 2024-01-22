@@ -3,11 +3,12 @@ package uk.gov.android.network.useragent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class UserAgentUtilTest {
+class UserAgentGeneratorImplTest {
     @Test
-    fun testUtil() {
+    fun verifySetUserAgent() {
+        val sut = UserAgentGeneratorImpl()
         val expectedUserAgent = USER_AGENT
-        val actualUserAgent = UserAgentUtil.buildAgent(
+        sut.setUserAgent(
             APP_NAME,
             VERSION_NAME,
             MANUFACTURER,
@@ -16,6 +17,7 @@ class UserAgentUtilTest {
             CLIENT_NAME,
             CLIENT_VERSION
         )
+        val actualUserAgent = sut.getUserAgent()
 
         assertEquals(expectedUserAgent, actualUserAgent)
     }

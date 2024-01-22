@@ -111,11 +111,17 @@ dependencies {
     }
 
     listOf(
-        libs.junit,
-        libs.ktor.client.mock
+        libs.junit.jupiter,
+        libs.junit.jupiter.params,
+        libs.ktor.client.mock,
+        platform(libs.junit.bom),
+        libs.mockito.core,
+        libs.mockito.kotlin
     ).forEach { dependency ->
         testImplementation(dependency)
     }
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.ext.junit,
@@ -123,6 +129,10 @@ dependencies {
     ).forEach { dependency ->
         androidTestImplementation(dependency)
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 publishing {

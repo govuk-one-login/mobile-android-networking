@@ -11,11 +11,11 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
-import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.api.ApiResponseException
