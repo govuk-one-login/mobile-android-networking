@@ -52,5 +52,7 @@ apply {
 }
 
 tasks.register("check") {
+    description = "Run the Vale linting check"
+    group = JavaBasePlugin.VERIFICATION_GROUP
     dependsOn("vale")
 }

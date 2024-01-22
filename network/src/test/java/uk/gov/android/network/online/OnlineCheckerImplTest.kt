@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import java.util.stream.Stream
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Named
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -45,6 +46,13 @@ class OnlineCheckerImplTest {
     ) {
         checker.isOnline()
         verify(networkCapabilities, never()).hasTransport(networkCapability)
+    }
+
+    @Test
+    fun testNullNetworkCapabilities() {
+        whenever(connectivityManager.getNetworkCapabilities(eq(network)))
+            .thenReturn(null)
+        assert(!checker.isOnline())
     }
 
     companion object {

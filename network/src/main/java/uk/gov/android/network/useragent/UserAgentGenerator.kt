@@ -63,7 +63,9 @@ class UserAgentGeneratorStub(private val stubValue: String) : UserAgentGenerator
         sdkVersion: Int,
         clientName: String,
         clientVersion: String
-    ) {}
+    ) {
+        // No Action needed as this is a stub implementation
+    }
 
     override fun getUserAgent() = stubValue
 }

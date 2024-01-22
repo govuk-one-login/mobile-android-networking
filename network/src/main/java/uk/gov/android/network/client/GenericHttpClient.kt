@@ -6,7 +6,7 @@ import uk.gov.android.network.api.ApiResponse
 /**
  * Contract for the generic HTTP client
  */
-interface GenericHttpClient {
+fun interface GenericHttpClient {
 
     /**
      * Make the HTTP request

@@ -24,7 +24,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.ContentType as ContentTypeEnum
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
@@ -130,9 +129,12 @@ class KtorHttpClient(
         }
     }
 
-    private fun mapContentType(contentType: ContentTypeEnum?): ContentType? {
+    private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?):
+        ContentType? {
         return when (contentType) {
-            ContentTypeEnum.APPLICATION_JSON -> ContentType.Application.Json
+            uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
+                ContentType.Application.Json
+
             else -> null
         }
     }
