@@ -7,8 +7,7 @@ class UserAgentGeneratorImplTest {
     @Test
     fun verifySetUserAgent() {
         val sut = UserAgentGeneratorImpl()
-        val expectedUserAgent = USER_AGENT
-        sut.setUserAgent(
+        val userAgent = UserAgent(
             APP_NAME,
             VERSION_NAME,
             MANUFACTURER,
@@ -17,6 +16,8 @@ class UserAgentGeneratorImplTest {
             CLIENT_NAME,
             CLIENT_VERSION
         )
+        val expectedUserAgent = USER_AGENT
+        sut.setUserAgent(userAgent)
         val actualUserAgent = sut.getUserAgent()
 
         assertEquals(expectedUserAgent, actualUserAgent)

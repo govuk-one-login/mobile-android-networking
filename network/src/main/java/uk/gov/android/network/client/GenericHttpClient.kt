@@ -12,7 +12,7 @@ fun interface GenericHttpClient {
      * Make the HTTP request
      *
      * @param apiRequest The HTTP request
-     * @throws ApiResponse the API response
+     * @returns ApiResponse the API response
      */
     suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse
 }

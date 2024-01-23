@@ -54,3 +54,4 @@ clientName
 clientVersion
 apiRequest
 [Gg]ithub
+userAgent
