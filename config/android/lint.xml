@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/jj2000-5.2**" />
+        <ignore path="**/org.jacoco/org.jacoco.agent/**" />
+        <ignore path="**/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/**" />
+        <ignore path="**/io.ktor/ktor-utils-jvm/2.3.7/**"/>
+        <ignore path="**/ch.qos.logback/logback-classic/1.2.11/**"/>
+        <ignore path="**/ch.qos.logback/logback-core/1.2.11/**"/>
+    </issue>
+
+    <issue id="PermissionNamingConvention">
+        <ignore path="**/AndroidManifest.xml" />
+    </issue>
+
+    <issue id="GradleDependency">
+        <ignore path="**/gradle/libs.versions.toml" />
+    </issue>
+</lint>
+
