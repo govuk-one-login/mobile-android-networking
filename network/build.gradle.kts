@@ -146,7 +146,7 @@ publishing {
     }
     repositories {
         maven(
-            "https://maven.pkg.github.com/govuk-one-login/mobile-android-network",
+            "https://maven.pkg.github.com/govuk-one-login/mobile-android-networking",
             setupGithubCredentials()
         )
     }
