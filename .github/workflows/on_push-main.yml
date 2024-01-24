@@ -51,7 +51,7 @@ jobs:
       - name: Release package
         uses: ./config/actions/maven-publish
         with:
-          access-token: ${{ secrets.TOKEN }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
           package-version: ${{ steps.version-name.outputs.version-name }}
           username: ${{ github.actor }}
 
