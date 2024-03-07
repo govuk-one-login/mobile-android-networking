@@ -43,7 +43,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
-    id("org.sonarqube") version "4.3.0.3225"
+    id("org.sonarqube") version "4.4.1.3373"
     id("uk.gov.network.sonarqube-root-config")
     alias(libs.plugins.kotlin.serialization) apply false
 }
