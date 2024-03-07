@@ -1,5 +1,5 @@
 import org.gradle.api.internal.provider.MissingValueException
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -146,7 +146,7 @@ publishing {
     }
     repositories {
         maven(
-            "https://maven.pkg.github.com/govuk-one-login/mobile-android-network",
+            "https://maven.pkg.github.com/govuk-one-login/mobile-android-networking",
             setupGithubCredentials()
         )
     }

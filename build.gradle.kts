@@ -36,6 +36,7 @@ buildscript {
     }
 }
 
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("maven-publish")
     alias(libs.plugins.kotlin.android) apply false
