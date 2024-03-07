@@ -1,5 +1,5 @@
 import org.gradle.api.internal.provider.MissingValueException
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
