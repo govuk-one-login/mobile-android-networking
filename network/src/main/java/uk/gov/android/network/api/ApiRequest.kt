@@ -14,4 +14,9 @@ sealed class ApiRequest {
         val headers: List<Pair<String, String>> = emptyList(),
         val contentType: ContentType? = null
     ) : ApiRequest()
+
+    data class FormUrlEncoded(
+        val url: String,
+        val params: List<Pair<String, String>>
+    ) : ApiRequest()
 }

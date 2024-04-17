@@ -11,6 +11,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
@@ -18,6 +19,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -77,6 +79,7 @@ class KtorHttpClient(
         }
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {
         return when (apiRequest) {
             is ApiRequest.Get -> {
@@ -113,6 +116,32 @@ class KtorHttpClient(
                             contentType(it)
                         }
                         setBody(apiRequest.body)
+                    }
+
+                    if (response.status != HttpStatusCode.OK) {
+                        throw ResponseException(response, response.body())
+                    }
+
+                    ApiResponse.Success<String>(response.body())
+                } catch (re: ResponseException) {
+                    ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+                } catch (e: Exception) {
+                    ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+                }
+            }
+
+            is ApiRequest.FormUrlEncoded -> {
+                try {
+                    val response = httpClient.post(apiRequest.url) {
+                        setBody(
+                            FormDataContent(
+                                Parameters.build {
+                                    apiRequest.params.forEach {
+                                        append(it.first, it.second)
+                                    }
+                                }
+                            )
+                        )
                     }
 
                     if (response.status != HttpStatusCode.OK) {
