@@ -258,4 +258,81 @@ class KtorHttpClientTest {
             assert(failureResponse.error is IllegalStateException)
         }
     }
+
+    @Test
+    fun testFormUrlEncodedSuccess() {
+        val expectedResultString = "response"
+        val expectedResponse = ApiResponse.Success(expectedResultString)
+        val url = "url"
+        setupHttpClient(
+            MockEngine {
+                respond(
+                    content = expectedResultString,
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                )
+            }
+        )
+
+        runBlocking {
+            val actualResponse = sut.makeRequest(
+                ApiRequest.FormUrlEncoded(
+                    url = url,
+                    params = listOf(Pair("key", "value"))
+                )
+            )
+            assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun testFormUrlEncodedResponseFailureThrown() {
+        val errorString = "api response error"
+        val url = "url"
+        setupHttpClient(
+            MockEngine {
+                respond(
+                    content = errorString,
+                    status = HttpStatusCode.Unauthorized,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                )
+            }
+        )
+        runBlocking {
+            val actualResponse = sut.makeRequest(
+                ApiRequest.FormUrlEncoded(
+                    url = url,
+                    params = listOf(Pair("key", "value"))
+                )
+            )
+            assert(actualResponse is ApiResponse.Failure)
+            val failureResponse = actualResponse as ApiResponse.Failure
+            assertEquals(HttpStatusCode.Unauthorized.value, failureResponse.status)
+            assert(failureResponse.error is ApiResponseException)
+        }
+    }
+
+    @Test
+    fun testFormUrlEncodedExceptionThrown() {
+        val errorMessage = "api response error"
+        val url = "url"
+        setupHttpClient(
+            MockEngine {
+                throw IllegalStateException(errorMessage)
+            }
+        )
+
+        runBlocking {
+            val actualResponse = sut.makeRequest(
+                ApiRequest.FormUrlEncoded(
+                    url = url,
+                    params = listOf(Pair("key", "value"))
+                )
+            )
+            assert(actualResponse is ApiResponse.Failure)
+            val failureResponse = actualResponse as ApiResponse.Failure
+            assertEquals(HttpStatusCode.TransportError.value, failureResponse.status)
+            assert(failureResponse.error is IllegalStateException)
+        }
+    }
 }
