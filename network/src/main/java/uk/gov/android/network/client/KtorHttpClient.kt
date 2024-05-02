@@ -24,9 +24,9 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import uk.gov.android.network.auth.AuthProvider
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.auth.AuthProvider
 import uk.gov.android.network.auth.AuthResponse.Failure
 import uk.gov.android.network.auth.AuthResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
@@ -103,7 +103,7 @@ class KtorHttpClient(
 
         is Success -> {
             val authorisedHeaders = apiRequest.headers +
-                    Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+                Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
             makeRequest(apiRequest.copy(headers = authorisedHeaders))
         }
     }
@@ -188,7 +188,7 @@ class KtorHttpClient(
     }
 
     private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?):
-            ContentType? {
+        ContentType? {
         return when (contentType) {
             uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
                 ContentType.Application.Json

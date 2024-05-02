@@ -31,5 +31,4 @@ interface GenericHttpClient {
      * @param authProvider the provider used to exchange scope with a bearer token
      */
     fun setAuthProvider(authProvider: AuthProvider)
-
 }

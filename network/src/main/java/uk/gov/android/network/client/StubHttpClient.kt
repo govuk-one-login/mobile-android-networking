@@ -5,7 +5,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthProvider
 
 class StubHttpClient(
-    private val apiResponse: ApiResponse,
+    private val apiResponse: ApiResponse
 ) : GenericHttpClient {
     var lastAuthProviderSupplied: AuthProvider? = null
 
