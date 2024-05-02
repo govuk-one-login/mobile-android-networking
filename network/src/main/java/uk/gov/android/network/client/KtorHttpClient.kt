@@ -90,23 +90,22 @@ class KtorHttpClient(
     override suspend fun makeAuthorisedRequest(
         apiRequest: ApiRequest.Post<*>,
         scope: String
-    ): ApiResponse {
-        val tokenProvider = this.authProvider ?: return ApiResponse.Failure(
+    ): ApiResponse = when (val serviceTokenResponse = this.authProvider?.fetchBearerToken(scope)) {
+        null -> ApiResponse.Failure(
             0,
             Exception("Service Token Provider not initialised")
         )
-        val serviceToken = when (val serviceTokenResponse = tokenProvider.fetchBearerToken(scope)) {
-            is Failure -> return ApiResponse.Failure(
-                0,
-                serviceTokenResponse.error
-            )
 
-            is Success -> serviceTokenResponse.bearerToken
+        is Failure -> ApiResponse.Failure(
+            0,
+            serviceTokenResponse.error
+        )
+
+        is Success -> {
+            val authorisedHeaders = apiRequest.headers +
+                    Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+            makeRequest(apiRequest.copy(headers = authorisedHeaders))
         }
-        val authorisedHeaders = apiRequest.headers +
-                Pair("Authorization", "Bearer $serviceToken")
-        val authorisedApiRequest = apiRequest.copy(headers = authorisedHeaders)
-        return makeRequest(authorisedApiRequest)
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
