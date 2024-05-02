@@ -24,14 +24,18 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import uk.gov.android.network.auth.AuthProvider
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.auth.AuthResponse.Failure
+import uk.gov.android.network.auth.AuthResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
 class KtorHttpClient(
-    userAgentGenerator: UserAgentGenerator
+    userAgentGenerator: UserAgentGenerator,
+    private var authProvider: AuthProvider? = null
 ) : GenericHttpClient {
 
     private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
@@ -77,6 +81,32 @@ class KtorHttpClient(
                 }
             }
         }
+    }
+
+    override fun setAuthProvider(authProvider: AuthProvider) {
+        this.authProvider = authProvider
+    }
+
+    override suspend fun makeAuthorisedRequest(
+        apiRequest: ApiRequest.Post<*>,
+        scope: String
+    ): ApiResponse {
+        val tokenProvider = this.authProvider ?: return ApiResponse.Failure(
+            0,
+            Exception("Service Token Provider not initialised")
+        )
+        val serviceToken = when (val serviceTokenResponse = tokenProvider.fetchBearerToken(scope)) {
+            is Failure -> return ApiResponse.Failure(
+                0,
+                serviceTokenResponse.error
+            )
+
+            is Success -> serviceTokenResponse.bearerToken
+        }
+        val authorisedHeaders = apiRequest.headers +
+                Pair("Authorization", "Bearer $serviceToken")
+        val authorisedApiRequest = apiRequest.copy(headers = authorisedHeaders)
+        return makeRequest(authorisedApiRequest)
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
@@ -159,7 +189,7 @@ class KtorHttpClient(
     }
 
     private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?):
-        ContentType? {
+            ContentType? {
         return when (contentType) {
             uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
                 ContentType.Application.Json
