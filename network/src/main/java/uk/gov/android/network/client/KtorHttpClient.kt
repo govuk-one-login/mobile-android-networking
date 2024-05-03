@@ -26,6 +26,9 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.auth.AuthenticationProvider
+import uk.gov.android.network.auth.AuthenticationResponse.Failure
+import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
@@ -35,6 +38,7 @@ class KtorHttpClient(
 ) : GenericHttpClient {
 
     private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
+    private var authenticationProvider: AuthenticationProvider? = null
 
     internal fun setHttpClient(httpClient: HttpClient) {
         this.httpClient = httpClient
@@ -75,6 +79,49 @@ class KtorHttpClient(
 
                     throw ResponseException(exceptionResponse, exceptionResponse.bodyAsText())
                 }
+            }
+        }
+    }
+
+    override fun setAuthenticationProvider(provider: AuthenticationProvider) {
+        this.authenticationProvider = provider
+    }
+
+    override suspend fun makeAuthorisedRequest(
+        apiRequest: ApiRequest,
+        scope: String
+    ): ApiResponse =
+        when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
+            null -> ApiResponse.Failure(
+                0,
+                Exception("Service Token Provider not initialised")
+            )
+
+            is Failure -> ApiResponse.Failure(
+                0,
+                serviceTokenResponse.error
+            )
+
+            is Success -> {
+                val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
+                makeRequest(authorisedApiRequest)
+            }
+        }
+
+    private fun authoriseRequest(
+        apiRequest: ApiRequest,
+        serviceTokenResponse: Success
+    ): ApiRequest {
+        val authorisationHeader =
+            Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+        return when (apiRequest) {
+            is ApiRequest.FormUrlEncoded -> apiRequest
+            is ApiRequest.Get -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+
+            is ApiRequest.Post<*> -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
             }
         }
     }
