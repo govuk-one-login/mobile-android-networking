@@ -92,6 +92,7 @@ class KtorAuthHttpClientTest {
             assertEquals(headers.get("Authorization"), "Bearer $expectedBearerToken")
         }
     }
+
     @Test
     fun testMakeAuthorisedRequest_Success() {
         val expectedScope = "scope"
@@ -148,7 +149,10 @@ class KtorAuthHttpClientTest {
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(0, failureResponse.status)
-            assertEquals("Service Token Provider not initialised", failureResponse.error.localizedMessage)
+            assertEquals(
+                "Service Token Provider not initialised",
+                failureResponse.error.localizedMessage
+            )
         }
     }
 

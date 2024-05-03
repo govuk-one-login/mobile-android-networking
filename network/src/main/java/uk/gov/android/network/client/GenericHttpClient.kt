@@ -27,7 +27,7 @@ interface GenericHttpClient {
     suspend fun makeAuthorisedRequest(apiRequest: ApiRequest.Post<*>, scope: String): ApiResponse
 
     /**
-     * Prepares the http client for authorised requests
+     * Prepares the client for authorised requests
      * @param authProvider the provider used to exchange scope with a bearer token
      */
     fun setAuthProvider(authProvider: AuthProvider)
