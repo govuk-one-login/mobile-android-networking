@@ -18,13 +18,13 @@ interface GenericHttpClient {
     suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse
 
     /**
-     * Make an authorised HTTP Post request to a protected service
+     * Make an authorised HTTP request to a protected service
      *
      * @param apiRequest The HTTP request to the protected service
      * @param scope will be used to fetch and decorate the request with the correct token
      * @returns ApiResponse the API response
      */
-    suspend fun makeAuthorisedRequest(apiRequest: ApiRequest.Post<*>, scope: String): ApiResponse
+    suspend fun makeAuthorisedRequest(apiRequest: ApiRequest, scope: String): ApiResponse
 
     /**
      * Prepares the client for authorised requests

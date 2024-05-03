@@ -34,11 +34,11 @@ import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
 class KtorHttpClient(
-    userAgentGenerator: UserAgentGenerator,
-    private var authenticationProvider: AuthenticationProvider? = null
+    userAgentGenerator: UserAgentGenerator
 ) : GenericHttpClient {
 
     private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
+    private var authenticationProvider: AuthenticationProvider? = null
 
     internal fun setHttpClient(httpClient: HttpClient) {
         this.httpClient = httpClient
@@ -88,7 +88,7 @@ class KtorHttpClient(
     }
 
     override suspend fun makeAuthorisedRequest(
-        apiRequest: ApiRequest.Post<*>,
+        apiRequest: ApiRequest,
         scope: String
     ): ApiResponse =
         when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
@@ -103,11 +103,28 @@ class KtorHttpClient(
             )
 
             is Success -> {
-                val authorisedHeaders = apiRequest.headers +
-                    Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
-                makeRequest(apiRequest.copy(headers = authorisedHeaders))
+                val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
+                makeRequest(authorisedApiRequest)
             }
         }
+
+    private fun authoriseRequest(
+        apiRequest: ApiRequest,
+        serviceTokenResponse: Success
+    ): ApiRequest {
+        val authorisationHeader =
+            Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+        return when (apiRequest) {
+            is ApiRequest.FormUrlEncoded -> apiRequest
+            is ApiRequest.Get -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+
+            is ApiRequest.Post<*> -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+        }
+    }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {

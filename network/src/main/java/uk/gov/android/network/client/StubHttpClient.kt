@@ -14,7 +14,7 @@ class StubHttpClient(
     }
 
     override suspend fun makeAuthorisedRequest(
-        apiRequest: ApiRequest.Post<*>,
+        apiRequest: ApiRequest,
         scope: String
     ): ApiResponse {
         return apiResponse
