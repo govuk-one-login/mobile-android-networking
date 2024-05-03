@@ -28,7 +28,7 @@ interface GenericHttpClient {
 
     /**
      * Prepares the client for authorised requests
-     * @param authenticationProvider the provider used to exchange scope with a bearer token
+     * @param provider the authentication provider used to exchange the scope for a bearer token
      */
-    fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider)
+    fun setAuthenticationProvider(provider: AuthenticationProvider)
 }

@@ -20,7 +20,7 @@ class StubHttpClient(
         return apiResponse
     }
 
-    override fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider) {
-        this.lastAuthenticationProviderSupplied = authenticationProvider
+    override fun setAuthenticationProvider(provider: AuthenticationProvider) {
+        this.lastAuthenticationProviderSupplied = provider
     }
 }

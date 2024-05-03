@@ -83,8 +83,8 @@ class KtorHttpClient(
         }
     }
 
-    override fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider) {
-        this.authenticationProvider = authenticationProvider
+    override fun setAuthenticationProvider(provider: AuthenticationProvider) {
+        this.authenticationProvider = provider
     }
 
     override suspend fun makeAuthorisedRequest(
