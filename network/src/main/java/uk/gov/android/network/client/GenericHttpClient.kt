@@ -2,7 +2,7 @@ package uk.gov.android.network.client
 
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.auth.AuthProvider
+import uk.gov.android.network.auth.AuthenticationProvider
 
 /**
  * Contract for the generic HTTP client
@@ -28,7 +28,7 @@ interface GenericHttpClient {
 
     /**
      * Prepares the client for authorised requests
-     * @param authProvider the provider used to exchange scope with a bearer token
+     * @param authenticationProvider the provider used to exchange scope with a bearer token
      */
-    fun setAuthProvider(authProvider: AuthProvider)
+    fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider)
 }

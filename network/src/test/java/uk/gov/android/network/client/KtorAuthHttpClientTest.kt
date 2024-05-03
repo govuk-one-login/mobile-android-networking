@@ -18,9 +18,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.auth.AuthResponse.Failure
-import uk.gov.android.network.auth.AuthResponse.Success
-import uk.gov.android.network.auth.MockAuthProvider
+import uk.gov.android.network.auth.AuthenticationResponse.Failure
+import uk.gov.android.network.auth.AuthenticationResponse.Success
+import uk.gov.android.network.auth.MockAuthenticationProvider
 import uk.gov.android.network.useragent.UserAgentGeneratorStub
 
 class KtorAuthHttpClientTest {
@@ -57,7 +57,7 @@ class KtorAuthHttpClientTest {
     }
 
     @Test
-    fun testSetAuthProvider() {
+    fun testSetAuthenticationProvider() {
         val expectedScope = "scope"
         val expectedResultString = "response"
         val url = "url"
@@ -75,8 +75,8 @@ class KtorAuthHttpClientTest {
             mockEngine
         )
         val expectedBearerToken = "ExpectedBearerToken"
-        val newMockAuthProvider = MockAuthProvider(Success(expectedBearerToken))
-        sut.setAuthProvider(newMockAuthProvider)
+        val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+        sut.setAuthenticationProvider(newMockAuthenticationProvider)
         runBlocking {
             sut.makeAuthorisedRequest(
                 ApiRequest.Post(
@@ -86,7 +86,7 @@ class KtorAuthHttpClientTest {
                 ),
                 expectedScope
             )
-            assertEquals(expectedScope, newMockAuthProvider.spyScope)
+            assertEquals(expectedScope, newMockAuthenticationProvider.spyScope)
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(headers.get("Authorization"), "Bearer $expectedBearerToken")
@@ -111,8 +111,8 @@ class KtorAuthHttpClientTest {
         }
         setupHttpClient(mockEngine)
         val expectedBearerToken = "ExpectedBearerToken"
-        val mockAuthProvider = MockAuthProvider(Success(expectedBearerToken))
-        sut.setAuthProvider(mockAuthProvider)
+        val mockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+        sut.setAuthenticationProvider(mockAuthenticationProvider)
         runBlocking {
             val actualResponse = sut.makeAuthorisedRequest(
                 ApiRequest.Post(
@@ -123,7 +123,7 @@ class KtorAuthHttpClientTest {
                 expectedScope
             )
             assertEquals(expectedResponse, actualResponse)
-            assertEquals(expectedScope, mockAuthProvider.spyScope)
+            assertEquals(expectedScope, mockAuthenticationProvider.spyScope)
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(headers.get("Authorization"), "Bearer $expectedBearerToken")
@@ -131,7 +131,7 @@ class KtorAuthHttpClientTest {
     }
 
     @Test
-    fun testMakeAuthorisedRequest_FailAuthProviderNotSet() {
+    fun testMakeAuthorisedRequest_FailAuthenticationProviderNotSet() {
         val expectedScope = "scope"
         val url = "url"
         val body = TestData("Test", "AB1234567C")
@@ -157,14 +157,14 @@ class KtorAuthHttpClientTest {
     }
 
     @Test
-    fun testMakeAuthorisedRequest_FailAuthProviderFailedToFetch() {
+    fun testMakeAuthorisedRequest_FailAuthenticationProviderFailedToFetch() {
         val expectedScope = "scope"
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
         val error = Exception("Failed to get token")
-        val mockAuthProvider = MockAuthProvider(Failure(error))
-        sut.setAuthProvider(mockAuthProvider)
+        val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error))
+        sut.setAuthenticationProvider(mockAuthenticationProvider)
         runBlocking {
             val actualResponse = sut.makeAuthorisedRequest(
                 ApiRequest.Post(

@@ -26,16 +26,16 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.auth.AuthProvider
-import uk.gov.android.network.auth.AuthResponse.Failure
-import uk.gov.android.network.auth.AuthResponse.Success
+import uk.gov.android.network.auth.AuthenticationProvider
+import uk.gov.android.network.auth.AuthenticationResponse.Failure
+import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
 class KtorHttpClient(
     userAgentGenerator: UserAgentGenerator,
-    private var authProvider: AuthProvider? = null
+    private var authenticationProvider: AuthenticationProvider? = null
 ) : GenericHttpClient {
 
     private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
@@ -83,30 +83,31 @@ class KtorHttpClient(
         }
     }
 
-    override fun setAuthProvider(authProvider: AuthProvider) {
-        this.authProvider = authProvider
+    override fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider) {
+        this.authenticationProvider = authenticationProvider
     }
 
     override suspend fun makeAuthorisedRequest(
         apiRequest: ApiRequest.Post<*>,
         scope: String
-    ): ApiResponse = when (val serviceTokenResponse = this.authProvider?.fetchBearerToken(scope)) {
-        null -> ApiResponse.Failure(
-            0,
-            Exception("Service Token Provider not initialised")
-        )
+    ): ApiResponse =
+        when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
+            null -> ApiResponse.Failure(
+                0,
+                Exception("Service Token Provider not initialised")
+            )
 
-        is Failure -> ApiResponse.Failure(
-            0,
-            serviceTokenResponse.error
-        )
+            is Failure -> ApiResponse.Failure(
+                0,
+                serviceTokenResponse.error
+            )
 
-        is Success -> {
-            val authorisedHeaders = apiRequest.headers +
-                Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
-            makeRequest(apiRequest.copy(headers = authorisedHeaders))
+            is Success -> {
+                val authorisedHeaders = apiRequest.headers +
+                    Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+                makeRequest(apiRequest.copy(headers = authorisedHeaders))
+            }
         }
-    }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {
