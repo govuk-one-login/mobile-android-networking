@@ -142,6 +142,21 @@ publishing {
             version = rootProject.extra["packageVersion"] as String
 
             artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+
+            // generate pom nodes for dependencies
+            pom.withXml {
+                val dependenciesNode = asNode().appendNode("dependencies")
+                configurations.getByName("implementation") {
+                    allDependencies.forEach { dependency ->
+                        if (dependency.name != "unspecified") {
+                            val dependencyNode = dependenciesNode.appendNode("dependency")
+                            dependencyNode.appendNode("groupId", dependency.group)
+                            dependencyNode.appendNode("artifactId", dependency.name)
+                            dependencyNode.appendNode("version", dependency.version)
+                        }
+                    }
+                }
+            }
         }
     }
     repositories {
