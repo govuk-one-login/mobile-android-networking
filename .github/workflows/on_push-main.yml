@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  runSonarAnalysis:
-    name: Run SonarCloud analysis on merge to main branch
+  generateQualityReport:
+    name: Run automated testing suite and SonarCloud analysis on merge to main branch
     runs-on: macos-latest
     steps:          
       - name: Run checkout github action
