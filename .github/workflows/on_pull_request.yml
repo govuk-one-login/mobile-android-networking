@@ -19,7 +19,7 @@ concurrency:
 jobs:
   onPullRequestJob:
     name: Verify code base when pull request is published/updated
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Run checkout github action
