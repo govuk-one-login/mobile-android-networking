@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "mobile-android-network"
+rootProject.name = "mobile-android-networking"
 include(":network")
