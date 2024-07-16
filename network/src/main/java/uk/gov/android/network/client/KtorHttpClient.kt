@@ -1,5 +1,6 @@
 package uk.gov.android.network.client
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
@@ -10,7 +11,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -46,7 +46,11 @@ class KtorHttpClient(
 
     @OptIn(ExperimentalSerializationApi::class)
     private fun makeHttpClient(userAgentGenerator: UserAgentGenerator): HttpClient {
-        val simpleLogger = Logger.SIMPLE
+        val simpleLogger = object : Logger {
+            override fun log(message: String) {
+                Log.d("GenericHttpClient", message)
+            }
+        }
         return HttpClient(Android) {
             expectSuccess = true
 
@@ -163,6 +167,11 @@ class KtorHttpClient(
                 headers {
                     apiRequest.headers.forEach { header ->
                         append(header.first, header.second)
+                    }
+                }
+                url {
+                    apiRequest.queryParams.forEach {
+                        parameters.append(it.first, it.second)
                     }
                 }
             }
