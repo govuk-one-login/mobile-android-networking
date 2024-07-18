@@ -1,120 +1,20 @@
-name: On Branch Push (main)
-
+name: Release Networking module
 on:
   push:
-    branches:
-      - "main"
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
-  generateQualityReport:
-    name: Run automated testing suite and SonarCloud analysis on merge to main branch
-    runs-on: macos-latest
-    steps:          
-      - name: Run checkout github action
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # pin@v4
-        with:
-          lfs: 'true'
-          fetch-depth: 0
-
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
-
-      - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
-
-      - name: Get latest tag
-        id: latest-tag
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: 'v*'
-
-      - name: Generate version code
-        id: version-code
-        uses: ./config/actions/generate-version-code
-
-      - name: Generate version name
-        id: version-name
-        uses: ./config/actions/version-name
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-tag }}
-
-      - name: Run gradle unit tests
-        uses: ./config/actions/gradle-check
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.version-name.outputs.version-name }}
-
-      - name: Run sonar analysis
-        uses: ./config/actions/sonar-analysis
-        with:
-          project-version: ${{ steps.version-name.outputs.version-name }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Bundle reports folder
-        uses: ./config/actions/bundle-reports
-  
-  publishRelease:
-    name: Publish release artefact on push
-    runs-on: macos-latest
-
+  bump_version:
+    env:
+      JDK_VERSION: 17
     permissions:
+      id-token: write
       contents: write
       packages: write
+    runs-on: ubuntu-24.04
     steps:
-      - name: Run checkout github action
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # pin@v4
+      - name: Run deployment workflow
+        uses: govuk-one-login/mobile-android-pipelines@1270fbfaf847991caf31cd098f7043e7c890b3f5
         with:
-          lfs: 'true'
-          fetch-depth: 0
-
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
-
-      - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
-
-      - name: Get latest tag
-        id: latest-tag
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: 'v*'
-
-      - name: Automatically bump semantic version via cocogitto
-        id: versioning
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-
-          current_version=$(cog -v get-version)
-          echo "current_version=$current_version" >> $GITHUB_OUTPUT
-
-          cog bump --auto
-
-          new_version=$(cog -v get-version)
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Bundle release
-        id: bundle-release
-        uses: ./config/actions/gradle-assemble-and-bundle
-        with:
-          version-name: ${{ steps.versioning.outputs.new_version }}
-
-      - name: Release package
-        uses: ./config/actions/maven-publish
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          package-version: ${{ steps.versioning.outputs.new_version }}
-          username: ${{ github.actor }}
-
-      - name: Git tag bundles
-        uses: ./config/actions/git-tag-bundles
-        with:
-          version-name: ${{ steps.versioning.outputs.new_version }}
-
-      - name: Clean workspace
-        uses: ./config/actions/clean-workspace
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
