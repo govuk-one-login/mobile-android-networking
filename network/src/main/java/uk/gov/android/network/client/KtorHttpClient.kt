@@ -114,16 +114,8 @@ class KtorHttpClient(
     ): ApiRequest {
         val authorisationHeader =
             Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
-        return when (apiRequest) {
-            is ApiRequest.FormUrlEncoded -> apiRequest
-            is ApiRequest.Get -> {
-                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-
-            is ApiRequest.Post<*> -> {
-                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-        }
+        apiRequest.apiHeaders += authorisationHeader
+        return apiRequest
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
@@ -133,7 +125,7 @@ class KtorHttpClient(
                 try {
                     val response = httpClient.get(apiRequest.url) {
                         headers {
-                            apiRequest.headers.forEach { header ->
+                            apiRequest.apiHeaders.forEach { header ->
                                 append(header.first, header.second)
                             }
                         }
@@ -155,7 +147,7 @@ class KtorHttpClient(
                 try {
                     val response = httpClient.post(apiRequest.url) {
                         headers {
-                            apiRequest.headers.forEach { header ->
+                            apiRequest.apiHeaders.forEach { header ->
                                 append(header.first, header.second)
                             }
                         }
@@ -180,6 +172,11 @@ class KtorHttpClient(
             is ApiRequest.FormUrlEncoded -> {
                 try {
                     val response = httpClient.post(apiRequest.url) {
+                        headers {
+                            apiRequest.apiHeaders.forEach { header ->
+                                append(header.first, header.second)
+                            }
+                        }
                         setBody(
                             FormDataContent(
                                 Parameters.build {
