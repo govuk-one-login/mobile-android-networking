@@ -29,7 +29,6 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
-import uk.gov.android.network.client.ContentType as NetworkContentType
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
@@ -147,9 +146,12 @@ class KtorHttpClient(
         }
     }
 
-    private fun mapContentType(contentType: NetworkContentType?): ContentType? {
+    private fun mapContentType(
+        contentType: uk.gov.android.network.client.ContentType?
+    ): ContentType? {
         return when (contentType) {
-            NetworkContentType.APPLICATION_JSON -> ContentType.Application.Json
+            uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
+                ContentType.Application.Json
 
             else -> null
         }
