@@ -2,24 +2,22 @@ package uk.gov.android.network.api
 
 import uk.gov.android.network.client.ContentType
 
-sealed class ApiRequest(
-    var apiHeaders: List<Pair<String, String>> = emptyList()
-) {
+sealed class ApiRequest {
     data class Get(
         val url: String,
         val headers: List<Pair<String, String>> = emptyList()
-    ) : ApiRequest(headers)
+    ) : ApiRequest()
 
     data class Post<T>(
         val url: String,
         val body: T?,
         val headers: List<Pair<String, String>> = emptyList(),
         val contentType: ContentType? = null
-    ) : ApiRequest(headers)
+    ) : ApiRequest()
 
     data class FormUrlEncoded(
         val url: String,
-        val params: List<Pair<String, String>>,
-        val headers: List<Pair<String, String>> = emptyList()
-    ) : ApiRequest(headers)
+        val headers: List<Pair<String, String>> = emptyList(),
+        val params: List<Pair<String, String>>
+    ) : ApiRequest()
 }

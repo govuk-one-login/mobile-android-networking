@@ -29,6 +29,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
+import uk.gov.android.network.client.ContentType as NetworkContentType
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
@@ -114,101 +115,122 @@ class KtorHttpClient(
     ): ApiRequest {
         val authorisationHeader =
             Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
-        apiRequest.apiHeaders += authorisationHeader
-        return apiRequest
+        return when (apiRequest) {
+            is ApiRequest.FormUrlEncoded -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+
+            is ApiRequest.Get -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+
+            is ApiRequest.Post<*> -> {
+                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
+        }
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {
         return when (apiRequest) {
             is ApiRequest.Get -> {
-                try {
-                    val response = httpClient.get(apiRequest.url) {
-                        headers {
-                            apiRequest.apiHeaders.forEach { header ->
-                                append(header.first, header.second)
-                            }
-                        }
-                    }
-
-                    if (response.status != HttpStatusCode.OK) {
-                        throw ResponseException(response, response.body())
-                    }
-
-                    ApiResponse.Success<String>(response.body())
-                } catch (re: ResponseException) {
-                    ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-                } catch (e: Exception) {
-                    ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
-                }
+                makeGetRequest(apiRequest)
             }
 
             is ApiRequest.Post<*> -> {
-                try {
-                    val response = httpClient.post(apiRequest.url) {
-                        headers {
-                            apiRequest.apiHeaders.forEach { header ->
-                                append(header.first, header.second)
-                            }
-                        }
-                        mapContentType(apiRequest.contentType)?.let {
-                            contentType(it)
-                        }
-                        setBody(apiRequest.body)
-                    }
-
-                    if (response.status != HttpStatusCode.OK) {
-                        throw ResponseException(response, response.body())
-                    }
-
-                    ApiResponse.Success<String>(response.body())
-                } catch (re: ResponseException) {
-                    ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-                } catch (e: Exception) {
-                    ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
-                }
+                makePostRequest(apiRequest)
             }
 
             is ApiRequest.FormUrlEncoded -> {
-                try {
-                    val response = httpClient.post(apiRequest.url) {
-                        headers {
-                            apiRequest.apiHeaders.forEach { header ->
-                                append(header.first, header.second)
-                            }
-                        }
-                        setBody(
-                            FormDataContent(
-                                Parameters.build {
-                                    apiRequest.params.forEach {
-                                        append(it.first, it.second)
-                                    }
-                                }
-                            )
-                        )
-                    }
-
-                    if (response.status != HttpStatusCode.OK) {
-                        throw ResponseException(response, response.body())
-                    }
-
-                    ApiResponse.Success<String>(response.body())
-                } catch (re: ResponseException) {
-                    ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-                } catch (e: Exception) {
-                    ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
-                }
+                makeFormRequest(apiRequest)
             }
         }
     }
 
-    private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?):
-        ContentType? {
+    private fun mapContentType(contentType: NetworkContentType?): ContentType? {
         return when (contentType) {
-            uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
-                ContentType.Application.Json
+            NetworkContentType.APPLICATION_JSON -> ContentType.Application.Json
 
             else -> null
+        }
+    }
+
+    private suspend fun makeGetRequest(apiRequest: ApiRequest.Get): ApiResponse {
+        return try {
+            val response = httpClient.get(apiRequest.url) {
+                headers {
+                    apiRequest.headers.forEach { header ->
+                        append(header.first, header.second)
+                    }
+                }
+            }
+
+            if (response.status != HttpStatusCode.OK) {
+                throw ResponseException(response, response.body())
+            }
+
+            ApiResponse.Success<String>(response.body())
+        } catch (re: ResponseException) {
+            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+        } catch (e: Exception) {
+            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+        }
+    }
+
+    private suspend fun makePostRequest(apiRequest: ApiRequest.Post<*>): ApiResponse {
+        return try {
+            val response = httpClient.post(apiRequest.url) {
+                headers {
+                    apiRequest.headers.forEach { header ->
+                        append(header.first, header.second)
+                    }
+                }
+                mapContentType(apiRequest.contentType)?.let {
+                    contentType(it)
+                }
+                setBody(apiRequest.body)
+            }
+
+            if (response.status != HttpStatusCode.OK) {
+                throw ResponseException(response, response.body())
+            }
+
+            ApiResponse.Success<String>(response.body())
+        } catch (re: ResponseException) {
+            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+        } catch (e: Exception) {
+            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+        }
+    }
+
+    private suspend fun makeFormRequest(apiRequest: ApiRequest.FormUrlEncoded): ApiResponse {
+        return try {
+            val response = httpClient.post(apiRequest.url) {
+                headers {
+                    apiRequest.headers.forEach { header ->
+                        append(header.first, header.second)
+                    }
+                }
+                setBody(
+                    FormDataContent(
+                        Parameters.build {
+                            apiRequest.params.forEach {
+                                append(it.first, it.second)
+                            }
+                        }
+                    )
+                )
+            }
+
+            if (response.status != HttpStatusCode.OK) {
+                throw ResponseException(response, response.body())
+            }
+
+            ApiResponse.Success<String>(response.body())
+        } catch (re: ResponseException) {
+            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+        } catch (e: Exception) {
+            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
         }
     }
 }
