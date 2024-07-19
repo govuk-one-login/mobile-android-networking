@@ -89,7 +89,7 @@ class KtorAuthHttpClientTest {
             assertEquals(expectedScope, newMockAuthenticationProvider.spyScope)
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
-            assertEquals(headers.get("Authorization"), "Bearer $expectedBearerToken")
+            assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
         }
     }
 
@@ -126,7 +126,7 @@ class KtorAuthHttpClientTest {
             assertEquals(expectedScope, mockAuthenticationProvider.spyScope)
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
-            assertEquals(headers.get("Authorization"), "Bearer $expectedBearerToken")
+            assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
         }
     }
 
@@ -178,6 +178,40 @@ class KtorAuthHttpClientTest {
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(0, failureResponse.status)
             assertEquals(error, failureResponse.error)
+        }
+    }
+
+    @Test
+    fun testSetAuthenticationProviderFormUrlEncoded() {
+        val expectedScope = "scope"
+        val expectedResultString = "response"
+        val url = "url"
+
+        val mockEngine = MockEngine {
+            respond(
+                content = expectedResultString,
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+        setupHttpClient(
+            mockEngine
+        )
+        val expectedBearerToken = "ExpectedBearerToken"
+        val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+        sut.setAuthenticationProvider(newMockAuthenticationProvider)
+        runBlocking {
+            sut.makeAuthorisedRequest(
+                ApiRequest.FormUrlEncoded(
+                    url = url,
+                    params = listOf(Pair("key", "value"))
+                ),
+                expectedScope
+            )
+            assertEquals(expectedScope, newMockAuthenticationProvider.spyScope)
+            assertEquals(mockEngine.requestHistory.size, 1)
+            val headers = mockEngine.requestHistory.first().headers
+            assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
         }
     }
 }
