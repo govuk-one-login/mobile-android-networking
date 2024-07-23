@@ -83,30 +83,38 @@ jobs:
         with:
           pattern: 'v*'
 
-      - name: Generate version name
-        id: version-name
-        uses: ./config/actions/version-name
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+      - name: Automatically bump semantic version via cocogitto
+        id: versioning
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          current_version=$(cog -v get-version)
+          echo "current_version=$current_version" >> $GITHUB_OUTPUT
+
+          cog bump --auto
+
+          new_version=$(cog -v get-version)
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Bundle release
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          version-name: ${{ steps.version-name.outputs.version-name }}
+          version-name: ${{ steps.versioning.outputs.new_version }}
 
       - name: Release package
         uses: ./config/actions/maven-publish
         with:
           access-token: ${{ secrets.GITHUB_TOKEN }}
-          package-version: ${{ steps.version-name.outputs.version-name }}
+          package-version: ${{ steps.versioning.outputs.new_version }}
           username: ${{ github.actor }}
 
       - name: Git tag bundles
         uses: ./config/actions/git-tag-bundles
         with:
-          version-name: ${{ steps.version-name.outputs.version-name }}
+          version-name: ${{ steps.versioning.outputs.new_version }}
 
       - name: Clean workspace
         uses: ./config/actions/clean-workspace

@@ -84,6 +84,12 @@ runs:
       shell: bash
       if: runner.os == 'macOS'
 
+    - name: Install cocogitto
+      run: |
+        brew install cocogitto
+      shell: bash
+      if: runner.os == 'macOS'
+
     - name: Setup Gradle
       id: setupGradle
       uses: gradle/gradle-build-action@a8f75513eafdebd8141bd1cd4e30fcd194af8dfa # pin@v2
