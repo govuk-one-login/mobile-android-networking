@@ -78,6 +78,12 @@ runs:
       shell: bash
       if: runner.os == 'Linux'
 
+    - name: Install git-conventional-commits
+      run: |
+        npm install --global git-conventional-commits
+      shell: bash
+      if: runner.os == 'macOS'
+
     - name: Install cocogitto
       run: |
         brew install cocogitto
