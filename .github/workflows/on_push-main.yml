@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Run deployment workflow
-        uses: govuk-one-login/mobile-android-pipelines@1270fbfaf847991caf31cd098f7043e7c890b3f5
+        uses: govuk-one-login/mobile-android-pipelines@3dd3a4603b806128f9da211ea261f658b734cbfb
         with:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
