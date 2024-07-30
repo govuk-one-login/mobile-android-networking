@@ -10,7 +10,7 @@ pluginManagement {
         id("org.jetbrains.kotlin.android") version "2.0.0"
     }
 
-    includeBuild("buildLogic")
+    includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

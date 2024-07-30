@@ -1,28 +1,16 @@
-import org.gradle.api.internal.provider.MissingValueException
-@Suppress("DSL_SCOPE_VIOLATION")
+import uk.gov.pipelines.config.ApkConfig
+
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.detekt)
-    id("jacoco")
-    id("kotlin-parcelize")
-    id("maven-publish")
-    id("uk.gov.network.jvm-toolchains")
-    id("uk.gov.network.sonarqube-module-config")
-    id("uk.gov.network.jacoco-module-config")
+    id("uk.gov.pipelines.android-lib-config")
     alias(libs.plugins.kotlin.serialization)
 }
 
-apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
-apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
-
 android {
-    namespace = "uk.gov.android.network"
-    compileSdk = (rootProject.extra["compileAndroidVersion"] as kotlin.Int)
-
     defaultConfig {
-        minSdk = (rootProject.extra["minAndroidVersion"] as kotlin.Int)
+        val apkConfig: ApkConfig by project.rootProject.extra
+        namespace = apkConfig.applicationId
+        compileSdk = apkConfig.sdkVersions.compile
+        minSdk = apkConfig.sdkVersions.minimum
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,9 +29,11 @@ android {
     }
 
     lint {
+        val configDir = "${rootProject.projectDir}/config"
+
         abortOnError = true
         absolutePaths = true
-        baseline = File("${rootProject.extra["configDir"]}/android/baseline.xml")
+        baseline = File("$configDir/android/baseline.xml")
         checkAllWarnings = true
         checkDependencies = false
         checkGeneratedSources = false
@@ -59,7 +49,7 @@ android {
         htmlReport = true
         ignoreTestSources = true
         ignoreWarnings = false
-        lintConfig = File("${rootProject.extra["configDir"]}/android/lint.xml")
+        lintConfig = File("$configDir/android/lint.xml")
         noLines = false
         quiet = false
         showAll = true
@@ -72,6 +62,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -135,60 +126,15 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "uk.gov.android"
-            version = rootProject.extra["packageVersion"] as String
-
-            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-
-            // generate pom nodes for dependencies
-            pom.withXml {
-                val dependenciesNode = asNode().appendNode("dependencies")
-                configurations.getByName("implementation") {
-                    allDependencies.forEach { dependency ->
-                        if (dependency.name != "unspecified") {
-                            val dependencyNode = dependenciesNode.appendNode("dependency")
-                            dependencyNode.appendNode("groupId", dependency.group)
-                            dependencyNode.appendNode("artifactId", dependency.name)
-                            dependencyNode.appendNode("version", dependency.version)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    repositories {
-        maven(
-            "https://maven.pkg.github.com/govuk-one-login/mobile-android-networking",
-            setupGithubCredentials()
+mavenPublishingConfig {
+    mavenConfigBlock {
+        name.set(
+            "Mobile Android Networking"
         )
-    }
-}
-
-fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit = {
-    val (credUser, credToken) = fetchGithubCredentials()
-    credentials {
-        username = credUser
-        password = credToken
-    }
-}
-
-fun fetchGithubCredentials(): Pair<String, String> {
-    val gprUser = providers.gradleProperty("gpr.user")
-    val gprToken = providers.gradleProperty("gpr.token")
-
-    return try {
-        gprUser.get() to gprToken.get()
-    } catch (exception: MissingValueException) {
-        logger.warn(
-            "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
-                "location for instructions:\n\n" +
-                "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
-            exception
+        description.set(
+            """
+            A Gradle module with support for API calls including certificate pinning to AWS and setting user agent
+            """.trimIndent()
         )
-
-        System.getenv("USERNAME") to System.getenv("TOKEN")
     }
 }
