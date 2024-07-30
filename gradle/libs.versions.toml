@@ -1,6 +1,6 @@
 [versions]
 androidGradlePlugin = "8.5.1"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
 coreKtx = "1.13.1"
 detektGradle = "1.23.6"
 espressoCore = "3.5.1"
