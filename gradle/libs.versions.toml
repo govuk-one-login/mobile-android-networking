@@ -17,7 +17,7 @@ ktor = "2.3.7"
 logback = "1.2.11"
 material = "1.11.0"
 mockitoCore = "5.9.0"
-mockitoKotlin = "5.2.1"
+mockitoKotlin = "5.4.0"
 sonarqube-gradle = "5.1.0.4882" # https://github.com/SonarSource/sonar-scanner-gradle/releases
 
 [libraries]
