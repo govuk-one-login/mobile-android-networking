@@ -2,12 +2,10 @@ import uk.gov.pipelines.config.ApkConfig
 
 plugins {
     id("uk.gov.pipelines.android-lib-config")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-
-
-
     defaultConfig {
         val apkConfig: ApkConfig by project.rootProject.extra
         namespace = apkConfig.applicationId
