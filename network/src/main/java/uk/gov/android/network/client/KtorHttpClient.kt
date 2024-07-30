@@ -48,7 +48,7 @@ class KtorHttpClient(
     private fun makeHttpClient(userAgentGenerator: UserAgentGenerator): HttpClient {
         val simpleLogger = object : Logger {
             override fun log(message: String) {
-                Log.d("GenericHttpClient", message)
+                Log.d("KtorHttpClient", message)
             }
         }
         return HttpClient(Android) {
