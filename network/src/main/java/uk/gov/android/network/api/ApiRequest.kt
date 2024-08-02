@@ -5,7 +5,8 @@ import uk.gov.android.network.client.ContentType
 sealed class ApiRequest {
     data class Get(
         val url: String,
-        val headers: List<Pair<String, String>> = emptyList()
+        val headers: List<Pair<String, String>> = emptyList(),
+        val queryParams: List<Pair<String, String>> = emptyList()
     ) : ApiRequest()
 
     data class Post<T>(
