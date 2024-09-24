@@ -78,7 +78,7 @@ class KtorAuthHttpClientTest {
         val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
         sut.setAuthenticationProvider(newMockAuthenticationProvider)
         runBlocking {
-            sut.makeAuthorisedRequest(
+            val response = sut.makeAuthorisedRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
@@ -90,6 +90,7 @@ class KtorAuthHttpClientTest {
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
+            assertEquals(expectedResultString, (response as ApiResponse.Success<*>).response)
         }
     }
 
