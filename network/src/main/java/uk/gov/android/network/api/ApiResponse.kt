@@ -8,12 +8,4 @@ sealed class ApiResponse {
         val status: Int,
         val error: Exception
     ) : ApiResponse()
-
-    data object Loading : ApiResponse() {
-        override fun toString(): String = "ApiResponse.Loading"
-    }
-
-    data object Offline : ApiResponse() {
-        override fun toString(): String = "ApiResponse.Offline"
-    }
 }
