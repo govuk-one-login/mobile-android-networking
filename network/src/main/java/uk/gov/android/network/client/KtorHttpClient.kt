@@ -24,9 +24,11 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
+import uk.gov.android.network.auth.AuthenticationResponse.AccessTokenExpired
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
@@ -93,13 +95,21 @@ class KtorHttpClient(
     ): ApiResponse =
         when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
             null -> ApiResponse.Failure(
+                ApiFailureReason.AuthProviderNotInitialised,
                 0,
                 Exception("Service Token Provider not initialised")
             )
 
             is Failure -> ApiResponse.Failure(
+                ApiFailureReason.AuthFailed,
                 0,
                 serviceTokenResponse.error
+            )
+
+            is AccessTokenExpired -> ApiResponse.Failure(
+                ApiFailureReason.AccessTokenExpired,
+                0,
+                Exception("Access Token expired")
             )
 
             is Success -> {
@@ -129,7 +139,6 @@ class KtorHttpClient(
         }
     }
 
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {
         return when (apiRequest) {
             is ApiRequest.Get -> {
@@ -173,9 +182,9 @@ class KtorHttpClient(
 
             ApiResponse.Success<String>(response.body())
         } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            ApiResponse.Failure(ApiFailureReason.Non200Response, re.response.status.value, re.mapToApiException())
         } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            ApiResponse.Failure(ApiFailureReason.General, HttpStatusCode.TransportError.value, e)
         }
     }
 
@@ -199,9 +208,9 @@ class KtorHttpClient(
 
             ApiResponse.Success<String>(response.body())
         } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            ApiResponse.Failure(ApiFailureReason.Non200Response, re.response.status.value, re.mapToApiException())
         } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            ApiResponse.Failure(ApiFailureReason.General, HttpStatusCode.TransportError.value, e)
         }
     }
 
@@ -230,9 +239,9 @@ class KtorHttpClient(
 
             ApiResponse.Success<String>(response.body())
         } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            ApiResponse.Failure(ApiFailureReason.Non200Response, re.response.status.value, re.mapToApiException())
         } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            ApiResponse.Failure(ApiFailureReason.General, HttpStatusCode.TransportError.value, e)
         }
     }
 }
