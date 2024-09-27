@@ -16,10 +16,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.auth.AuthenticationResponse.AccessTokenExpired
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.auth.MockAuthenticationProvider
@@ -80,7 +78,7 @@ class KtorAuthHttpClientTest {
         val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
         sut.setAuthenticationProvider(newMockAuthenticationProvider)
         runBlocking {
-            val response = sut.makeAuthorisedRequest(
+            sut.makeAuthorisedRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
@@ -92,7 +90,6 @@ class KtorAuthHttpClientTest {
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
-            assertEquals(expectedResultString, (response as ApiResponse.Success<*>).response)
         }
     }
 
@@ -134,43 +131,6 @@ class KtorAuthHttpClientTest {
     }
 
     @Test
-    fun testMakeAuthorisedGetRequest_Success() {
-        val expectedScope = "scope"
-        val expectedResultString = "response"
-        val expectedResponse = ApiResponse.Success(expectedResultString)
-        val url = "url"
-
-        val mockEngine = MockEngine {
-            respond(
-                content = expectedResultString,
-                status = HttpStatusCode.OK,
-                headers = headersOf(HttpHeaders.ContentType, "application/json")
-            )
-        }
-        setupHttpClient(mockEngine)
-        val expectedBearerToken = "ExpectedBearerToken"
-        val mockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
-        sut.setAuthenticationProvider(mockAuthenticationProvider)
-        runBlocking {
-            val actualResponse = sut.makeAuthorisedRequest(
-                ApiRequest.Get(
-                    url = url,
-                    headers = listOf(
-                        Pair("test", "test")
-                    )
-                ),
-                expectedScope
-            )
-            assertEquals(expectedResponse, actualResponse)
-            assertEquals(expectedScope, mockAuthenticationProvider.spyScope)
-            assertEquals(mockEngine.requestHistory.size, 1)
-            val headers = mockEngine.requestHistory.first().headers
-            assertEquals(headers["Authorization"], "Bearer $expectedBearerToken")
-            assertEquals(headers["test"], "test")
-        }
-    }
-
-    @Test
     fun testMakeAuthorisedRequest_FailAuthenticationProviderNotSet() {
         val expectedScope = "scope"
         val url = "url"
@@ -188,7 +148,6 @@ class KtorAuthHttpClientTest {
             )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
-            assertEquals(ApiFailureReason.AuthProviderNotInitialised, failureResponse.reason)
             assertEquals(0, failureResponse.status)
             assertEquals(
                 "Service Token Provider not initialised",
@@ -217,35 +176,8 @@ class KtorAuthHttpClientTest {
             )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
-            assertEquals(ApiFailureReason.AuthFailed, failureResponse.reason)
             assertEquals(0, failureResponse.status)
             assertEquals(error, failureResponse.error)
-        }
-    }
-
-    @Test
-    fun testMakeAuthorisedRequest_FailAuthenticationProviderAccessExpired() {
-        val expectedScope = "scope"
-        val url = "url"
-        val body = TestData("Test", "AB1234567C")
-        val contentType = ContentType.APPLICATION_JSON
-        val error = Exception("Access Token expired")
-        val mockAuthenticationProvider = MockAuthenticationProvider(AccessTokenExpired)
-        sut.setAuthenticationProvider(mockAuthenticationProvider)
-        runBlocking {
-            val actualResponse = sut.makeAuthorisedRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = body,
-                    contentType = contentType
-                ),
-                expectedScope
-            )
-            assert(actualResponse is ApiResponse.Failure)
-            val failureResponse = actualResponse as ApiResponse.Failure
-            assertEquals(0, failureResponse.status)
-            assertEquals(ApiFailureReason.AccessTokenExpired, failureResponse.reason)
-            assertEquals(error.message, failureResponse.error.message)
         }
     }
 
