@@ -13,7 +13,7 @@ kotlinSerialization = "2.3.12"
 kotlinSerializationPlugin = "2.0.20"
 ktor = "2.3.12"
 # Latest version (1.4.11) of logback causes crashes: https://youtrack.jetbrains.com/issue/KTOR-5227
-logback = "1.2.11"
+logback = "1.5.9"
 material = "1.12.0"
 mockitoCore = "5.13.0"
 mockitoKotlin = "5.4.0"
