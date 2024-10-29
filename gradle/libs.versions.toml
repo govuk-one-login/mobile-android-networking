@@ -11,7 +11,7 @@ kotlin = "2.0.21"
 ktlint = "12.1.1"
 kotlinSerialization = "3.0.0"
 kotlinSerializationPlugin = "2.0.21"
-ktor = "3.0.0"
+ktor = "3.0.1"
 # Latest version (1.4.11) of logback causes crashes: https://youtrack.jetbrains.com/issue/KTOR-5227
 logback = "1.2.11"
 material = "1.12.0"
