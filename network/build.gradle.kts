@@ -67,6 +67,7 @@ android {
         jvmTarget = "11"
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
         animationsDisabled = true
@@ -95,8 +96,7 @@ dependencies {
         libs.ktor.client.core,
         libs.ktor.client.contentnegotiation,
         libs.ktor.client.logging,
-        libs.ktor.serialization.kotlinx.json,
-        libs.logback.classic
+        libs.ktor.serialization.kotlinx.json
     ).forEach { dependency ->
         implementation(dependency)
     }
