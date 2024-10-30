@@ -9,7 +9,7 @@ junitVersion = "1.2.1"
 junitJupiter = "5.11.3"
 kotlin = "2.0.21"
 ktlint = "12.1.1"
-kotlinSerialization = "3.0.0"
+kotlinSerialization = "3.0.1"
 kotlinSerializationPlugin = "2.0.21"
 ktor = "3.0.1"
 # Latest version (1.4.11) of logback causes crashes: https://youtrack.jetbrains.com/issue/KTOR-5227
