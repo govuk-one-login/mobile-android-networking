@@ -91,7 +91,6 @@ dependencies {
     listOf(
         libs.core.ktx,
         libs.appcompat,
-        libs.material,
         libs.ktor.client.android,
         libs.ktor.client.core,
         libs.ktor.client.contentnegotiation,
