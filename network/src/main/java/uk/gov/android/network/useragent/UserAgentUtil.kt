@@ -9,7 +9,7 @@ object UserAgentUtil {
      * @return The user agent
      */
     fun buildAgent(
-        userAgent: UserAgent
+        userAgent: UserAgent,
     ): String {
         userAgent.apply {
             return "$appName/$versionName $manufacturer/$model Android/$sdkVersion " +

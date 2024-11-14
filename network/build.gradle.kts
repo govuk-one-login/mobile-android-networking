@@ -19,7 +19,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -42,8 +42,8 @@ android {
             setOf(
                 "ConvertToWebp",
                 "UnusedIds",
-                "VectorPath"
-            )
+                "VectorPath",
+            ),
         )
         explainIssues = true
         htmlReport = true
@@ -76,7 +76,7 @@ android {
                 events = setOf(
                     org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
                     org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
                 )
             }
         }
@@ -107,7 +107,7 @@ dependencies {
         libs.ktor.client.mock,
         platform(libs.junit.bom),
         libs.mockito.core,
-        libs.mockito.kotlin
+        libs.mockito.kotlin,
     ).forEach { dependency ->
         testImplementation(dependency)
     }
@@ -116,7 +116,7 @@ dependencies {
 
     listOf(
         libs.ext.junit,
-        libs.espresso.core
+        libs.espresso.core,
     ).forEach { dependency ->
         androidTestImplementation(dependency)
     }
@@ -129,12 +129,12 @@ tasks.withType<Test> {
 mavenPublishingConfig {
     mavenConfigBlock {
         name.set(
-            "Mobile Android Networking"
+            "Mobile Android Networking",
         )
         description.set(
             """
             A Gradle module with support for API calls including certificate pinning to AWS and setting user agent
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 }

@@ -18,5 +18,5 @@ data class UserAgent(
     val model: String,
     val sdkVersion: Int,
     val clientName: String,
-    val clientVersion: String
+    val clientVersion: String,
 )

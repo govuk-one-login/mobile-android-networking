@@ -5,7 +5,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 
 class StubHttpClient(
-    private val apiResponse: ApiResponse
+    private val apiResponse: ApiResponse,
 ) : GenericHttpClient {
     var lastAuthenticationProviderSupplied: AuthenticationProvider? = null
 
@@ -15,7 +15,7 @@ class StubHttpClient(
 
     override suspend fun makeAuthorisedRequest(
         apiRequest: ApiRequest,
-        scope: String
+        scope: String,
     ): ApiResponse {
         return apiResponse
     }

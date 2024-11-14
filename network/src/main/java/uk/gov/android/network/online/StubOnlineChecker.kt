@@ -9,7 +9,7 @@ import androidx.annotation.VisibleForTesting
  */
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 data class StubOnlineChecker(
-    private var stub: Boolean = false
+    private var stub: Boolean = false,
 ) : OnlineChecker {
 
     override fun isOnline(): Boolean = stub

@@ -34,7 +34,7 @@ import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
 class KtorHttpClient(
-    userAgentGenerator: UserAgentGenerator
+    userAgentGenerator: UserAgentGenerator,
 ) : GenericHttpClient {
 
     private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
@@ -60,7 +60,7 @@ class KtorHttpClient(
                         ignoreUnknownKeys = true
                         isLenient = true
                         explicitNulls = false
-                    }
+                    },
                 )
             }
 
@@ -89,17 +89,17 @@ class KtorHttpClient(
 
     override suspend fun makeAuthorisedRequest(
         apiRequest: ApiRequest,
-        scope: String
+        scope: String,
     ): ApiResponse =
         when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
             null -> ApiResponse.Failure(
                 0,
-                Exception("Service Token Provider not initialised")
+                Exception("Service Token Provider not initialised"),
             )
 
             is Failure -> ApiResponse.Failure(
                 0,
-                serviceTokenResponse.error
+                serviceTokenResponse.error,
             )
 
             is Success -> {
@@ -110,7 +110,7 @@ class KtorHttpClient(
 
     private fun authoriseRequest(
         apiRequest: ApiRequest,
-        serviceTokenResponse: Success
+        serviceTokenResponse: Success,
     ): ApiRequest {
         val authorisationHeader =
             Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
@@ -147,7 +147,7 @@ class KtorHttpClient(
     }
 
     private fun mapContentType(
-        contentType: uk.gov.android.network.client.ContentType?
+        contentType: uk.gov.android.network.client.ContentType?,
     ): ContentType? {
         return when (contentType) {
             uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
@@ -219,8 +219,8 @@ class KtorHttpClient(
                             apiRequest.params.forEach {
                                 append(it.first, it.second)
                             }
-                        }
-                    )
+                        },
+                    ),
                 )
             }
 
