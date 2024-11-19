@@ -5,8 +5,8 @@ package uk.gov.android.network.useragent
  *
  * @param appName Name of the app as displayed in the play store
  * @param versionName Version of the app
- * @param manufacturer Manufacturer of the device running the app
- * @param model Model number of the device running the app
+ * @param manufacturer of the device running the app
+ * @param model number of the device running the app
  * @param sdkVersion The current version of the Android OS
  * @param clientName The name of the third party HTTP client
  * @param clientVersion Version number of the HTTP client
