@@ -95,7 +95,6 @@ dependencies {
         libs.ktor.client.contentnegotiation,
         libs.ktor.client.logging,
         libs.ktor.serialization.kotlinx.json,
-        libs.logback.classic,
     ).forEach { dependency ->
         implementation(dependency)
     }
