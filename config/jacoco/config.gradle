@@ -190,7 +190,6 @@ def setupAndroidReporting(Project moduleProject, variants) {
                 }
             }
 
-            // build/jacoco folder and build/outputs/unit_test_code_coverage folders
             ConfigurableFileTree unitTestExecutionData = fileTree([
                     dir     : unitTestExecutionDataFile,
                     includes: [

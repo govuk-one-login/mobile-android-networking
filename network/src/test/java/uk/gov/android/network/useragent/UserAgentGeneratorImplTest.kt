@@ -14,7 +14,7 @@ class UserAgentGeneratorImplTest {
             MODEL,
             SDK_VERSION,
             CLIENT_NAME,
-            CLIENT_VERSION
+            CLIENT_VERSION,
         )
         val expectedUserAgent = USER_AGENT
         sut.setUserAgent(userAgent)

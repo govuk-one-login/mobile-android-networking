@@ -53,5 +53,8 @@ sdkVersion
 clientName
 clientVersion
 apiRequest
-[Gg]ithub
+[Gg]it[Hh]ub
 userAgent
+config
+buildLogic
+accessors

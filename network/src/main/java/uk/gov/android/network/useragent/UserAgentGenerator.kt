@@ -4,7 +4,7 @@ package uk.gov.android.network.useragent
 interface UserAgentGenerator {
 
     fun setUserAgent(
-        userAgent: UserAgent
+        userAgent: UserAgent,
     )
 
     fun getUserAgent(): String
@@ -14,10 +14,10 @@ class UserAgentGeneratorImpl : UserAgentGenerator {
     private lateinit var userAgentString: String
 
     override fun setUserAgent(
-        userAgent: UserAgent
+        userAgent: UserAgent,
     ) {
         val agent = UserAgentUtil.buildAgent(
-            userAgent
+            userAgent,
         )
         userAgentString = agent
     }
@@ -28,7 +28,7 @@ class UserAgentGeneratorImpl : UserAgentGenerator {
 @Suppress("EmptyFunctionBlock")
 class UserAgentGeneratorStub(private val stubValue: String) : UserAgentGenerator {
     override fun setUserAgent(
-        userAgent: UserAgent
+        userAgent: UserAgent,
     ) {
         // No Action needed as this is a stub implementation
     }

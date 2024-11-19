@@ -4,13 +4,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
 class OnlineCheckerImpl(
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
 ) : OnlineChecker {
 
     private val applicableTransportTypes = arrayOf(
         NetworkCapabilities.TRANSPORT_CELLULAR,
         NetworkCapabilities.TRANSPORT_WIFI,
-        NetworkCapabilities.TRANSPORT_ETHERNET
+        NetworkCapabilities.TRANSPORT_ETHERNET,
     )
 
     /**
@@ -20,7 +20,7 @@ class OnlineCheckerImpl(
      */
     override fun isOnline(): Boolean {
         return connectivityManager.getNetworkCapabilities(
-            connectivityManager.activeNetwork
+            connectivityManager.activeNetwork,
         )?.let { networkCapabilities ->
             applicableTransportTypes.any { transportType ->
                 networkCapabilities.hasTransport(transportType)
