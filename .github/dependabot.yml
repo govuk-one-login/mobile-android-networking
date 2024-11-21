@@ -18,3 +18,10 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "ci"
+
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "build"
