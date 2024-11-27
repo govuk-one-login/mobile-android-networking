@@ -14,7 +14,7 @@ kotlinSerializationPlugin = "2.0.21"
 ktor = "3.0.1"
 mockitoCore = "5.14.2"
 mockitoKotlin = "5.4.0"
-sonarqube-gradle = "6.0.0.5145" # https://github.com/SonarSource/sonar-scanner-gradle/releases
+sonarqube-gradle = "6.0.1.5171" # https://github.com/SonarSource/sonar-scanner-gradle/releases
 
 [libraries]
 android-build-tool = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
