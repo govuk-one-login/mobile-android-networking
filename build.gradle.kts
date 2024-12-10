@@ -3,9 +3,17 @@ import uk.gov.pipelines.emulator.EmulatorConfig
 import uk.gov.pipelines.emulator.SystemImageSource
 
 buildscript {
-    val projectKey: String by rootProject.extra("mobile-android-networking")
-    val projectId: String by rootProject.extra("uk.gov.android")
     val buildLogicDir: String by rootProject.extra("mobile-android-pipelines/buildLogic")
+    // Github packages publishing configuration
+    val githubRepositoryName: String by rootProject.extra("mobile-android-networking")
+    val mavenGroupId: String by rootProject.extra("uk.gov.android")
+    // Sonar configuration
+    val sonarProperties: Map<String, String> by rootProject.extra(
+        mapOf(
+            "sonar.projectKey" to "mobile-android-networking",
+            "sonar.projectName" to "mobile-android-networking"
+        )
+    )
 
     repositories {
         google()
