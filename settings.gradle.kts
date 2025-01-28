@@ -7,7 +7,7 @@ pluginManagement {
 
     plugins {
         id("com.android.library")
-        id("org.jetbrains.kotlin.android") version "2.1.0"
+        id("org.jetbrains.kotlin.android") version "2.1.10"
     }
 
     includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
