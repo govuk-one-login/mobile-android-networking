@@ -63,3 +63,4 @@ userAgent
 config
 buildLogic
 accessors
+gradlew
