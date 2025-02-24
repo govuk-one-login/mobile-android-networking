@@ -2,7 +2,7 @@
 androidGradlePlugin = "8.8.1"
 appcompat = "1.7.0"
 coreKtx = "1.13.1"
-detektGradle = "1.23.7"
+detektGradle = "1.23.8"
 espressoCore = "3.6.1"
 junit = "5.11.4"
 junitVersion = "1.2.1"
