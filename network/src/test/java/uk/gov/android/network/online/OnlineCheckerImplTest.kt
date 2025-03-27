@@ -32,18 +32,14 @@ class OnlineCheckerImplTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("getValidTransportTypes")
-    fun checksSubsetOfTransportTypes(
-        networkCapability: Int,
-    ) {
+    fun checksSubsetOfTransportTypes(networkCapability: Int) {
         checker.isOnline()
         verify(networkCapabilities).hasTransport(networkCapability)
     }
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("getInvalidTransportTypes")
-    fun doesNotCheckASubsetTransportTypes(
-        networkCapability: Int,
-    ) {
+    fun doesNotCheckASubsetTransportTypes(networkCapability: Int) {
         checker.isOnline()
         verify(networkCapabilities, never()).hasTransport(networkCapability)
     }
@@ -57,59 +53,61 @@ class OnlineCheckerImplTest {
 
     companion object {
         @JvmStatic
-        fun getInvalidTransportTypes(): Stream<Arguments> = Stream.of(
-            arguments(
-                Named.named(
-                    "Transport: Bluetooth",
-                    NetworkCapabilities.TRANSPORT_BLUETOOTH,
+        fun getInvalidTransportTypes(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    Named.named(
+                        "Transport: Bluetooth",
+                        NetworkCapabilities.TRANSPORT_BLUETOOTH,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: Low-Power Wireless Personal Area Network",
-                    NetworkCapabilities.TRANSPORT_LOWPAN,
+                arguments(
+                    Named.named(
+                        "Transport: Low-Power Wireless Personal Area Network",
+                        NetworkCapabilities.TRANSPORT_LOWPAN,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: USB",
-                    NetworkCapabilities.TRANSPORT_USB,
+                arguments(
+                    Named.named(
+                        "Transport: USB",
+                        NetworkCapabilities.TRANSPORT_USB,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: VPN",
-                    NetworkCapabilities.TRANSPORT_VPN,
+                arguments(
+                    Named.named(
+                        "Transport: VPN",
+                        NetworkCapabilities.TRANSPORT_VPN,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: WiFi awareness",
-                    NetworkCapabilities.TRANSPORT_WIFI_AWARE,
+                arguments(
+                    Named.named(
+                        "Transport: WiFi awareness",
+                        NetworkCapabilities.TRANSPORT_WIFI_AWARE,
+                    ),
                 ),
-            ),
-        )
+            )
 
         @JvmStatic
-        fun getValidTransportTypes(): Stream<Arguments> = Stream.of(
-            arguments(
-                Named.named(
-                    "Transport: Cellular",
-                    NetworkCapabilities.TRANSPORT_CELLULAR,
+        fun getValidTransportTypes(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    Named.named(
+                        "Transport: Cellular",
+                        NetworkCapabilities.TRANSPORT_CELLULAR,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: Ethernet",
-                    NetworkCapabilities.TRANSPORT_ETHERNET,
+                arguments(
+                    Named.named(
+                        "Transport: Ethernet",
+                        NetworkCapabilities.TRANSPORT_ETHERNET,
+                    ),
                 ),
-            ),
-            arguments(
-                Named.named(
-                    "Transport: WiFi",
-                    NetworkCapabilities.TRANSPORT_WIFI,
+                arguments(
+                    Named.named(
+                        "Transport: WiFi",
+                        NetworkCapabilities.TRANSPORT_WIFI,
+                    ),
                 ),
-            ),
-        )
+            )
     }
 }

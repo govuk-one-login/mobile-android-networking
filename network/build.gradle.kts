@@ -42,21 +42,18 @@ android {
         animationsDisabled = true
         unitTests.all {
             it.testLogging {
-                events = setOf(
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-                )
+                events =
+                    setOf(
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                    )
             }
         }
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
         }
-    }
-
-    ktlint {
-        version = libs.versions.ktlint.cli.get()
     }
 }
 

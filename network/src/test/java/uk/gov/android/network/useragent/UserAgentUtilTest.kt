@@ -15,15 +15,16 @@ class UserAgentUtilTest {
     @Test
     fun testUtil() {
         val expectedUserAgent = USER_AGENT
-        val userAgent = UserAgent(
-            APP_NAME,
-            VERSION_NAME,
-            MANUFACTURER,
-            MODEL,
-            SDK_VERSION,
-            CLIENT_NAME,
-            CLIENT_VERSION,
-        )
+        val userAgent =
+            UserAgent(
+                APP_NAME,
+                VERSION_NAME,
+                MANUFACTURER,
+                MODEL,
+                SDK_VERSION,
+                CLIENT_NAME,
+                CLIENT_VERSION,
+            )
         val actualUserAgent = UserAgentUtil.buildAgent(userAgent)
 
         assertEquals(expectedUserAgent, actualUserAgent)
