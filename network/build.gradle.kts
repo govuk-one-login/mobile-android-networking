@@ -71,10 +71,10 @@ dependencies {
     }
 
     listOf(
+        platform(libs.junit.bom),
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.ktor.client.mock,
-        platform(libs.junit.bom),
         libs.mockito.core,
         libs.mockito.kotlin,
     ).forEach { dependency ->
