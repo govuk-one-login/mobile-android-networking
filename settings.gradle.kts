@@ -1,17 +1,14 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
     }
-
-    plugins {
-        id("com.android.library")
-        id("org.jetbrains.kotlin.android") version "2.1.20"
-    }
-
     includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

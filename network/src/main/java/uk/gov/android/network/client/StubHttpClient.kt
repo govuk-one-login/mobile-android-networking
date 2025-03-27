@@ -9,16 +9,12 @@ class StubHttpClient(
 ) : GenericHttpClient {
     var lastAuthenticationProviderSupplied: AuthenticationProvider? = null
 
-    override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse {
-        return apiResponse
-    }
+    override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse = apiResponse
 
     override suspend fun makeAuthorisedRequest(
         apiRequest: ApiRequest,
         scope: String,
-    ): ApiResponse {
-        return apiResponse
-    }
+    ): ApiResponse = apiResponse
 
     override fun setAuthenticationProvider(provider: AuthenticationProvider) {
         this.lastAuthenticationProviderSupplied = provider

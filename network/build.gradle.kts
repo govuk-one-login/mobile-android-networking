@@ -28,36 +28,6 @@ android {
         }
     }
 
-    lint {
-        val configDir = "${rootProject.projectDir}/config"
-
-        abortOnError = true
-        absolutePaths = true
-        baseline = File("$configDir/android/baseline.xml")
-        checkAllWarnings = true
-        checkDependencies = false
-        checkGeneratedSources = false
-        checkReleaseBuilds = true
-        disable.addAll(
-            setOf(
-                "ConvertToWebp",
-                "UnusedIds",
-                "VectorPath",
-            ),
-        )
-        explainIssues = true
-        htmlReport = true
-        ignoreTestSources = true
-        ignoreWarnings = false
-        lintConfig = File("$configDir/android/lint.xml")
-        noLines = false
-        quiet = false
-        showAll = true
-        textReport = true
-        warningsAsErrors = true
-        xmlReport = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -72,21 +42,18 @@ android {
         animationsDisabled = true
         unitTests.all {
             it.testLogging {
-                events = setOf(
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-                )
+                events =
+                    setOf(
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                    )
             }
         }
         unitTests {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
         }
-    }
-
-    ktlint {
-        version = libs.versions.ktlint.cli.get()
     }
 }
 
@@ -104,10 +71,10 @@ dependencies {
     }
 
     listOf(
+        platform(libs.junit.bom),
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.ktor.client.mock,
-        platform(libs.junit.bom),
         libs.mockito.core,
         libs.mockito.kotlin,
     ).forEach { dependency ->
@@ -115,6 +82,7 @@ dependencies {
     }
 
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     listOf(
         libs.ext.junit,

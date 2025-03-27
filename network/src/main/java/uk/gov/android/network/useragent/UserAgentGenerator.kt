@@ -2,10 +2,7 @@ package uk.gov.android.network.useragent
 
 @Suppress("LongParameterList")
 interface UserAgentGenerator {
-
-    fun setUserAgent(
-        userAgent: UserAgent,
-    )
+    fun setUserAgent(userAgent: UserAgent)
 
     fun getUserAgent(): String
 }
@@ -13,12 +10,11 @@ interface UserAgentGenerator {
 class UserAgentGeneratorImpl : UserAgentGenerator {
     private lateinit var userAgentString: String
 
-    override fun setUserAgent(
-        userAgent: UserAgent,
-    ) {
-        val agent = UserAgentUtil.buildAgent(
-            userAgent,
-        )
+    override fun setUserAgent(userAgent: UserAgent) {
+        val agent =
+            UserAgentUtil.buildAgent(
+                userAgent,
+            )
         userAgentString = agent
     }
 
@@ -26,10 +22,10 @@ class UserAgentGeneratorImpl : UserAgentGenerator {
 }
 
 @Suppress("EmptyFunctionBlock")
-class UserAgentGeneratorStub(private val stubValue: String) : UserAgentGenerator {
-    override fun setUserAgent(
-        userAgent: UserAgent,
-    ) {
+class UserAgentGeneratorStub(
+    private val stubValue: String,
+) : UserAgentGenerator {
+    override fun setUserAgent(userAgent: UserAgent) {
         // No Action needed as this is a stub implementation
     }
 

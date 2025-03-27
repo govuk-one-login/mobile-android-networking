@@ -11,10 +11,10 @@ import androidx.annotation.VisibleForTesting
 data class StubOnlineChecker(
     private var stub: Boolean = false,
 ) : OnlineChecker {
-
     override fun isOnline(): Boolean = stub
 
-    fun setOnline(isOnline: Boolean) = apply {
-        stub = isOnline
-    }
+    fun setOnline(isOnline: Boolean) =
+        apply {
+            stub = isOnline
+        }
 }

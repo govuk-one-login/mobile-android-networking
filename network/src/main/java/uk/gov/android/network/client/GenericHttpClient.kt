@@ -8,7 +8,6 @@ import uk.gov.android.network.auth.AuthenticationProvider
  * Contract for the generic HTTP client
  */
 interface GenericHttpClient {
-
     /**
      * Make the HTTP request
      *
@@ -24,7 +23,10 @@ interface GenericHttpClient {
      * @param scope will be used to fetch and decorate the request with the correct token
      * @returns ApiResponse the API response
      */
-    suspend fun makeAuthorisedRequest(apiRequest: ApiRequest, scope: String): ApiResponse
+    suspend fun makeAuthorisedRequest(
+        apiRequest: ApiRequest,
+        scope: String,
+    ): ApiResponse
 
     /**
      * Prepares the client for authorised requests

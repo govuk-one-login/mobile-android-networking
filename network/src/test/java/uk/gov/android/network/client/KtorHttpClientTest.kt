@@ -28,29 +28,31 @@ class KtorHttpClientTest {
 
     @OptIn(ExperimentalSerializationApi::class)
     private fun setupHttpClient(engine: MockEngine) {
-        val httpClient = HttpClient(engine) {
-            expectSuccess = true
+        val httpClient =
+            HttpClient(engine) {
+                expectSuccess = true
 
-            HttpResponseValidator {
-                handleResponseExceptionWithRequest { exception, _ ->
-                    val responseException = exception as? ResponseException
-                        ?: return@handleResponseExceptionWithRequest
-                    val exceptionResponse = responseException.response
+                HttpResponseValidator {
+                    handleResponseExceptionWithRequest { exception, _ ->
+                        val responseException =
+                            exception as? ResponseException
+                                ?: return@handleResponseExceptionWithRequest
+                        val exceptionResponse = responseException.response
 
-                    throw ResponseException(exceptionResponse, exceptionResponse.bodyAsText())
+                        throw ResponseException(exceptionResponse, exceptionResponse.bodyAsText())
+                    }
+                }
+
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            ignoreUnknownKeys = true
+                            isLenient = true
+                            explicitNulls = false
+                        },
+                    )
                 }
             }
-
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                        isLenient = true
-                        explicitNulls = false
-                    },
-                )
-            }
-        }
         sut.setHttpClient(httpClient)
     }
 
@@ -132,13 +134,14 @@ class KtorHttpClientTest {
             },
         )
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = body,
-                    contentType = contentType,
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.Post(
+                        url = url,
+                        body = body,
+                        contentType = contentType,
+                    ),
+                )
             assertEquals(expectedResponse, actualResponse)
         }
     }
@@ -159,13 +162,14 @@ class KtorHttpClientTest {
             },
         )
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = null,
-                    contentType = contentType,
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.Post(
+                        url = url,
+                        body = null,
+                        contentType = contentType,
+                    ),
+                )
             assertEquals(expectedResponse, actualResponse)
         }
     }
@@ -186,13 +190,14 @@ class KtorHttpClientTest {
             },
         )
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = body,
-                    contentType = contentType,
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.Post(
+                        url = url,
+                        body = body,
+                        contentType = contentType,
+                    ),
+                )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(HttpStatusCode.Unauthorized.value, failureResponse.status)
@@ -213,13 +218,14 @@ class KtorHttpClientTest {
         )
 
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = body,
-                    contentType = contentType,
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.Post(
+                        url = url,
+                        body = body,
+                        contentType = contentType,
+                    ),
+                )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(HttpStatusCode.TransportError.value, failureResponse.status)
@@ -245,13 +251,14 @@ class KtorHttpClientTest {
         )
 
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.Post(
-                    url = url,
-                    body = body,
-                    contentType = contentType,
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.Post(
+                        url = url,
+                        body = body,
+                        contentType = contentType,
+                    ),
+                )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(HttpStatusCode.TransportError.value, failureResponse.status)
@@ -275,12 +282,13 @@ class KtorHttpClientTest {
         )
 
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.FormUrlEncoded(
-                    url = url,
-                    params = listOf(Pair("key", "value")),
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.FormUrlEncoded(
+                        url = url,
+                        params = listOf(Pair("key", "value")),
+                    ),
+                )
             assertEquals(expectedResponse, actualResponse)
         }
     }
@@ -299,12 +307,13 @@ class KtorHttpClientTest {
             },
         )
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.FormUrlEncoded(
-                    url = url,
-                    params = listOf(Pair("key", "value")),
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.FormUrlEncoded(
+                        url = url,
+                        params = listOf(Pair("key", "value")),
+                    ),
+                )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(HttpStatusCode.Unauthorized.value, failureResponse.status)
@@ -323,12 +332,13 @@ class KtorHttpClientTest {
         )
 
         runBlocking {
-            val actualResponse = sut.makeRequest(
-                ApiRequest.FormUrlEncoded(
-                    url = url,
-                    params = listOf(Pair("key", "value")),
-                ),
-            )
+            val actualResponse =
+                sut.makeRequest(
+                    ApiRequest.FormUrlEncoded(
+                        url = url,
+                        params = listOf(Pair("key", "value")),
+                    ),
+                )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
             assertEquals(HttpStatusCode.TransportError.value, failureResponse.status)
