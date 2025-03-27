@@ -50,6 +50,4 @@ val emulatorConfig by rootProject.extra(
 plugins {
     id("uk.gov.pipelines.vale-config")
     id("uk.gov.pipelines.sonarqube-root-config")
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.android.library) apply false
 }
