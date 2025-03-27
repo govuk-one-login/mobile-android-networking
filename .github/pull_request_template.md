@@ -22,7 +22,6 @@
 ### Before creating the pull request
 
 - [ ] Commit messages that conform to conventional commit messages.
-- [ ] Ran the app locally ensuring it builds.
 - [ ] Tests pass locally.
 - [ ] Pull request has a clear title with a short description about the feature or update.
 - [ ] Created a `draft` pull request if it's not ready for review.
@@ -31,12 +30,10 @@
 
 - [ ] Complete all Acceptance Criteria within Jira ticket.
 - [ ] Self-review code.
-- [ ] Successfully run changes on a testing device.
 - [ ] Complete automated Testing:
   * [ ] Unit Tests.
   * [ ] Integration Tests.
   * [ ] Instrumentation / Emulator Tests.
-- [ ] Review [Accessibility considerations].
 - [ ] Handle PR comments.
 
 ### Before merging the pull request
@@ -47,4 +44,3 @@
 - [ ] Resolve all comments.
 
 [Sonar cloud report]: https://sonarcloud.io/project/overview?id=mobile-android-networking
-[Accessibility considerations]: https://developer.android.com/guide/topics/ui/accessibility/testing
