@@ -2,6 +2,7 @@ package uk.gov.android.network.client
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.ResponseException
@@ -22,8 +23,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import uk.gov.android.network.BuildConfig
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
@@ -32,21 +33,28 @@ import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
-@Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
+@Suppress("TooGenericExceptionCaught")
 class KtorHttpClient(
     userAgentGenerator: UserAgentGenerator,
+    customLogger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
 ) : GenericHttpClient {
-    private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
+    private var httpClient: HttpClient = makeHttpClient(userAgentGenerator, customLogger, Android.create())
     private var authenticationProvider: AuthenticationProvider? = null
 
-    internal fun setHttpClient(httpClient: HttpClient) {
-        this.httpClient = httpClient
+    internal fun setHttpClient(
+        userAgentGenerator: UserAgentGenerator,
+        customLogger: Logger,
+        engine: HttpClientEngine,
+    ) {
+        this.httpClient = makeHttpClient(userAgentGenerator, customLogger, engine)
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private fun makeHttpClient(userAgentGenerator: UserAgentGenerator): HttpClient {
-        val simpleLogger = Logger.SIMPLE
-        return HttpClient(Android) {
+    private fun makeHttpClient(
+        userAgentGenerator: UserAgentGenerator,
+        customLogger: Logger,
+        engine: HttpClientEngine,
+    ): HttpClient {
+        return HttpClient(engine) {
             expectSuccess = true
 
             install(UserAgent) {
@@ -64,13 +72,13 @@ class KtorHttpClient(
             }
 
             install(Logging) {
-                logger = simpleLogger
+                logger = customLogger
                 level = LogLevel.ALL
             }
 
             HttpResponseValidator {
                 handleResponseExceptionWithRequest { exception, _ ->
-                    simpleLogger.log("Non-success response received: $exception")
+                    customLogger.log(NON_SUCCESS_MESSAGE + exception.toString())
 
                     val responseException =
                         exception as? ResponseException
@@ -115,36 +123,22 @@ class KtorHttpClient(
         serviceTokenResponse: Success,
     ): ApiRequest {
         val authorisationHeader =
-            Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
+            Pair(AUTH_HEADER_KEY, AUTH_HEADER_VALUE + serviceTokenResponse.bearerToken)
         return when (apiRequest) {
-            is ApiRequest.FormUrlEncoded -> {
+            is ApiRequest.FormUrlEncoded ->
                 apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-
-            is ApiRequest.Get -> {
+            is ApiRequest.Get ->
                 apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-
-            is ApiRequest.Post<*> -> {
+            is ApiRequest.Post<*> ->
                 apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
         }
     }
 
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse =
         when (apiRequest) {
-            is ApiRequest.Get -> {
-                makeGetRequest(apiRequest)
-            }
-
-            is ApiRequest.Post<*> -> {
-                makePostRequest(apiRequest)
-            }
-
-            is ApiRequest.FormUrlEncoded -> {
-                makeFormRequest(apiRequest)
-            }
+            is ApiRequest.Get -> makeGetRequest(apiRequest)
+            is ApiRequest.Post<*> -> makePostRequest(apiRequest)
+            is ApiRequest.FormUrlEncoded -> makeFormRequest(apiRequest)
         }
 
     private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?): ContentType? =
@@ -233,4 +227,10 @@ class KtorHttpClient(
         } catch (e: Exception) {
             ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
         }
+
+    companion object {
+        private const val NON_SUCCESS_MESSAGE = "Non-success response received: "
+        const val AUTH_HEADER_KEY = "Authorization"
+        const val AUTH_HEADER_VALUE = "Bearer "
+    }
 }
