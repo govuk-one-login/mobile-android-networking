@@ -36,22 +36,22 @@ import uk.gov.android.network.useragent.UserAgentGenerator
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient(
     userAgentGenerator: UserAgentGenerator,
-    customLogger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
+    logger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
 ) : GenericHttpClient {
-    private var httpClient: HttpClient = makeHttpClient(userAgentGenerator, customLogger, Android.create())
+    private var httpClient: HttpClient = makeHttpClient(userAgentGenerator, logger, Android.create())
     private var authenticationProvider: AuthenticationProvider? = null
 
     internal fun setHttpClient(
         userAgentGenerator: UserAgentGenerator,
-        customLogger: Logger,
+        logger: Logger,
         engine: HttpClientEngine,
     ) {
-        this.httpClient = makeHttpClient(userAgentGenerator, customLogger, engine)
+        this.httpClient = makeHttpClient(userAgentGenerator, logger, engine)
     }
 
     private fun makeHttpClient(
         userAgentGenerator: UserAgentGenerator,
-        customLogger: Logger,
+        logger: Logger,
         engine: HttpClientEngine,
     ): HttpClient {
         return HttpClient(engine) {
@@ -72,13 +72,13 @@ class KtorHttpClient(
             }
 
             install(Logging) {
-                logger = customLogger
+                this.logger = logger
                 level = LogLevel.ALL
             }
 
             HttpResponseValidator {
                 handleResponseExceptionWithRequest { exception, _ ->
-                    customLogger.log(NON_SUCCESS_MESSAGE + exception.toString())
+                    logger.log(NON_SUCCESS_MESSAGE + exception.toString())
 
                     val responseException =
                         exception as? ResponseException

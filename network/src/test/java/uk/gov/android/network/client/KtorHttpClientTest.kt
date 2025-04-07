@@ -25,7 +25,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -48,7 +48,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -73,7 +73,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     throw IllegalStateException(errorMessage)
@@ -97,7 +97,7 @@ class KtorHttpClientTest {
         val contentType = ContentType.APPLICATION_JSON
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -128,7 +128,7 @@ class KtorHttpClientTest {
         val contentType = ContentType.APPLICATION_JSON
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -159,7 +159,7 @@ class KtorHttpClientTest {
         val contentType = ContentType.APPLICATION_JSON
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -193,7 +193,7 @@ class KtorHttpClientTest {
         val contentType = ContentType.APPLICATION_JSON
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     throw IllegalStateException(errorMessage)
@@ -223,7 +223,7 @@ class KtorHttpClientTest {
         val contentType = null
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -256,7 +256,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -284,7 +284,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     respond(
@@ -315,7 +315,7 @@ class KtorHttpClientTest {
         val url = "url"
         sut.setHttpClient(
             userAgentGenerator = userAgentGenerator,
-            customLogger = NoOpLogger(),
+            logger = NoOpLogger(),
             engine =
                 MockEngine {
                     throw IllegalStateException(errorMessage)
