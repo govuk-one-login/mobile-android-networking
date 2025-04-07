@@ -1,7 +1,9 @@
 package uk.gov.android.network.client
 
+import androidx.annotation.VisibleForTesting
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.ResponseException
@@ -22,8 +24,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import uk.gov.android.network.BuildConfig
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
@@ -32,205 +34,215 @@ import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.useragent.UserAgentGenerator
 
-@Suppress("TooGenericExceptionCaught", "OptionalWhenBraces")
-class KtorHttpClient(
-    userAgentGenerator: UserAgentGenerator,
-) : GenericHttpClient {
-    private var httpClient: HttpClient = makeHttpClient(userAgentGenerator)
-    private var authenticationProvider: AuthenticationProvider? = null
+@Suppress("TooGenericExceptionCaught")
+class KtorHttpClient
+    @VisibleForTesting
+    constructor(
+        userAgentGenerator: UserAgentGenerator,
+        logger: Logger,
+        ktorClientEngine: HttpClientEngine,
+    ) : GenericHttpClient {
+        private val httpClient: HttpClient =
+            makeHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = logger,
+                ktorClientEngine = ktorClientEngine,
+            )
+        private var authenticationProvider: AuthenticationProvider? = null
 
-    internal fun setHttpClient(httpClient: HttpClient) {
-        this.httpClient = httpClient
-    }
+        constructor(
+            userAgentGenerator: UserAgentGenerator,
+            logger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
+        ) : this(
+            userAgentGenerator = userAgentGenerator,
+            logger = logger,
+            ktorClientEngine = Android.create(),
+        )
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private fun makeHttpClient(userAgentGenerator: UserAgentGenerator): HttpClient {
-        val simpleLogger = Logger.SIMPLE
-        return HttpClient(Android) {
-            expectSuccess = true
+        private fun makeHttpClient(
+            userAgentGenerator: UserAgentGenerator,
+            logger: Logger,
+            ktorClientEngine: HttpClientEngine,
+        ): HttpClient {
+            return HttpClient(ktorClientEngine) {
+                expectSuccess = true
 
-            install(UserAgent) {
-                agent = userAgentGenerator.getUserAgent()
-            }
-
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                        isLenient = true
-                        explicitNulls = false
-                    },
-                )
-            }
-
-            install(Logging) {
-                logger = simpleLogger
-                level = LogLevel.ALL
-            }
-
-            HttpResponseValidator {
-                handleResponseExceptionWithRequest { exception, _ ->
-                    simpleLogger.log("Non-success response received: $exception")
-
-                    val responseException =
-                        exception as? ResponseException
-                            ?: return@handleResponseExceptionWithRequest
-                    val exceptionResponse = responseException.response
-
-                    throw ResponseException(exceptionResponse, exceptionResponse.bodyAsText())
-                }
-            }
-        }
-    }
-
-    override fun setAuthenticationProvider(provider: AuthenticationProvider) {
-        this.authenticationProvider = provider
-    }
-
-    override suspend fun makeAuthorisedRequest(
-        apiRequest: ApiRequest,
-        scope: String,
-    ): ApiResponse =
-        when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
-            null ->
-                ApiResponse.Failure(
-                    0,
-                    Exception("Service Token Provider not initialised"),
-                )
-
-            is Failure ->
-                ApiResponse.Failure(
-                    0,
-                    serviceTokenResponse.error,
-                )
-
-            is Success -> {
-                val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
-                makeRequest(authorisedApiRequest)
-            }
-        }
-
-    private fun authoriseRequest(
-        apiRequest: ApiRequest,
-        serviceTokenResponse: Success,
-    ): ApiRequest {
-        val authorisationHeader =
-            Pair("Authorization", "Bearer ${serviceTokenResponse.bearerToken}")
-        return when (apiRequest) {
-            is ApiRequest.FormUrlEncoded -> {
-                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-
-            is ApiRequest.Get -> {
-                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-
-            is ApiRequest.Post<*> -> {
-                apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
-            }
-        }
-    }
-
-    @Suppress("LongMethod", "CyclomaticComplexMethod")
-    override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse =
-        when (apiRequest) {
-            is ApiRequest.Get -> {
-                makeGetRequest(apiRequest)
-            }
-
-            is ApiRequest.Post<*> -> {
-                makePostRequest(apiRequest)
-            }
-
-            is ApiRequest.FormUrlEncoded -> {
-                makeFormRequest(apiRequest)
-            }
-        }
-
-    private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?): ContentType? =
-        when (contentType) {
-            uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
-                ContentType.Application.Json
-
-            else -> null
-        }
-
-    private suspend fun makeGetRequest(apiRequest: ApiRequest.Get): ApiResponse =
-        try {
-            val response =
-                httpClient.get(apiRequest.url) {
-                    headers {
-                        apiRequest.headers.forEach { header ->
-                            append(header.first, header.second)
-                        }
-                    }
+                install(UserAgent) {
+                    agent = userAgentGenerator.getUserAgent()
                 }
 
-            if (response.status != HttpStatusCode.OK) {
-                throw ResponseException(response, response.body())
-            }
-
-            ApiResponse.Success<String>(response.body())
-        } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-        } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
-        }
-
-    private suspend fun makePostRequest(apiRequest: ApiRequest.Post<*>): ApiResponse =
-        try {
-            val response =
-                httpClient.post(apiRequest.url) {
-                    headers {
-                        apiRequest.headers.forEach { header ->
-                            append(header.first, header.second)
-                        }
-                    }
-                    mapContentType(apiRequest.contentType)?.let {
-                        contentType(it)
-                    }
-                    setBody(apiRequest.body)
-                }
-
-            if (response.status != HttpStatusCode.OK) {
-                throw ResponseException(response, response.body())
-            }
-
-            ApiResponse.Success<String>(response.body())
-        } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-        } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
-        }
-
-    private suspend fun makeFormRequest(apiRequest: ApiRequest.FormUrlEncoded): ApiResponse =
-        try {
-            val response =
-                httpClient.post(apiRequest.url) {
-                    headers {
-                        apiRequest.headers.forEach { header ->
-                            append(header.first, header.second)
-                        }
-                    }
-                    setBody(
-                        FormDataContent(
-                            Parameters.build {
-                                apiRequest.params.forEach {
-                                    append(it.first, it.second)
-                                }
-                            },
-                        ),
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            ignoreUnknownKeys = true
+                            isLenient = true
+                            explicitNulls = false
+                        },
                     )
                 }
 
-            if (response.status != HttpStatusCode.OK) {
-                throw ResponseException(response, response.body())
+                install(Logging) {
+                    this.logger = logger
+                    level = LogLevel.ALL
+                }
+
+                HttpResponseValidator {
+                    handleResponseExceptionWithRequest { exception, _ ->
+                        logger.log(NON_SUCCESS_MESSAGE + exception.toString())
+
+                        val responseException =
+                            exception as? ResponseException
+                                ?: return@handleResponseExceptionWithRequest
+                        val exceptionResponse = responseException.response
+
+                        throw ResponseException(exceptionResponse, exceptionResponse.bodyAsText())
+                    }
+                }
+            }
+        }
+
+        override fun setAuthenticationProvider(provider: AuthenticationProvider) {
+            this.authenticationProvider = provider
+        }
+
+        override suspend fun makeAuthorisedRequest(
+            apiRequest: ApiRequest,
+            scope: String,
+        ): ApiResponse =
+            when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
+                null ->
+                    ApiResponse.Failure(
+                        0,
+                        Exception("Service Token Provider not initialised"),
+                    )
+
+                is Failure ->
+                    ApiResponse.Failure(
+                        0,
+                        serviceTokenResponse.error,
+                    )
+
+                is Success -> {
+                    val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
+                    makeRequest(authorisedApiRequest)
+                }
             }
 
-            ApiResponse.Success<String>(response.body())
-        } catch (re: ResponseException) {
-            ApiResponse.Failure(re.response.status.value, re.mapToApiException())
-        } catch (e: Exception) {
-            ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+        private fun authoriseRequest(
+            apiRequest: ApiRequest,
+            serviceTokenResponse: Success,
+        ): ApiRequest {
+            val authorisationHeader =
+                Pair(AUTH_HEADER_KEY, AUTH_HEADER_VALUE + serviceTokenResponse.bearerToken)
+            return when (apiRequest) {
+                is ApiRequest.FormUrlEncoded ->
+                    apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+
+                is ApiRequest.Get ->
+                    apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+
+                is ApiRequest.Post<*> ->
+                    apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
+            }
         }
-}
+
+        override suspend fun makeRequest(apiRequest: ApiRequest): ApiResponse =
+            when (apiRequest) {
+                is ApiRequest.Get -> makeGetRequest(apiRequest)
+                is ApiRequest.Post<*> -> makePostRequest(apiRequest)
+                is ApiRequest.FormUrlEncoded -> makeFormRequest(apiRequest)
+            }
+
+        private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?): ContentType? =
+            when (contentType) {
+                uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
+                    ContentType.Application.Json
+
+                else -> null
+            }
+
+        private suspend fun makeGetRequest(apiRequest: ApiRequest.Get): ApiResponse =
+            try {
+                val response =
+                    httpClient.get(apiRequest.url) {
+                        headers {
+                            apiRequest.headers.forEach { header ->
+                                append(header.first, header.second)
+                            }
+                        }
+                    }
+
+                if (response.status != HttpStatusCode.OK) {
+                    throw ResponseException(response, response.body())
+                }
+
+                ApiResponse.Success<String>(response.body())
+            } catch (re: ResponseException) {
+                ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            } catch (e: Exception) {
+                ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            }
+
+        private suspend fun makePostRequest(apiRequest: ApiRequest.Post<*>): ApiResponse =
+            try {
+                val response =
+                    httpClient.post(apiRequest.url) {
+                        headers {
+                            apiRequest.headers.forEach { header ->
+                                append(header.first, header.second)
+                            }
+                        }
+                        mapContentType(apiRequest.contentType)?.let {
+                            contentType(it)
+                        }
+                        setBody(apiRequest.body)
+                    }
+
+                if (response.status != HttpStatusCode.OK) {
+                    throw ResponseException(response, response.body())
+                }
+
+                ApiResponse.Success<String>(response.body())
+            } catch (re: ResponseException) {
+                ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            } catch (e: Exception) {
+                ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            }
+
+        private suspend fun makeFormRequest(apiRequest: ApiRequest.FormUrlEncoded): ApiResponse =
+            try {
+                val response =
+                    httpClient.post(apiRequest.url) {
+                        headers {
+                            apiRequest.headers.forEach { header ->
+                                append(header.first, header.second)
+                            }
+                        }
+                        setBody(
+                            FormDataContent(
+                                Parameters.build {
+                                    apiRequest.params.forEach {
+                                        append(it.first, it.second)
+                                    }
+                                },
+                            ),
+                        )
+                    }
+
+                if (response.status != HttpStatusCode.OK) {
+                    throw ResponseException(response, response.body())
+                }
+
+                ApiResponse.Success<String>(response.body())
+            } catch (re: ResponseException) {
+                ApiResponse.Failure(re.response.status.value, re.mapToApiException())
+            } catch (e: Exception) {
+                ApiResponse.Failure(HttpStatusCode.TransportError.value, e)
+            }
+
+        companion object {
+            private const val NON_SUCCESS_MESSAGE = "Non-success response received: "
+            const val AUTH_HEADER_KEY = "Authorization"
+            const val AUTH_HEADER_VALUE = "Bearer "
+        }
+    }
