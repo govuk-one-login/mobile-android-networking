@@ -17,7 +17,7 @@ import uk.gov.android.network.useragent.UserAgentGeneratorStub
 
 class KtorAuthHttpClientTest {
     private val userAgentGenerator = UserAgentGeneratorStub("userAgent")
-    private var sut = KtorHttpClient(userAgentGenerator)
+    private lateinit var sut: KtorHttpClient
 
     @Test
     fun `set the AuthenticationProvider`() {
@@ -34,11 +34,12 @@ class KtorAuthHttpClientTest {
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine = mockEngine,
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine = mockEngine,
+            )
         val expectedBearerToken = "ExpectedBearerToken"
         val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
         sut.setAuthenticationProvider(newMockAuthenticationProvider)
@@ -78,11 +79,12 @@ class KtorAuthHttpClientTest {
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine = mockEngine,
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine = mockEngine,
+            )
         val expectedBearerToken = "ExpectedBearerToken"
         val mockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
         sut.setAuthenticationProvider(mockAuthenticationProvider)
@@ -113,7 +115,7 @@ class KtorAuthHttpClientTest {
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
-
+        sut = KtorHttpClient(userAgentGenerator)
         runBlocking {
             val actualResponse =
                 sut.makeAuthorisedRequest(
@@ -141,6 +143,7 @@ class KtorAuthHttpClientTest {
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
         val error = Exception("Failed to get token")
+        sut = KtorHttpClient(userAgentGenerator)
         val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error))
         sut.setAuthenticationProvider(mockAuthenticationProvider)
         runBlocking {
@@ -174,11 +177,12 @@ class KtorAuthHttpClientTest {
                     headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine = mockEngine,
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine = mockEngine,
+            )
         val expectedBearerToken = "ExpectedBearerToken"
         val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
         sut.setAuthenticationProvider(newMockAuthenticationProvider)

@@ -16,25 +16,26 @@ import uk.gov.android.network.useragent.UserAgentGeneratorStub
 
 class KtorHttpClientTest {
     private val userAgentGenerator = UserAgentGeneratorStub("userAgent")
-    private val sut = KtorHttpClient(userAgentGenerator)
+    private lateinit var sut: KtorHttpClient
 
     @Test
     fun `Get - Success`() {
         val expectedResultString = "api response"
         val expectedResponse = ApiResponse.Success(expectedResultString)
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = expectedResultString,
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = expectedResultString,
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
 
         runBlocking {
             val actualResponse = sut.makeRequest(ApiRequest.Get(url))
@@ -46,18 +47,19 @@ class KtorHttpClientTest {
     fun `Get - Failure`() {
         val errorString = "api response error"
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = errorString,
-                        status = HttpStatusCode.Unauthorized,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = errorString,
+                            status = HttpStatusCode.Unauthorized,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse = sut.makeRequest(ApiRequest.Get(url))
             assert(actualResponse is ApiResponse.Failure)
@@ -71,14 +73,15 @@ class KtorHttpClientTest {
     fun `Get - Exception thrown`() {
         val errorMessage = "api response error"
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    throw IllegalStateException(errorMessage)
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        throw IllegalStateException(errorMessage)
+                    },
+            )
         runBlocking {
             val actualResponse = sut.makeRequest(ApiRequest.Get(url))
             assert(actualResponse is ApiResponse.Failure)
@@ -95,18 +98,19 @@ class KtorHttpClientTest {
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = expectedResultString,
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = expectedResultString,
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -126,18 +130,19 @@ class KtorHttpClientTest {
         val expectedResponse = ApiResponse.Success(expectedResultString)
         val url = "url"
         val contentType = ContentType.APPLICATION_JSON
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = expectedResultString,
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = expectedResultString,
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -157,18 +162,19 @@ class KtorHttpClientTest {
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = errorString,
-                        status = HttpStatusCode.Unauthorized,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = errorString,
+                            status = HttpStatusCode.Unauthorized,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -191,14 +197,15 @@ class KtorHttpClientTest {
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    throw IllegalStateException(errorMessage)
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        throw IllegalStateException(errorMessage)
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -221,18 +228,19 @@ class KtorHttpClientTest {
         val url = "url"
         val body = TestData("Test", "AB1234567C")
         val contentType = null
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = expectedResultString,
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = expectedResultString,
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -254,18 +262,19 @@ class KtorHttpClientTest {
         val expectedResultString = "response"
         val expectedResponse = ApiResponse.Success(expectedResultString)
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = expectedResultString,
-                        status = HttpStatusCode.OK,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = expectedResultString,
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -282,18 +291,19 @@ class KtorHttpClientTest {
     fun `FormUrlEncoded - Failure`() {
         val errorString = "api response error"
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    respond(
-                        content = errorString,
-                        status = HttpStatusCode.Unauthorized,
-                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                    )
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        respond(
+                            content = errorString,
+                            status = HttpStatusCode.Unauthorized,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
@@ -313,14 +323,15 @@ class KtorHttpClientTest {
     fun `FormUrlEncoded - Exception thrown`() {
         val errorMessage = "api response error"
         val url = "url"
-        sut.setHttpClient(
-            userAgentGenerator = userAgentGenerator,
-            logger = NoOpLogger(),
-            engine =
-                MockEngine {
-                    throw IllegalStateException(errorMessage)
-                },
-        )
+        sut =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = NoOpLogger(),
+                engine =
+                    MockEngine {
+                        throw IllegalStateException(errorMessage)
+                    },
+            )
         runBlocking {
             val actualResponse =
                 sut.makeRequest(
