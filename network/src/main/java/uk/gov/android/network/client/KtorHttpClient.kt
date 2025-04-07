@@ -39,23 +39,32 @@ class KtorHttpClient
     @VisibleForTesting
     constructor(
         userAgentGenerator: UserAgentGenerator,
-        logger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
-        engine: HttpClientEngine,
+        logger: Logger,
+        ktorClientEngine: HttpClientEngine,
     ) : GenericHttpClient {
-        private val httpClient: HttpClient = makeHttpClient(userAgentGenerator, logger, engine)
+        private val httpClient: HttpClient =
+            makeHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = logger,
+                ktorClientEngine = ktorClientEngine,
+            )
         private var authenticationProvider: AuthenticationProvider? = null
 
         constructor(
             userAgentGenerator: UserAgentGenerator,
             logger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
-        ) : this(userAgentGenerator, logger, Android.create())
+        ) : this(
+            userAgentGenerator = userAgentGenerator,
+            logger = logger,
+            ktorClientEngine = Android.create(),
+        )
 
         private fun makeHttpClient(
             userAgentGenerator: UserAgentGenerator,
             logger: Logger,
-            engine: HttpClientEngine,
+            ktorClientEngine: HttpClientEngine,
         ): HttpClient {
-            return HttpClient(engine) {
+            return HttpClient(ktorClientEngine) {
                 expectSuccess = true
 
                 install(UserAgent) {

@@ -27,7 +27,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = expectedResultString,
@@ -51,7 +51,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = errorString,
@@ -77,7 +77,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
                     },
@@ -102,7 +102,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = expectedResultString,
@@ -134,7 +134,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = expectedResultString,
@@ -166,7 +166,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = errorString,
@@ -201,7 +201,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
                     },
@@ -232,7 +232,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = expectedResultString,
@@ -266,7 +266,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = expectedResultString,
@@ -295,7 +295,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         respond(
                             content = errorString,
@@ -327,7 +327,7 @@ class KtorHttpClientTest {
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = NoOpLogger(),
-                engine =
+                ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
                     },
