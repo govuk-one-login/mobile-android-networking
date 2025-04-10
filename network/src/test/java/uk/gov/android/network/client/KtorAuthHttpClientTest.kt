@@ -13,6 +13,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.auth.MockAuthenticationProvider
+import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.useragent.UserAgentGeneratorStub
 
 class KtorAuthHttpClientTest {
@@ -37,7 +38,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
@@ -82,7 +83,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
@@ -180,7 +181,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"

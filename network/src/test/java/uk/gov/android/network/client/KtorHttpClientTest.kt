@@ -12,6 +12,7 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.api.ApiResponseException
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
+import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.useragent.UserAgentGeneratorStub
 
 class KtorHttpClientTest {
@@ -26,7 +27,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -50,7 +51,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -76,7 +77,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
@@ -101,7 +102,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -133,7 +134,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -165,7 +166,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -200,7 +201,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
@@ -231,7 +232,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -265,7 +266,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -294,7 +295,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         respond(
@@ -326,7 +327,7 @@ class KtorHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = NoOpLogger(),
+                logger = KtorLogger.NoOp,
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
