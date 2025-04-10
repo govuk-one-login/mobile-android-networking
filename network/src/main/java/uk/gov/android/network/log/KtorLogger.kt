@@ -1,6 +1,6 @@
 package uk.gov.android.network.log
 
-interface KtorLogger {
+fun interface KtorLogger {
     fun log(message: String)
 
     object NoOp : KtorLogger {
