@@ -1,5 +1,4 @@
 [versions]
-appcompat = "1.7.0"
 coreKtx = "1.13.1"
 espressoCore = "3.6.1"
 junit = "5.12.1"
@@ -11,7 +10,6 @@ mockitoCore = "5.17.0"
 mockitoKotlin = "5.4.0"
 
 [libraries]
-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }

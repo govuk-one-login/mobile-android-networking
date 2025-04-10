@@ -10,9 +10,7 @@ import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.UserAgent
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -32,6 +30,8 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse.Failure
 import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
+import uk.gov.android.network.log.KtorLogger
+import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught")
@@ -39,7 +39,7 @@ class KtorHttpClient
     @VisibleForTesting
     constructor(
         userAgentGenerator: UserAgentGenerator,
-        logger: Logger,
+        logger: KtorLogger,
         ktorClientEngine: HttpClientEngine,
     ) : GenericHttpClient {
         private val httpClient: HttpClient =
@@ -52,7 +52,7 @@ class KtorHttpClient
 
         constructor(
             userAgentGenerator: UserAgentGenerator,
-            logger: Logger = if (BuildConfig.DEBUG) Logger.SIMPLE else NoOpLogger(),
+            logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
         ) : this(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
@@ -61,7 +61,7 @@ class KtorHttpClient
 
         private fun makeHttpClient(
             userAgentGenerator: UserAgentGenerator,
-            logger: Logger,
+            logger: KtorLogger,
             ktorClientEngine: HttpClientEngine,
         ): HttpClient {
             return HttpClient(ktorClientEngine) {
@@ -82,7 +82,7 @@ class KtorHttpClient
                 }
 
                 install(Logging) {
-                    this.logger = logger
+                    this.logger = KtorLoggerAdapter(logger)
                     level = LogLevel.ALL
                 }
 
