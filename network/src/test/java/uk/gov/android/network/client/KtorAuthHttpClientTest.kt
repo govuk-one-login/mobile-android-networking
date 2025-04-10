@@ -38,7 +38,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.NoOp,
+                logger = KtorLogger.noOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
@@ -83,7 +83,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.NoOp,
+                logger = KtorLogger.noOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
@@ -181,7 +181,7 @@ class KtorAuthHttpClientTest {
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.NoOp,
+                logger = KtorLogger.noOp,
                 ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"

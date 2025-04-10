@@ -8,7 +8,7 @@ import java.io.PrintStream
 class KtorLoggerTest {
     @Test
     fun `NoOp logger should not throw exception`() {
-        val logger = KtorLogger.NoOp
+        val logger = KtorLogger.noOp
         Assertions.assertDoesNotThrow {
             logger.log("This should do nothing")
         }
@@ -16,7 +16,7 @@ class KtorLoggerTest {
 
     @Test
     fun `Simple logger should print message to stdout`() {
-        val logger = KtorLogger.Simple
+        val logger = KtorLogger.simple
         val outputStream = ByteArrayOutputStream()
         val originalOut = System.out
         System.setOut(PrintStream(outputStream))

@@ -52,7 +52,7 @@ class KtorHttpClient
 
         constructor(
             userAgentGenerator: UserAgentGenerator,
-            logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.Simple else KtorLogger.NoOp,
+            logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
         ) : this(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
