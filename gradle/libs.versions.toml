@@ -1,7 +1,7 @@
 [versions]
 coreKtx = "1.13.1"
 espressoCore = "3.6.1"
-junit = "5.12.1"
+junit = "5.12.2"
 junitVersion = "1.2.1"
 kotlinSerialization = "3.1.2"
 kotlinSerializationPlugin = "2.1.20"
