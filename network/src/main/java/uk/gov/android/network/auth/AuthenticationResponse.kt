@@ -7,6 +7,6 @@ sealed class AuthenticationResponse {
 
     data class Failure(
         val error: Exception,
-        val status: Int,
+        val status: Int = 0,
     ) : AuthenticationResponse()
 }
