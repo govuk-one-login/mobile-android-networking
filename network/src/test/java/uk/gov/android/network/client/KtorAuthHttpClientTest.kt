@@ -144,8 +144,9 @@ class KtorAuthHttpClientTest {
         val body = TestData("Test", "AB1234567C")
         val contentType = ContentType.APPLICATION_JSON
         val error = Exception("Failed to get token")
+        val errorCode = 404
         sut = KtorHttpClient(userAgentGenerator)
-        val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error))
+        val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error, errorCode))
         sut.setAuthenticationProvider(mockAuthenticationProvider)
         runBlocking {
             val actualResponse =
@@ -159,7 +160,7 @@ class KtorAuthHttpClientTest {
                 )
             assert(actualResponse is ApiResponse.Failure)
             val failureResponse = actualResponse as ApiResponse.Failure
-            assertEquals(0, failureResponse.status)
+            assertEquals(errorCode, failureResponse.status)
             assertEquals(error, failureResponse.error)
         }
     }

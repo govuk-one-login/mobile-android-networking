@@ -118,7 +118,7 @@ class KtorHttpClient
 
                 is Failure ->
                     ApiResponse.Failure(
-                        0,
+                        serviceTokenResponse.status,
                         serviceTokenResponse.error,
                     )
 
