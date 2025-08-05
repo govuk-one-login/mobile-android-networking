@@ -1,6 +1,6 @@
 [versions]
 coreKtx = "1.16.0"
-espressoCore = "3.6.1"
+espressoCore = "3.7.0"
 junit = "5.13.3"
 junitVersion = "1.2.1"
 kotlinSerialization = "3.1.3"
