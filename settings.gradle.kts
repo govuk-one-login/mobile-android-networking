@@ -1,4 +1,6 @@
 @file:Suppress("UnstableApiUsage")
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
@@ -6,7 +8,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
 }
 
 dependencyResolutionManagement {
@@ -14,8 +15,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 rootProject.name = "mobile-android-networking"
 include(":network")
+includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
