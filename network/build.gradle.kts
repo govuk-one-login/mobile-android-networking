@@ -14,6 +14,12 @@ android {
         compileSdk = apkConfig.sdkVersions.compile
         minSdk = apkConfig.sdkVersions.minimum
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "KTOR_VERSION",
+            "\"${libs.versions.ktor.get()}\"",
+        )
     }
 
     buildTypes {
