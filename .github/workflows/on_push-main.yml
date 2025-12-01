@@ -13,8 +13,15 @@ jobs:
       packages: write
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout codebase
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
       - name: Run deployment workflow
-        uses: govuk-one-login/mobile-android-pipelines@9e5c187a1466fa5970bc6f4cd33da177825f72b8
+        uses: ./mobile-android-pipelines
         with:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
