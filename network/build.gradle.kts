@@ -14,6 +14,12 @@ android {
         compileSdk = apkConfig.sdkVersions.compile
         minSdk = apkConfig.sdkVersions.minimum
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "KTOR_VERSION",
+            "\"${libs.versions.ktor.get()}\"",
+        )
     }
 
     buildTypes {
@@ -72,6 +78,7 @@ dependencies {
         libs.ktor.client.contentnegotiation,
         libs.ktor.client.logging,
         libs.ktor.serialization.kotlinx.json,
+        libs.logging,
     ).forEach { dependency ->
         implementation(dependency)
     }
