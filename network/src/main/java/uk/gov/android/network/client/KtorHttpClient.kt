@@ -56,7 +56,7 @@ class KtorHttpClient @VisibleForTesting constructor(
     constructor(
         userAgentGenerator: UserAgentGenerator,
         logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
-        performanceMonitor: PerformanceMonitor = NoOpPerformanceMonitor
+        performanceMonitor: PerformanceMonitor = NoOpPerformanceMonitor,
     ) : this(
         userAgentGenerator = userAgentGenerator,
         logger = logger,
