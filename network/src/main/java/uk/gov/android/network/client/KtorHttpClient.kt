@@ -32,35 +32,43 @@ import uk.gov.android.network.auth.AuthenticationResponse.Success
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
+import uk.gov.android.network.performance.PerformanceMonitorPlugin
 import uk.gov.android.network.useragent.UserAgentGenerator
+import uk.gov.logging.api.performance.PerformanceMonitor
+import uk.gov.logging.impl.performance.NoOpPerformanceMonitor
 
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient @VisibleForTesting constructor(
     userAgentGenerator: UserAgentGenerator,
     logger: KtorLogger,
     ktorClientEngine: HttpClientEngine,
+    performanceMonitor: PerformanceMonitor = NoOpPerformanceMonitor,
 ) : GenericHttpClient {
     private val httpClient: HttpClient =
         makeHttpClient(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
             ktorClientEngine = ktorClientEngine,
+            monitor = performanceMonitor,
         )
     private var authenticationProvider: AuthenticationProvider? = null
 
     constructor(
         userAgentGenerator: UserAgentGenerator,
         logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
+        performanceMonitor: PerformanceMonitor = NoOpPerformanceMonitor
     ) : this(
         userAgentGenerator = userAgentGenerator,
         logger = logger,
         ktorClientEngine = Android.create(),
+        performanceMonitor = performanceMonitor,
     )
 
     private fun makeHttpClient(
         userAgentGenerator: UserAgentGenerator,
         logger: KtorLogger,
         ktorClientEngine: HttpClientEngine,
+        monitor: PerformanceMonitor,
     ): HttpClient {
         return HttpClient(ktorClientEngine) {
             expectSuccess = true
@@ -82,6 +90,10 @@ class KtorHttpClient @VisibleForTesting constructor(
             install(Logging) {
                 this.logger = KtorLoggerAdapter(logger)
                 level = LogLevel.ALL
+            }
+
+            install(PerformanceMonitorPlugin) {
+                performanceMonitor = monitor
             }
 
             HttpResponseValidator {
