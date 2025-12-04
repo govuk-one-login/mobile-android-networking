@@ -6,14 +6,12 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-    includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        gradlePluginPortal()
         mavenCentral()
         maven(
             "https://maven.pkg.github.com/govuk-one-login/mobile-android-logging",
@@ -24,6 +22,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "mobile-android-networking"
 include(":network")
+includeBuild("${rootProject.projectDir}/mobile-android-pipelines/buildLogic")
 
 fun setGithubCredentials(): MavenArtifactRepository.() -> Unit = {
     val (credUser, credToken) = fetchGithubCredentials()
