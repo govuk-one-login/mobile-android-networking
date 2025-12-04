@@ -7,6 +7,8 @@ jobs:
   bump_version:
     env:
       JDK_VERSION: 17
+      GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+      GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
     permissions:
       id-token: write
       contents: write

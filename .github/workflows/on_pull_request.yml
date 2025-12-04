@@ -19,6 +19,8 @@ concurrency:
 jobs:
   onPullRequestJob:
     env:
+      GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+      GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
       ANDROID_HOME: ${{ github.workspace }}/bin/androidSdk
     name: Verify code base when pull request is published/updated
     runs-on: ubuntu-24.04
