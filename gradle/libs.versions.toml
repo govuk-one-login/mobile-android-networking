@@ -6,7 +6,7 @@ junitVersion = "1.3.0"
 kotlinSerialization = "3.3.3"
 kotlinSerializationPlugin = "2.2.21"
 ktor = "3.3.3"
-mockitoCore = "5.20.0"
+mockitoCore = "5.21.0"
 mockitoKotlin = "6.1.0"
 
 [libraries]
