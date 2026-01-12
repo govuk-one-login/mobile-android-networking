@@ -11,7 +11,7 @@
 
 ## JIRA ticket link:
 
-- [DCMAW-XXXXX](https://govukverify.atlassian.net/browse/DCMAW-XXXXX)
+- [DCMAW-REPLACE_ME](https://govukverify.atlassian.net/browse/DCMAW-REPLACE_ME)
 
 ## Evidence of the change:
 
