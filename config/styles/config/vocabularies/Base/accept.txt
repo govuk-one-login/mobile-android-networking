@@ -64,3 +64,5 @@ config
 buildLogic
 accessors
 gradlew
+(?i)Hotfix
+(?i)Dev
