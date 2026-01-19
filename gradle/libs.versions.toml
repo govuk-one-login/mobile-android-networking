@@ -7,7 +7,7 @@ kotlinSerialization = "3.3.3"
 kotlinSerializationPlugin = "2.3.0"
 ktor = "3.3.3"
 mockitoCore = "5.21.0"
-mockitoKotlin = "6.1.0"
+mockitoKotlin = "6.2.1"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
