@@ -1,5 +1,7 @@
 # mobile-android-networking
 
+[![Release Networking module](https://github.com/govuk-one-login/mobile-android-networking/actions/workflows/on_push-main.yml/badge.svg)](https://github.com/govuk-one-login/mobile-android-networking/actions/workflows/on_push-main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mobile-android-networking&metric=alert_status&token=1aa5265a302ad20708e4d395244c0bb4d981c08d)](https://sonarcloud.io/summary/new_code?id=mobile-android-networking)
 
 ## Updating gradle-wrapper
 
