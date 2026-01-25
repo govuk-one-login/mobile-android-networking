@@ -1,6 +1,7 @@
 package uk.gov.android.network.client
 
 import androidx.annotation.VisibleForTesting
+import androidx.fragment.app.FragmentActivity
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
@@ -105,11 +106,40 @@ class KtorHttpClient
             this.authenticationProvider = provider
         }
 
+        @Deprecated(
+            "Use makeAuthorisedRequest with fragmentActivity to allow for authentication" +
+                    " - aim to be fully removed on 25th of March",
+            level = DeprecationLevel.WARNING,
+        )
         override suspend fun makeAuthorisedRequest(
             apiRequest: ApiRequest,
             scope: String,
         ): ApiResponse =
             when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope)) {
+                null ->
+                    ApiResponse.Failure(
+                        0,
+                        Exception("Service Token Provider not initialised"),
+                    )
+
+                is Failure ->
+                    ApiResponse.Failure(
+                        0,
+                        serviceTokenResponse.error,
+                    )
+
+                is Success -> {
+                    val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
+                    makeRequest(authorisedApiRequest)
+                }
+            }
+
+        override suspend fun makeAuthorisedRequest(
+            apiRequest: ApiRequest,
+            scope: String,
+            fragmentActivity: FragmentActivity,
+        ): ApiResponse =
+            when (val serviceTokenResponse = this.authenticationProvider?.fetchBearerToken(scope, fragmentActivity)) {
                 null ->
                     ApiResponse.Failure(
                         0,
