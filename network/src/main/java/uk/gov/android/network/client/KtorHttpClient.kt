@@ -108,7 +108,7 @@ class KtorHttpClient
 
         @Deprecated(
             "Use makeAuthorisedRequest with fragmentActivity to allow for authentication" +
-                    " - aim to be fully removed on 25th of March",
+                " - aim to be fully removed on 25th of March",
             level = DeprecationLevel.WARNING,
         )
         override suspend fun makeAuthorisedRequest(
