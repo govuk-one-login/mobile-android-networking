@@ -1,8 +1,8 @@
 [Jj][Ii][Rr][Aa]
-[Hh]otfix
-[Dd]ev
-[Gg]radle
-[Gg]ithub
+(?i)Hotfix
+(?i)Dev
+(?i)Gradle
+(?i)Github
 
 gradlew
 XXXXX
