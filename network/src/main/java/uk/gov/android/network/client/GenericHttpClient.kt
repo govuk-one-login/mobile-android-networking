@@ -39,7 +39,7 @@ interface GenericHttpClient {
      *
      * @param apiRequest The HTTP request to the protected service
      * @param scope will be used to fetch and decorate the request with the correct token
-     * @param fragmentActivity allows
+     * @param fragmentActivity required for completing authentication in order to enable requests to a protected service
      * @returns ApiResponse the API response
      */
     suspend fun makeAuthorisedRequest(
