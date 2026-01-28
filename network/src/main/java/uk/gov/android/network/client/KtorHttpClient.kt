@@ -8,6 +8,7 @@ import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.UserAgent
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
@@ -70,6 +71,8 @@ class KtorHttpClient
                 install(UserAgent) {
                     agent = userAgentGenerator.getUserAgent()
                 }
+
+                install(HttpCache)
 
                 install(ContentNegotiation) {
                     json(
