@@ -200,7 +200,7 @@ class KtorHttpClientCacheTest {
                                 headers =
                                     headersOf(
                                         HttpHeaders.ContentType to listOf("application/json"),
-                                        HttpHeaders.CacheControl to listOf("max-age=3600"),
+                                        HttpHeaders.CacheControl to listOf("private, max-age=3600"),
                                     ),
                             )
                         },
