@@ -5,7 +5,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.ApiRequest
@@ -21,30 +21,30 @@ class KtorAuthHttpClientTest {
     private lateinit var sut: KtorHttpClient
 
     @Test
-    fun `set the AuthenticationProvider`() {
-        val expectedScope = "scope"
-        val expectedResultString = "response"
-        val url = "url"
-        val body = TestData("Test", "AB1234567C")
-        val contentType = ContentType.APPLICATION_JSON
-        val mockEngine =
-            MockEngine {
-                respond(
-                    content = expectedResultString,
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+    fun `set the AuthenticationProvider`() =
+        runTest {
+            val expectedScope = "scope"
+            val expectedResultString = "response"
+            val url = "url"
+            val body = TestData("Test", "AB1234567C")
+            val contentType = ContentType.APPLICATION_JSON
+            val mockEngine =
+                MockEngine {
+                    respond(
+                        content = expectedResultString,
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                }
+            sut =
+                KtorHttpClient(
+                    userAgentGenerator = userAgentGenerator,
+                    logger = KtorLogger.noOp,
+                    ktorClientEngine = mockEngine,
                 )
-            }
-        sut =
-            KtorHttpClient(
-                userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine,
-            )
-        val expectedBearerToken = "ExpectedBearerToken"
-        val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
-        sut.setAuthenticationProvider(newMockAuthenticationProvider)
-        runBlocking {
+            val expectedBearerToken = "ExpectedBearerToken"
+            val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+            sut.setAuthenticationProvider(newMockAuthenticationProvider)
             sut.makeAuthorisedRequest(
                 ApiRequest.Post(
                     url = url,
@@ -61,35 +61,34 @@ class KtorAuthHttpClientTest {
                 KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
-    }
 
     @Test
-    fun `MakeAuthorisedRequest - Success`() {
-        val expectedScope = "scope"
-        val expectedResultString = "response"
-        val expectedResponse = ApiResponse.Success(expectedResultString)
-        val url = "url"
-        val body = TestData("Test", "AB1234567C")
-        val contentType = ContentType.APPLICATION_JSON
+    fun `MakeAuthorisedRequest - Success`() =
+        runTest {
+            val expectedScope = "scope"
+            val expectedResultString = "response"
+            val expectedResponse = ApiResponse.Success(expectedResultString)
+            val url = "url"
+            val body = TestData("Test", "AB1234567C")
+            val contentType = ContentType.APPLICATION_JSON
 
-        val mockEngine =
-            MockEngine {
-                respond(
-                    content = expectedResultString,
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            val mockEngine =
+                MockEngine {
+                    respond(
+                        content = expectedResultString,
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                }
+            sut =
+                KtorHttpClient(
+                    userAgentGenerator = userAgentGenerator,
+                    logger = KtorLogger.noOp,
+                    ktorClientEngine = mockEngine,
                 )
-            }
-        sut =
-            KtorHttpClient(
-                userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine,
-            )
-        val expectedBearerToken = "ExpectedBearerToken"
-        val mockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
-        sut.setAuthenticationProvider(mockAuthenticationProvider)
-        runBlocking {
+            val expectedBearerToken = "ExpectedBearerToken"
+            val mockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+            sut.setAuthenticationProvider(mockAuthenticationProvider)
             val actualResponse =
                 sut.makeAuthorisedRequest(
                     ApiRequest.Post(
@@ -108,16 +107,15 @@ class KtorAuthHttpClientTest {
                 KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
-    }
 
     @Test
-    fun `MakeAuthorisedRequest - Fail AuthenticationProviderNotSet`() {
-        val expectedScope = "scope"
-        val url = "url"
-        val body = TestData("Test", "AB1234567C")
-        val contentType = ContentType.APPLICATION_JSON
-        sut = KtorHttpClient(userAgentGenerator)
-        runBlocking {
+    fun `MakeAuthorisedRequest - Fail AuthenticationProviderNotSet`() =
+        runTest {
+            val expectedScope = "scope"
+            val url = "url"
+            val body = TestData("Test", "AB1234567C")
+            val contentType = ContentType.APPLICATION_JSON
+            sut = KtorHttpClient(userAgentGenerator)
             val actualResponse =
                 sut.makeAuthorisedRequest(
                     ApiRequest.Post(
@@ -135,19 +133,18 @@ class KtorAuthHttpClientTest {
                 failureResponse.error.localizedMessage,
             )
         }
-    }
 
     @Test
-    fun `MakeAuthorisedRequest - Fail AuthenticationProviderFailedToFetch`() {
-        val expectedScope = "scope"
-        val url = "url"
-        val body = TestData("Test", "AB1234567C")
-        val contentType = ContentType.APPLICATION_JSON
-        val error = Exception("Failed to get token")
-        sut = KtorHttpClient(userAgentGenerator)
-        val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error))
-        sut.setAuthenticationProvider(mockAuthenticationProvider)
-        runBlocking {
+    fun `MakeAuthorisedRequest - Fail AuthenticationProviderFailedToFetch`() =
+        runTest {
+            val expectedScope = "scope"
+            val url = "url"
+            val body = TestData("Test", "AB1234567C")
+            val contentType = ContentType.APPLICATION_JSON
+            val error = Exception("Failed to get token")
+            sut = KtorHttpClient(userAgentGenerator)
+            val mockAuthenticationProvider = MockAuthenticationProvider(Failure(error))
+            sut.setAuthenticationProvider(mockAuthenticationProvider)
             val actualResponse =
                 sut.makeAuthorisedRequest(
                     ApiRequest.Post(
@@ -162,32 +159,31 @@ class KtorAuthHttpClientTest {
             assertEquals(0, failureResponse.status)
             assertEquals(error, failureResponse.error)
         }
-    }
 
     @Test
-    fun `SetAuthenticationProvider FormUrlEncoded`() {
-        val expectedScope = "scope"
-        val expectedResultString = "response"
-        val url = "url"
+    fun `SetAuthenticationProvider FormUrlEncoded`() =
+        runTest {
+            val expectedScope = "scope"
+            val expectedResultString = "response"
+            val url = "url"
 
-        val mockEngine =
-            MockEngine {
-                respond(
-                    content = expectedResultString,
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            val mockEngine =
+                MockEngine {
+                    respond(
+                        content = expectedResultString,
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                }
+            sut =
+                KtorHttpClient(
+                    userAgentGenerator = userAgentGenerator,
+                    logger = KtorLogger.noOp,
+                    ktorClientEngine = mockEngine,
                 )
-            }
-        sut =
-            KtorHttpClient(
-                userAgentGenerator = userAgentGenerator,
-                logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine,
-            )
-        val expectedBearerToken = "ExpectedBearerToken"
-        val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
-        sut.setAuthenticationProvider(newMockAuthenticationProvider)
-        runBlocking {
+            val expectedBearerToken = "ExpectedBearerToken"
+            val newMockAuthenticationProvider = MockAuthenticationProvider(Success(expectedBearerToken))
+            sut.setAuthenticationProvider(newMockAuthenticationProvider)
             sut.makeAuthorisedRequest(
                 ApiRequest.FormUrlEncoded(
                     url = url,
@@ -203,5 +199,4 @@ class KtorAuthHttpClientTest {
                 KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
-    }
 }
