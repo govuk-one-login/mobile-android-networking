@@ -8,6 +8,7 @@ kotlinSerializationPlugin = "2.3.10"
 ktor = "3.4.0"
 mockitoCore = "5.21.0"
 mockitoKotlin = "6.2.3"
+kotlin = "2.2.20"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
@@ -15,6 +16,11 @@ espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref =
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+
+# Kotlin
+kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
 
 # JUnit5
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }

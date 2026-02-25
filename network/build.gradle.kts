@@ -66,6 +66,8 @@ android {
 
 dependencies {
     listOf(
+        platform(libs.kotlin.bom),
+        libs.kotlinx.coroutines,
         libs.core.ktx,
         libs.ktor.client.android,
         libs.ktor.client.core,
@@ -83,6 +85,7 @@ dependencies {
         libs.ktor.client.mock,
         libs.mockito.core,
         libs.mockito.kotlin,
+        libs.kotlinx.coroutines.test,
     ).forEach { dependency ->
         testImplementation(dependency)
     }
