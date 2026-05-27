@@ -43,6 +43,10 @@ android {
         buildConfig = true
     }
 
+    testFixtures {
+        enable = true
+    }
+
     testOptions {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
         animationsDisabled = true
