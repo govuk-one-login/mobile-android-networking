@@ -46,3 +46,8 @@ plugins {
     id("uk.gov.pipelines.vale-config")
     id("uk.gov.pipelines.sonarqube-root-config")
 }
+
+subprojects {
+    val mavenGroupId: String by rootProject.extra
+    group = mavenGroupId
+}
