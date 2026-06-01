@@ -4,11 +4,11 @@ espressoCore = "3.7.0"
 junit = "6.0.3"
 junitVersion = "1.3.0"
 kotlinSerialization = "3.4.0"
-kotlinSerializationPlugin = "2.3.10"
+kotlinSerializationPlugin = "2.3.21"
 ktor = "3.5.0"
 mockitoCore = "5.21.0"
 mockitoKotlin = "6.2.3"
-kotlin = "2.2.20"
+kotlin = "2.3.21"
 
 [libraries]
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
