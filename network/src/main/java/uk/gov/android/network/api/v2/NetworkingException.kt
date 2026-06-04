@@ -1,0 +1,41 @@
+package uk.gov.android.network.api.v2
+
+/**
+ * Base class for all errors resulting from an API request.
+ *
+ * 'Networking' refers to the name of this library, rather than the type of error.
+ */
+abstract class NetworkingException(
+    message: String? = null,
+    cause: Throwable? = null,
+) : Exception(message, cause)
+
+/**
+ * The service that received the request wasn't configured correctly
+ */
+class ConfigurationException(
+    message: String,
+) : NetworkingException(message)
+
+/**
+ * The authentication provider failed
+ */
+class AuthenticationException(
+    message: String,
+    cause: Throwable?,
+) : NetworkingException(message, cause)
+
+/**
+ * The server returned a non-success (3xx, 4xx, 5xx) response
+ */
+class ApiResponseException(
+    message: String,
+    cause: Throwable?,
+) : NetworkingException(message, cause)
+
+/**
+ * No response due to network-level failure (e.g. timeout, DNS resolution)
+ */
+class TransportException(
+    cause: Throwable?,
+) : NetworkingException(cause = cause)

@@ -20,6 +20,11 @@ class KtorAuthHttpClientTest {
     private val userAgentGenerator = UserAgentGeneratorStub("userAgent")
     private lateinit var sut: KtorHttpClient
 
+    companion object {
+        private const val AUTH_HEADER_KEY = "Authorization"
+        private const val AUTH_HEADER_VALUE = "Bearer "
+    }
+
     @Test
     fun `set the AuthenticationProvider`() =
         runTest {
@@ -57,8 +62,8 @@ class KtorAuthHttpClientTest {
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(
-                headers[KtorHttpClient.AUTH_HEADER_KEY],
-                KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
+                headers[AUTH_HEADER_KEY],
+                AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
 
@@ -103,8 +108,8 @@ class KtorAuthHttpClientTest {
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(
-                headers[KtorHttpClient.AUTH_HEADER_KEY],
-                KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
+                headers[AUTH_HEADER_KEY],
+                AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
 
@@ -195,8 +200,8 @@ class KtorAuthHttpClientTest {
             assertEquals(mockEngine.requestHistory.size, 1)
             val headers = mockEngine.requestHistory.first().headers
             assertEquals(
-                headers[KtorHttpClient.AUTH_HEADER_KEY],
-                KtorHttpClient.AUTH_HEADER_VALUE + expectedBearerToken,
+                headers[AUTH_HEADER_KEY],
+                AUTH_HEADER_VALUE + expectedBearerToken,
             )
         }
 }
