@@ -4,12 +4,16 @@ import kotlinx.io.IOException
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.v2.withHeaders
+import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfig
 import uk.gov.android.network.client.config.RequestConfigBuilder
+import uk.gov.android.network.client.headers.AttestationHeaderReader
 import uk.gov.android.network.client.headers.AuthorisationHeaderReader
+import uk.gov.android.network.client.headers.RefreshDPoPHeaderReader
 import uk.gov.android.network.client.v2.GenericHttpClient
 import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.network.util.NetworkingResult
@@ -24,7 +28,9 @@ import uk.gov.android.network.util.NetworkingResult
 class DefaultNetworkingService(
     private val httpClient: GenericHttpClient,
 ) : NetworkingService {
+    private var attestationHeaderReader = AttestationHeaderReader(null)
     private var authorisationHeaderReader = AuthorisationHeaderReader(null)
+    private var refreshDPoPHeaderReader = RefreshDPoPHeaderReader(null)
 
     @Suppress(
         // This function uses the return early pattern for different types of failure.
@@ -68,12 +74,28 @@ class DefaultNetworkingService(
         authorisationHeaderReader = AuthorisationHeaderReader(authenticationProvider)
     }
 
+    fun setClientAttestationProvider(clientAttestationProvider: ClientAttestationProvider?) {
+        attestationHeaderReader = AttestationHeaderReader(clientAttestationProvider)
+    }
+
+    fun setDPoPProvider(dpopProvider: DPoPProvider?) {
+        refreshDPoPHeaderReader = RefreshDPoPHeaderReader(dpopProvider)
+    }
+
+    @Suppress(
+        // This function uses the return early pattern for different types of failure.
+        // There is only one return statement for success, which is the final statement.
+        "ReturnCount",
+    )
     private suspend fun buildExtraHeaders(config: RequestConfig): NetworkingResult<List<Header>> {
-        val attestationHeader =
+        val attestationHeaders =
             if (config.attestation) {
-                error("Not yet implemented")
+                when (val result = attestationHeaderReader.getHeaders()) {
+                    is NetworkingResult.Failure -> return NetworkingResult.Failure(result.exception)
+                    is NetworkingResult.Success -> result.value
+                }
             } else {
-                null
+                emptyList()
             }
 
         val authHeader =
@@ -90,17 +112,20 @@ class DefaultNetworkingService(
 
         val refreshDPoPHeader =
             if (config.refreshDPoP) {
-                error("Not yet implemented")
+                when (val result = refreshDPoPHeaderReader.getHeader()) {
+                    is NetworkingResult.Failure -> return NetworkingResult.Failure(result.exception)
+                    is NetworkingResult.Success -> result.value
+                }
             } else {
                 null
             }
 
         return NetworkingResult.Success(
-            listOfNotNull(
-                attestationHeader,
-                authHeader,
-                refreshDPoPHeader,
-            ),
+            attestationHeaders +
+                listOfNotNull(
+                    authHeader,
+                    refreshDPoPHeader,
+                ),
         )
     }
 
