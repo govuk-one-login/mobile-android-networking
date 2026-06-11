@@ -38,8 +38,8 @@
 
 ### Before merging the pull request
 
-- [ ] For **Defect**, **Tech Story** and **Story** tickets: Ensure that QA has reviewed (by checking they have the correct links to the correct JIRA tickets, the correct amount of details in the PR description to match the JIRA ticket, screenshot/video evidence attached when necessary) and commented QA approval.
-- [ ] For **Tech Debt**, **Task** and **Spike** tickets (dev-only): Ensure that developer has reviewed (by checking they have the correct links to the correct JIRA tickets, the correct amount of details in the PR description to match the JIRA ticket, screenshot/video evidence attached when necessary) and commented Dev QA approval.
+- [ ] For **Defect**, **Tech Story** and **Story** tickets: Make sure that QA has reviewed (by checking they have the correct links to the correct JIRA tickets, the correct amount of details in the PR description to match the JIRA ticket, screenshot/video evidence attached when necessary) and commented QA approval.
+- [ ] For **Tech Debt**, **Task** and **Spike** tickets (dev-only): Make sure that developer has reviewed (by checking they have the correct links to the correct JIRA tickets, the correct amount of details in the PR description to match the JIRA ticket, screenshot/video evidence attached when necessary) and commented Dev QA approval.
 - [ ] [Sonar cloud report] passes inspections for your PR.
 - [ ] Resolve all comments.
 

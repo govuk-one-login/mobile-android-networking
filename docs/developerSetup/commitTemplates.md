@@ -9,7 +9,7 @@ terminal window:
 git config commit.template $(git rev-parse --show-toplevel)/.github/conventional_commit_template.txt
 ```
 
-Android Studio automatically registers and utilise the commit template, should a
+Android Studio automatically registers and uses the commit template, should a
 Developer prefer writing commits outside of a terminal window.
 
 [Commit Template File]: /.github/commit_template.txt
