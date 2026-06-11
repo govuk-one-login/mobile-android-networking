@@ -48,5 +48,5 @@ desired please edit the value under "branches:" in `.github/workflows/on_push_ho
 The hotfix branch name should be in the format "hotfix/M.m.p".
 
 Once the hotfix PR has been approved and the "Squash and merge" button pressed, the merge title
-must be in the format "Merge pull request #xxx from govuk-one-login/release/M.m.p" to allow for the
+must be in the format "Merge pull request #xxx from govuk-one-login/release/M.m.p" to let the
 correct version to be extracted and used as a tag.
