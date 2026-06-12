@@ -18,9 +18,9 @@ class ConfigurationException(
 ) : NetworkingException(message)
 
 /**
- * The authentication provider failed
+ * The service that received the request failed before sending it to the server
  */
-class AuthenticationException(
+open class ServiceException(
     message: String,
     cause: Throwable?,
 ) : NetworkingException(message, cause)

@@ -3,8 +3,8 @@ package uk.gov.android.network.service
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.v2.ApiResponseException
-import uk.gov.android.network.api.v2.AuthenticationException
 import uk.gov.android.network.api.v2.ConfigurationException
+import uk.gov.android.network.api.v2.ServiceException
 import uk.gov.android.network.api.v2.TransportException
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
@@ -62,7 +62,7 @@ internal suspend fun networkingServiceSample(networkingService: NetworkingServic
             when (response.error) {
                 is ApiResponseException,
                 is ConfigurationException,
-                is AuthenticationException,
+                is ServiceException,
                 is TransportException,
                 -> {
                     // Handle any errors

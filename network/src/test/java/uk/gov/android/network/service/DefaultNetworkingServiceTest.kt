@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.v2.ApiResponseException
-import uk.gov.android.network.api.v2.AuthenticationException
+import uk.gov.android.network.api.v2.ServiceException
 import uk.gov.android.network.api.v2.TransportException
 import uk.gov.android.network.api.v2.expectFailure
 import uk.gov.android.network.auth.TestAuthenticationProvider
@@ -70,7 +70,7 @@ class DefaultNetworkingServiceTest {
                 }
 
             val failure = result.expectFailure()
-            assertInstanceOf(AuthenticationException::class.java, failure.error)
+            assertInstanceOf(ServiceException::class.java, failure.error)
         }
 
     @Test

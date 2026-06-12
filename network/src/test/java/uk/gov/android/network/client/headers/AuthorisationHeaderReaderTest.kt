@@ -4,8 +4,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
-import uk.gov.android.network.api.v2.AuthenticationException
 import uk.gov.android.network.api.v2.ConfigurationException
+import uk.gov.android.network.api.v2.ServiceException
 import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
 import uk.gov.android.network.auth.authenticationSuccess
@@ -29,13 +29,13 @@ class AuthorisationHeaderReaderTest {
         }
 
     @Test
-    fun `given provider returns failure, getHeader returns authentication failure`() =
+    fun `given provider returns failure, getHeader returns service failure`() =
         runTest {
             provider.response = authenticationFailure
 
             val result = headerReader.getHeader(authConfig)
 
-            assertInstanceOf(AuthenticationException::class.java, result.expectFailure())
+            assertInstanceOf(ServiceException::class.java, result.expectFailure())
         }
 
     @Test
