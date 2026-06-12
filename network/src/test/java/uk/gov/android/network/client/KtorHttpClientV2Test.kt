@@ -41,7 +41,7 @@ class KtorHttpClientV2Test {
             val response = client.request(ApiRequest.Get(URL))
 
             assertEquals(200, response.status)
-            assertEquals(RESPONSE_BODY, response.body())
+            assertEquals(RESPONSE_BODY, response.body)
         }
 
     @Test
@@ -87,7 +87,7 @@ class KtorHttpClientV2Test {
                 )
 
             assertEquals(201, response.status)
-            assertEquals(RESPONSE_BODY, response.body())
+            assertEquals(RESPONSE_BODY, response.body)
         }
 
     @Test
@@ -165,7 +165,7 @@ class KtorHttpClientV2Test {
                 )
 
             assertEquals(200, response.status)
-            assertEquals(RESPONSE_BODY, response.body())
+            assertEquals(RESPONSE_BODY, response.body)
         }
 
     @Test

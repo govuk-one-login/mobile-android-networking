@@ -31,12 +31,10 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
-import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.client.headers.toAuthorisationHeader
 import uk.gov.android.network.client.v2.GenericHttpResponse
-import uk.gov.android.network.client.v2.KtorHttpResponse
-import uk.gov.android.network.client.v2.KtorResponseException
+import uk.gov.android.network.client.v2.GenericResponseException
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
@@ -153,9 +151,9 @@ class KtorHttpClient
                         }
                     }
             } catch (e: ResponseException) {
-                throw KtorResponseException(e)
-            }.let {
-                KtorHttpResponse(it)
+                throw GenericResponseException.fromKtorResponseException(e)
+            }.let { response ->
+                GenericHttpResponse.fromKtorHttpResponse(response)
             }
 
         override fun setAuthenticationProvider(provider: AuthenticationProvider) {

@@ -14,8 +14,8 @@ import uk.gov.android.network.api.v2.expectFailure
 import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
 import uk.gov.android.network.client.v2.StubHttpClient
-import uk.gov.android.network.client.v2.StubHttpResponse
-import uk.gov.android.network.client.v2.StubResponseException
+import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.client.v2.TestResponseException
 
 class DefaultNetworkingServiceTest {
     private val httpClient = StubHttpClient()
@@ -26,23 +26,23 @@ class DefaultNetworkingServiceTest {
     @Test
     fun `given client returns response, makeRequest returns success with body and status`() =
         runTest {
-            httpClient.response = StubHttpResponse(status = 200, responseBody = "response body")
+            httpClient.response = TestHttpResponse.success
 
             val result = networkingService.makeRequest(request)
 
-            assertEquals(ApiResponse.Success("response body", status = 200), result)
+            assertEquals(ApiResponse.Success("success", status = 200), result)
         }
 
     @Test
     fun `given client throws ResponseExceptionWrapper, makeRequest returns API response failure`() =
         runTest {
-            httpClient.exception = StubResponseException(response = StubHttpResponse(status = 403))
+            httpClient.exception = TestResponseException.internalServerError
 
             val result = networkingService.makeRequest(request)
 
             val failure = result.expectFailure()
             assertInstanceOf(ApiResponseException::class.java, failure.error)
-            assertEquals(403, failure.status)
+            assertEquals(500, failure.status)
         }
 
     @Test
@@ -62,7 +62,7 @@ class DefaultNetworkingServiceTest {
         runTest {
             authProvider.response = authenticationFailure
             networkingService.setAuthenticationProvider(authProvider)
-            httpClient.response = StubHttpResponse()
+            httpClient.response = TestHttpResponse.success
 
             val result =
                 networkingService.makeRequest(request) {
@@ -77,7 +77,7 @@ class DefaultNetworkingServiceTest {
     fun `given authentication configured, makeRequest appends authorisation header`() =
         runTest {
             networkingService.setAuthenticationProvider(authProvider)
-            httpClient.response = StubHttpResponse()
+            httpClient.response = TestHttpResponse.success
 
             networkingService.makeRequest(request) {
                 withAuthentication(SCOPE)
@@ -94,7 +94,7 @@ class DefaultNetworkingServiceTest {
     @Test
     fun `given authentication not configured, makeRequest does not add authorisation header`() =
         runTest {
-            httpClient.response = StubHttpResponse()
+            httpClient.response = TestHttpResponse.success
 
             networkingService.makeRequest(request)
 

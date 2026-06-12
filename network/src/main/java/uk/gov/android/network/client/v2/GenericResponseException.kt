@@ -1,16 +1,28 @@
 package uk.gov.android.network.client.v2
 
+import io.ktor.client.plugins.ResponseException
+
 /**
  * Represents an unsuccessful HTTP response
  *
- * @property exception the underlying exception from the HTTP client
  * @property response the non-success HTTP response
+ * @param cause the underlying exception from the HTTP client
  */
-abstract class GenericResponseException(
-    val exception: Exception,
+class GenericResponseException(
+    val response: GenericHttpResponse,
+    cause: IllegalStateException,
 ) : IllegalStateException(
-        exception.message,
-        exception.cause,
+        cause.message,
+        cause,
     ) {
-    abstract val response: GenericHttpResponse
+    companion object {
+        internal suspend fun fromKtorResponseException(exception: ResponseException): GenericResponseException =
+            GenericResponseException(
+                response =
+                    GenericHttpResponse.fromKtorHttpResponse(
+                        httpResponse = exception.response,
+                    ),
+                cause = exception,
+            )
+    }
 }

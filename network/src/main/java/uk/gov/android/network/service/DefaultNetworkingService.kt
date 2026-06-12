@@ -61,7 +61,7 @@ class DefaultNetworkingService(
 
         // Successful (1XX or 2XX) response
         return ApiResponse.Success(
-            response = response.body(),
+            response = response.body,
             status = response.status,
         )
     }
