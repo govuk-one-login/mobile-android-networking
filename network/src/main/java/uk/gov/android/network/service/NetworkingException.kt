@@ -1,4 +1,4 @@
-package uk.gov.android.network.api.v2
+package uk.gov.android.network.service
 
 /**
  * Base class for all errors resulting from an API request.

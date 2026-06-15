@@ -2,10 +2,6 @@ package uk.gov.android.network.service
 
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
-import uk.gov.android.network.api.v2.ApiResponseException
-import uk.gov.android.network.api.v2.ConfigurationException
-import uk.gov.android.network.api.v2.ServiceException
-import uk.gov.android.network.api.v2.TransportException
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
@@ -27,13 +23,13 @@ interface NetworkingService {
      * @param apiRequest The base API request
      * @param configure Configure extra behaviour such as authentication, attestation and DPoP
 
-     * @return ApiResponse<String> The API response or error.
+     * @return ApiResponse<String, NetworkingException> The API response or error.
      *   Successful responses include the raw response body
      */
     suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit = { },
-    ): ApiResponse<String>
+    ): ApiResponse<String, NetworkingException>
 }
 
 @ExcludeFromJacocoGeneratedReport

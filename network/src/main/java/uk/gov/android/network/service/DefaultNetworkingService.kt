@@ -3,8 +3,6 @@ package uk.gov.android.network.service
 import kotlinx.io.IOException
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
-import uk.gov.android.network.api.v2.ApiResponseException
-import uk.gov.android.network.api.v2.TransportException
 import uk.gov.android.network.api.v2.withHeaders
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfig
@@ -36,7 +34,7 @@ class DefaultNetworkingService(
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit,
-    ): ApiResponse<String> {
+    ): ApiResponse<String, NetworkingException> {
         val config = RequestConfigBuilder().apply { configure() }.build()
 
         val extraHeaders =
@@ -106,13 +104,13 @@ class DefaultNetworkingService(
         )
     }
 
-    private fun Exception.toTransportFailure(): ApiResponse.Failure =
+    private fun Exception.toTransportFailure(): ApiResponse.Failure<TransportException> =
         ApiResponse.Failure(
             TransportException(this),
             null,
         )
 
-    private fun GenericResponseException.toApiResponseFailure(): ApiResponse.Failure =
+    private fun GenericResponseException.toApiResponseFailure(): ApiResponse.Failure<ApiResponseException> =
         ApiResponse.Failure(
             status = response.status,
             error =

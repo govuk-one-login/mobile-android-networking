@@ -1,6 +1,6 @@
 package uk.gov.android.network.util
 
-import uk.gov.android.network.api.v2.NetworkingException
+import uk.gov.android.network.service.NetworkingException
 
 internal sealed class NetworkingResult<T> {
     data class Success<T>(

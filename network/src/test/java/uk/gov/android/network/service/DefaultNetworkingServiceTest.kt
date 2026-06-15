@@ -7,9 +7,6 @@ import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
-import uk.gov.android.network.api.v2.ApiResponseException
-import uk.gov.android.network.api.v2.ServiceException
-import uk.gov.android.network.api.v2.TransportException
 import uk.gov.android.network.api.v2.expectFailure
 import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
