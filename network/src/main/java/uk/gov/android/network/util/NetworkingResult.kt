@@ -2,7 +2,7 @@ package uk.gov.android.network.util
 
 import uk.gov.android.network.api.v2.NetworkingException
 
-sealed class NetworkingResult<T> {
+internal sealed class NetworkingResult<T> {
     data class Success<T>(
         val value: T,
     ) : NetworkingResult<T>()
