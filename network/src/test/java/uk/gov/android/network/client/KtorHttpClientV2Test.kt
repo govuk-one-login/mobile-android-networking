@@ -147,6 +147,25 @@ class KtorHttpClientV2Test {
         }
 
     @Test
+    fun `FormUrlEncoded - sends the correct ContentType header`() =
+        runTest {
+            val client = createClient()
+
+            client.request(
+                ApiRequest.FormUrlEncoded(
+                    url = URL,
+                    params = listOf("field" to "value"),
+                ),
+            )
+
+            val sentRequest = mockEngine.requestHistory.first()
+            assertEquals(
+                "application/x-www-form-urlencoded; charset=UTF-8",
+                sentRequest.body.contentType?.toString(),
+            )
+        }
+
+    @Test
     fun `FormUrlEncoded - error response throws GenericResponseException`() =
         runTest {
             val engine =

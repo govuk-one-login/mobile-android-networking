@@ -34,6 +34,9 @@ sealed interface ApiRequest {
     /**
      * An HTTP POST request for form submissions
      *
+     * This request will automatically set the Content-Type header to
+     * application/x-www-form-urlencoded
+     *
      * @property params the form parameters sent as the request body
      */
     data class FormUrlEncoded(
