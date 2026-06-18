@@ -18,7 +18,10 @@ import java.net.SocketTimeoutException
 class KtorHttpClientV2Test {
     private val userAgentGenerator = UserAgentGeneratorStub("userAgent")
 
-    private fun createClient(engine: MockEngine): GenericHttpClient =
+    private val mockEngine =
+        MockEngine { respond(content = RESPONSE_BODY, status = HttpStatusCode.OK) }
+
+    private fun createClient(engine: MockEngine = mockEngine): GenericHttpClient =
         KtorHttpClient(
             userAgentGenerator = userAgentGenerator,
             logger = KtorLogger.noOp,
@@ -28,15 +31,7 @@ class KtorHttpClientV2Test {
     @Test
     fun `Get - returns response body and status`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = RESPONSE_BODY,
-                            status = HttpStatusCode.OK,
-                        )
-                    },
-                )
+            val client = createClient()
 
             val response = client.request(ApiRequest.Get(URL))
 
@@ -47,15 +42,9 @@ class KtorHttpClientV2Test {
     @Test
     fun `Get - error response throws GenericResponseException`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = "unauthorized",
-                            status = HttpStatusCode.Unauthorized,
-                        )
-                    },
-                )
+            val engine =
+                MockEngine { respond(content = "unauthorized", status = HttpStatusCode.Unauthorized) }
+            val client = createClient(engine)
 
             val exception =
                 assertThrows<GenericResponseException> {
@@ -68,15 +57,9 @@ class KtorHttpClientV2Test {
     @Test
     fun `Post - returns response body and status`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = RESPONSE_BODY,
-                            status = HttpStatusCode.Created,
-                        )
-                    },
-                )
+            val engine =
+                MockEngine { respond(content = RESPONSE_BODY, status = HttpStatusCode.Created) }
+            val client = createClient(engine)
 
             val response =
                 client.request(
@@ -93,17 +76,7 @@ class KtorHttpClientV2Test {
     @Test
     fun `Post - given contentType provided, sets content type header`() =
         runTest {
-            var receivedContentType: String? = null
-            val client =
-                createClient(
-                    MockEngine { request ->
-                        receivedContentType = request.body.contentType?.toString()
-                        respond(
-                            content = RESPONSE_BODY,
-                            status = HttpStatusCode.OK,
-                        )
-                    },
-                )
+            val client = createClient()
 
             client.request(
                 ApiRequest.Post(
@@ -113,21 +86,18 @@ class KtorHttpClientV2Test {
                 ),
             )
 
-            assertEquals("application/json", receivedContentType)
+            val sentRequest = mockEngine.requestHistory.first()
+            assertEquals("application/json", sentRequest.body.contentType?.toString())
         }
 
     @Test
     fun `Post - error response throws GenericResponseException`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = "server error",
-                            status = HttpStatusCode.InternalServerError,
-                        )
-                    },
-                )
+            val engine =
+                MockEngine {
+                    respond(content = "server error", status = HttpStatusCode.InternalServerError)
+                }
+            val client = createClient(engine)
 
             val exception =
                 assertThrows<GenericResponseException> {
@@ -146,15 +116,7 @@ class KtorHttpClientV2Test {
     @Test
     fun `FormUrlEncoded - returns response body and status`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = RESPONSE_BODY,
-                            status = HttpStatusCode.OK,
-                        )
-                    },
-                )
+            val client = createClient()
 
             val response =
                 client.request(
@@ -171,17 +133,7 @@ class KtorHttpClientV2Test {
     @Test
     fun `FormUrlEncoded - sends params with correct keys and values`() =
         runTest {
-            var receivedBody = ""
-            val client =
-                createClient(
-                    MockEngine { request ->
-                        receivedBody = request.body.toByteArray().decodeToString()
-                        respond(
-                            content = RESPONSE_BODY,
-                            status = HttpStatusCode.OK,
-                        )
-                    },
-                )
+            val client = createClient()
 
             client.request(
                 ApiRequest.FormUrlEncoded(
@@ -190,21 +142,16 @@ class KtorHttpClientV2Test {
                 ),
             )
 
-            assertEquals("field=value", receivedBody)
+            val sentRequest = mockEngine.requestHistory.first()
+            assertEquals("field=value", sentRequest.body.toByteArray().decodeToString())
         }
 
     @Test
     fun `FormUrlEncoded - error response throws GenericResponseException`() =
         runTest {
-            val client =
-                createClient(
-                    MockEngine {
-                        respond(
-                            content = "bad request",
-                            status = HttpStatusCode.BadRequest,
-                        )
-                    },
-                )
+            val engine =
+                MockEngine { respond(content = "bad request", status = HttpStatusCode.BadRequest) }
+            val client = createClient(engine)
 
             val exception =
                 assertThrows<GenericResponseException> {
@@ -222,17 +169,7 @@ class KtorHttpClientV2Test {
     @Test
     fun `request includes custom headers`() =
         runTest {
-            var receivedHeaders: Map<String, List<String>> = emptyMap()
-            val client =
-                createClient(
-                    MockEngine { request ->
-                        receivedHeaders = request.headers.entries().associate { it.key to it.value }
-                        respond(
-                            content = "ok",
-                            status = HttpStatusCode.OK,
-                        )
-                    },
-                )
+            val client = createClient()
 
             client.request(
                 ApiRequest.Get(
@@ -241,18 +178,15 @@ class KtorHttpClientV2Test {
                 ),
             )
 
-            assertEquals(listOf("value"), receivedHeaders["X-Custom"])
+            val sentRequest = mockEngine.requestHistory.first()
+            assertEquals(listOf("value"), sentRequest.headers.getAll("X-Custom"))
         }
 
     @Test
     fun `request propogates IOExceptions`() =
         runTest {
             val client =
-                createClient(
-                    MockEngine {
-                        throw SocketTimeoutException()
-                    },
-                )
+                createClient(MockEngine { throw SocketTimeoutException() })
 
             assertThrows<java.io.IOException> {
                 client.request(ApiRequest.Get(URL))
