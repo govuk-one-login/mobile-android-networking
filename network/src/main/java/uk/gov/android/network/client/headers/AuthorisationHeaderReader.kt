@@ -14,11 +14,6 @@ private const val AUTH_HEADER_VALUE = "Bearer"
 internal class AuthorisationHeaderReader(
     internal val authenticationProvider: AuthenticationProvider?,
 ) {
-    @Suppress(
-        // This function uses the return early pattern for different types of failure.
-        // There is only one return statement for success, which is the final statement.
-        "ReturnCount",
-    )
     suspend fun getHeader(config: RequestConfig.Authentication): NetworkingResult<Header> {
         val authenticationProvider =
             this.authenticationProvider ?: return missingProviderFailure()

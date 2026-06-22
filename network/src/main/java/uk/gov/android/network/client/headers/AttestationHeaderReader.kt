@@ -13,11 +13,6 @@ private const val ATTESTATION_POP_HEADER_KEY = "OAuth-Client-Attestation-PoP"
 internal class AttestationHeaderReader(
     internal val clientAttestationProvider: ClientAttestationProvider?,
 ) {
-    @Suppress(
-        // This function uses the return early pattern for different types of failure.
-        // There is only one return statement for success, which is the final statement.
-        "ReturnCount",
-    )
     suspend fun getHeaders(): NetworkingResult<List<Header>> {
         val provider =
             this.clientAttestationProvider ?: return missingProviderFailure()

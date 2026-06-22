@@ -34,11 +34,6 @@ class DefaultNetworkingService(
     private var authorisationHeaderReader = AuthorisationHeaderReader(null)
     private var refreshDPoPHeaderReader = RefreshDPoPHeaderReader(null)
 
-    @Suppress(
-        // This function uses the return early pattern for different types of failure.
-        // There is only one return statement for success, which is the final statement.
-        "ReturnCount",
-    )
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit,
@@ -84,11 +79,6 @@ class DefaultNetworkingService(
         refreshDPoPHeaderReader = RefreshDPoPHeaderReader(dpopProvider)
     }
 
-    @Suppress(
-        // This function uses the return early pattern for different types of failure.
-        // There is only one return statement for success, which is the final statement.
-        "ReturnCount",
-    )
     private suspend fun buildExtraHeaders(config: RequestConfig): NetworkingResult<List<Header>> {
         val attestationHeaders =
             if (config.attestation) {
