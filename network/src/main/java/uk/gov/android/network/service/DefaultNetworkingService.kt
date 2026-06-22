@@ -22,6 +22,8 @@ import uk.gov.android.network.util.NetworkingResult
  * Default [NetworkingService] implementation.
  *
  * To enable authentication, provide an [AuthenticationProvider] using [setAuthenticationProvider].
+ * To enable client attestation headers, provide a [ClientAttestationProvider] using [setClientAttestationProvider].
+ * To enable demonstrating proof-of-possession (DPoP) headers, provide a [DPoPProvider] using [setDPoPProvider].
  *
  * @sample defaultNetworkingServiceSample
  */
@@ -151,13 +153,23 @@ internal suspend fun defaultNetworkingServiceSample(
     apiRequest: ApiRequest,
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
+    clientAttestationProvider: ClientAttestationProvider,
+    dPoPProvider: DPoPProvider,
 ) {
     val networkingService = DefaultNetworkingService(httpClient)
 
     // Set the authentication provider before making authenticated requests
     networkingService.setAuthenticationProvider(authenticationProvider)
 
+    // Set the client attestation provider before asking for client attestation headers
+    networkingService.setClientAttestationProvider(clientAttestationProvider)
+
+    // Set the DPoP provider before asking for demonstrating proof-of-possession headers
+    networkingService.setDPoPProvider(dPoPProvider)
+
     networkingService.makeRequest(apiRequest) {
         withAuthentication("scope")
+        withAttestation = true
+        withRefreshDPoP = true
     }
 }
