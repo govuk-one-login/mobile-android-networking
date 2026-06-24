@@ -100,6 +100,9 @@ dependencies {
     listOf(
         libs.ext.junit,
         libs.espresso.core,
+        libs.mockwebserver,
+        libs.okhttp.tls,
+        libs.kotlinx.coroutines.test,
     ).forEach { dependency ->
         androidTestImplementation(dependency)
     }
