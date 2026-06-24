@@ -57,7 +57,15 @@ class KtorHttpClient
         ) : this(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
-            ktorClientEngine = Android.create(),
+            ktorClientEngine =
+                Android.create {
+                    sslManager = { connection ->
+                        connection.sslSocketFactory =
+                            Tls12SocketFactory(
+                                createTls12SSLContext().socketFactory,
+                            )
+                    }
+                },
         )
 
         private fun makeHttpClient(
