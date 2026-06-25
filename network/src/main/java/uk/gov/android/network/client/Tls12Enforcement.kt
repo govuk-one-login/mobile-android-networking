@@ -54,8 +54,15 @@ internal class Tls12SocketFactory(
 
     private fun Socket.enforceTls12(): Socket =
         apply {
-            if (this is SSLSocket) {
-                enabledProtocols = supportedProtocols.filter { it in TLS_12_AND_ABOVE }.toTypedArray()
+            if (this !is SSLSocket) {
+                throw SslRequiredException(
+                    "Only SSL connections are permitted. Received ${this::class.simpleName}.",
+                )
             }
+            enabledProtocols = supportedProtocols.filter { it in TLS_12_AND_ABOVE }.toTypedArray()
         }
 }
+
+internal class SslRequiredException(
+    message: String,
+) : SecurityException(message)
