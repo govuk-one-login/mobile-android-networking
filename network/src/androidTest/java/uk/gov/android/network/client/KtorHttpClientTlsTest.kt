@@ -20,6 +20,7 @@ import java.net.InetAddress
 import java.net.Socket
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLException
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 
@@ -90,6 +91,12 @@ class KtorHttpClientTlsTest {
                 )
 
             assertTrue("Expected failure but got: $response", response is ApiResponse.Failure)
+            val failure = response as ApiResponse.Failure
+            assertTrue(
+                "Expected SSL-related exception but got: ${failure.error}",
+                failure.error is SSLException ||
+                    failure.error.cause is SSLException,
+            )
         }
 
     @Test

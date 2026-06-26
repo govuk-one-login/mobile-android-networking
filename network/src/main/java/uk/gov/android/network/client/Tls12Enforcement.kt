@@ -43,13 +43,9 @@ internal fun AndroidEngineConfig.configureSslManagerMinTls12(
 ) {
     sslManager = { connection ->
         val sslContext = createTls12SSLContext()
-        if (trustManager != null) {
-            sslContext.init(null, arrayOf(trustManager), null)
-        }
+        trustManager?.let { sslContext.init(null, arrayOf(it), null) }
         connection.sslSocketFactory = Tls12SocketFactory(sslContext.socketFactory)
-        if (hostnameVerifier != null) {
-            connection.hostnameVerifier = hostnameVerifier
-        }
+        hostnameVerifier?.let { connection.hostnameVerifier = it }
     }
 }
 
