@@ -6,19 +6,19 @@ import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 /**
- * [NetworkingService] makes HTTP requests and returns success or failure.
+ * [NetworkService] makes HTTP requests and returns success or failure.
  *
  * Supports appending authentication, attestation, and DPoP headers to requests.
  *
- * @sample networkingServiceSample
+ * @sample networkServiceSample
  *
  * @see [RequestConfigBuilder]
  */
-interface NetworkingService {
+interface NetworkService {
     /**
      * Make an HTTP request
      *
-     * @sample networkingServiceSample
+     * @sample networkServiceSample
      *
      * @param apiRequest The base API request
      * @param configure Configure extra behaviour such as authentication, attestation and DPoP
@@ -33,7 +33,7 @@ interface NetworkingService {
 }
 
 @ExcludeFromJacocoGeneratedReport
-internal suspend fun networkingServiceSample(networkingService: NetworkingService) {
+internal suspend fun networkServiceSample(networkService: NetworkService) {
     val request =
         ApiRequest.Get(
             url = "https://example.gov.uk",
@@ -44,7 +44,7 @@ internal suspend fun networkingServiceSample(networkingService: NetworkingServic
         )
 
     val response =
-        networkingService.makeRequest(request) {
+        networkService.makeRequest(request) {
             withAttestation = true
             withAuthentication("scope")
             withRefreshDPoP = true

@@ -19,17 +19,17 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.network.util.NetworkingResult
 
 /**
- * Default [NetworkingService] implementation.
+ * Default [NetworkService] implementation.
  *
  * To enable authentication, provide an [AuthenticationProvider] using [setAuthenticationProvider].
  * To enable client attestation headers, provide a [ClientAttestationProvider] using [setClientAttestationProvider].
  * To enable demonstrating proof-of-possession (DPoP) headers, provide a [DPoPProvider] using [setDPoPProvider].
  *
- * @sample defaultNetworkingServiceSample
+ * @sample defaultNetworkServiceSample
  */
-class DefaultNetworkingService(
+class DefaultNetworkService(
     private val httpClient: GenericHttpClient,
-) : NetworkingService {
+) : NetworkService {
     private var attestationHeaderReader = AttestationHeaderReader(null)
     private var authorisationHeaderReader = AuthorisationHeaderReader(null)
     private var refreshDPoPHeaderReader = RefreshDPoPHeaderReader(null)
@@ -139,25 +139,25 @@ class DefaultNetworkingService(
 }
 
 @ExcludeFromJacocoGeneratedReport
-internal suspend fun defaultNetworkingServiceSample(
+internal suspend fun defaultNetworkServiceSample(
     apiRequest: ApiRequest,
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
     clientAttestationProvider: ClientAttestationProvider,
     dPoPProvider: DPoPProvider,
 ) {
-    val networkingService = DefaultNetworkingService(httpClient)
+    val networkService = DefaultNetworkService(httpClient)
 
     // Set the authentication provider before making authenticated requests
-    networkingService.setAuthenticationProvider(authenticationProvider)
+    networkService.setAuthenticationProvider(authenticationProvider)
 
     // Set the client attestation provider before asking for client attestation headers
-    networkingService.setClientAttestationProvider(clientAttestationProvider)
+    networkService.setClientAttestationProvider(clientAttestationProvider)
 
     // Set the DPoP provider before asking for demonstrating proof-of-possession headers
-    networkingService.setDPoPProvider(dPoPProvider)
+    networkService.setDPoPProvider(dPoPProvider)
 
-    networkingService.makeRequest(apiRequest) {
+    networkService.makeRequest(apiRequest) {
         withAuthentication("scope")
         withAttestation = true
         withRefreshDPoP = true

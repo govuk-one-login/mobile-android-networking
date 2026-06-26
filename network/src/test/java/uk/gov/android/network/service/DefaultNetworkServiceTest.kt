@@ -19,9 +19,9 @@ import uk.gov.android.network.dpop.TestDPoPProvider
 import uk.gov.android.network.dpop.dpopFailure
 import kotlin.jvm.java
 
-class DefaultNetworkingServiceTest {
+class DefaultNetworkServiceTest {
     private val httpClient = StubHttpClient()
-    private val networkingService = DefaultNetworkingService(httpClient = httpClient)
+    private val networkService = DefaultNetworkService(httpClient = httpClient)
     private val request = ApiRequest.Get(url = "https://example.com")
     private val authProvider = TestAuthenticationProvider(expectedScope = SCOPE)
     private val attestationProvider = TestClientAttestationProvider()
@@ -32,7 +32,7 @@ class DefaultNetworkingServiceTest {
         runTest {
             httpClient.response = TestHttpResponse.success
 
-            val result = networkingService.makeRequest(request)
+            val result = networkService.makeRequest(request)
 
             assertEquals(ApiResponse.Success("success", status = 200), result)
         }
@@ -42,7 +42,7 @@ class DefaultNetworkingServiceTest {
         runTest {
             httpClient.exception = TestResponseException.internalServerError
 
-            val result = networkingService.makeRequest(request)
+            val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
             assertInstanceOf(ApiResponseException::class.java, failure.error)
@@ -54,7 +54,7 @@ class DefaultNetworkingServiceTest {
         runTest {
             httpClient.exception = IOException("connection failed")
 
-            val result = networkingService.makeRequest(request)
+            val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
             assertInstanceOf(TransportException::class.java, failure.error)
@@ -65,11 +65,11 @@ class DefaultNetworkingServiceTest {
     fun `given authentication configured and header reader fails, makeRequest returns failure`() =
         runTest {
             authProvider.response = authenticationFailure
-            networkingService.setAuthenticationProvider(authProvider)
+            networkService.setAuthenticationProvider(authProvider)
             httpClient.response = TestHttpResponse.success
 
             val result =
-                networkingService.makeRequest(request) {
+                networkService.makeRequest(request) {
                     withAuthentication(SCOPE)
                 }
 
@@ -80,10 +80,10 @@ class DefaultNetworkingServiceTest {
     @Test
     fun `given authentication configured, makeRequest appends authorisation header`() =
         runTest {
-            networkingService.setAuthenticationProvider(authProvider)
+            networkService.setAuthenticationProvider(authProvider)
             httpClient.response = TestHttpResponse.success
 
-            networkingService.makeRequest(request) {
+            networkService.makeRequest(request) {
                 withAuthentication(SCOPE)
             }
 
@@ -100,7 +100,7 @@ class DefaultNetworkingServiceTest {
         runTest {
             httpClient.response = TestHttpResponse.success
 
-            networkingService.makeRequest(request)
+            networkService.makeRequest(request)
 
             assertEquals(request, httpClient.receivedRequest)
         }
@@ -109,11 +109,11 @@ class DefaultNetworkingServiceTest {
     fun `given attestation configured and header reader fails, makeRequest returns failure`() =
         runTest {
             attestationProvider.response = clientAttestationFailure
-            networkingService.setClientAttestationProvider(attestationProvider)
+            networkService.setClientAttestationProvider(attestationProvider)
             httpClient.response = TestHttpResponse.success
 
             val result =
-                networkingService.makeRequest(request) {
+                networkService.makeRequest(request) {
                     withAttestation = true
                 }
 
@@ -124,10 +124,10 @@ class DefaultNetworkingServiceTest {
     @Test
     fun `given attestation configured, makeRequest appends attestation headers`() =
         runTest {
-            networkingService.setClientAttestationProvider(attestationProvider)
+            networkService.setClientAttestationProvider(attestationProvider)
             httpClient.response = TestHttpResponse.success
 
-            networkingService.makeRequest(request) {
+            networkService.makeRequest(request) {
                 withAttestation = true
             }
 
@@ -148,11 +148,11 @@ class DefaultNetworkingServiceTest {
     fun `given refreshDPoP configured and header reader fails, makeRequest returns failure`() =
         runTest {
             dpopProvider.response = dpopFailure
-            networkingService.setDPoPProvider(dpopProvider)
+            networkService.setDPoPProvider(dpopProvider)
             httpClient.response = TestHttpResponse.success
 
             val result =
-                networkingService.makeRequest(request) {
+                networkService.makeRequest(request) {
                     withRefreshDPoP = true
                 }
 
@@ -163,10 +163,10 @@ class DefaultNetworkingServiceTest {
     @Test
     fun `given refreshDPoP configured, makeRequest appends DPoP header`() =
         runTest {
-            networkingService.setDPoPProvider(dpopProvider)
+            networkService.setDPoPProvider(dpopProvider)
             httpClient.response = TestHttpResponse.success
 
-            networkingService.makeRequest(request) {
+            networkService.makeRequest(request) {
                 withRefreshDPoP = true
             }
 
