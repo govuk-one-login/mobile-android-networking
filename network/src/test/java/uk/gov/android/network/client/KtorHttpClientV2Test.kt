@@ -5,6 +5,8 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.toByteArray
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -88,6 +90,40 @@ class KtorHttpClientV2Test {
 
             val sentRequest = mockEngine.requestHistory.first()
             assertEquals("application/json", sentRequest.body.contentType?.toString())
+        }
+
+    @Test
+    fun `Post - serializable body returns response`() =
+        runTest {
+            val client = createClient()
+
+            val response =
+                client.request(
+                    ApiRequest.Post(
+                        url = URL,
+                        body = SerializableBody(title = "title", body = "body"),
+                        contentType = ContentType.APPLICATION_JSON,
+                    ),
+                )
+
+            assertEquals(200, response.status)
+            assertEquals(RESPONSE_BODY, response.body)
+        }
+
+    @Test
+    fun `Post - non-serializable body throws SerializationException`() =
+        runTest {
+            val client = createClient()
+
+            assertThrows<SerializationException> {
+                client.request(
+                    ApiRequest.Post(
+                        url = URL,
+                        body = NonSerializableBody(title = "title", body = "body"),
+                        contentType = ContentType.APPLICATION_JSON,
+                    ),
+                )
+            }
         }
 
     @Test
@@ -218,3 +254,14 @@ class KtorHttpClientV2Test {
         private const val REQUEST_BODY = "request body"
     }
 }
+
+private data class NonSerializableBody(
+    val title: String,
+    val body: String,
+)
+
+@Serializable
+private data class SerializableBody(
+    val title: String,
+    val body: String,
+)

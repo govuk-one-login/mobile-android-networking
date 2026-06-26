@@ -62,6 +62,19 @@ class DefaultNetworkServiceTest {
         }
 
     @Test
+    fun `given client throws SerializationException, makeRequest returns request failure`() =
+        runTest {
+            httpClient.exception =
+                kotlinx.serialization.SerializationException("Serializer not found")
+
+            val result = networkService.makeRequest(request)
+
+            val failure = result.expectFailure()
+            assertInstanceOf(ApiRequestException::class.java, failure.error)
+            assertEquals(null, failure.status)
+        }
+
+    @Test
     fun `given authentication configured and header reader fails, makeRequest returns failure`() =
         runTest {
             authProvider.response = authenticationFailure

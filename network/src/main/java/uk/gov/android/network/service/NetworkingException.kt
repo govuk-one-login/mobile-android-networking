@@ -26,6 +26,14 @@ open class ServiceException(
 ) : NetworkingException(message, cause)
 
 /**
+ * The request wasn't configured properly
+ */
+class ApiRequestException(
+    message: String,
+    cause: Throwable?,
+) : NetworkingException(message, cause)
+
+/**
  * The server returned a non-success (3xx, 4xx, 5xx) response
  */
 class ApiResponseException(

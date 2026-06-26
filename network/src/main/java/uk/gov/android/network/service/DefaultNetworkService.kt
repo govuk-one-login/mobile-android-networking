@@ -1,6 +1,7 @@
 package uk.gov.android.network.service
 
 import kotlinx.io.IOException
+import kotlinx.serialization.SerializationException
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.v2.withHeaders
@@ -53,6 +54,8 @@ class DefaultNetworkService(
         val response =
             try {
                 httpClient.request(apiRequest)
+            } catch (exception: SerializationException) {
+                return exception.toApiRequestFailure()
             } catch (exception: GenericResponseException) {
                 // Unsuccessful (3XX, 4XX, 5XX) response
                 return exception.toApiResponseFailure()
@@ -133,6 +136,16 @@ class DefaultNetworkService(
             error =
                 ApiResponseException(
                     "API responded with ${response.status}",
+                    this,
+                ),
+        )
+
+    private fun SerializationException.toApiRequestFailure(): ApiResponse.Failure<ApiRequestException> =
+        ApiResponse.Failure(
+            status = null,
+            error =
+                ApiRequestException(
+                    "Serialization failed",
                     this,
                 ),
         )
