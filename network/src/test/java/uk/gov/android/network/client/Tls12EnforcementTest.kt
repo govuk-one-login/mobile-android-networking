@@ -6,11 +6,14 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.useragent.UserAgentGeneratorStub
 import java.net.InetAddress
 import java.net.ServerSocket
+import java.net.Socket
 import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 
 class Tls12EnforcementTest {
     private val sslContext = createTls12SSLContext()
@@ -131,5 +134,52 @@ class Tls12EnforcementTest {
         assertTrue(enabledProtocols.contains("TLSv1.2") || enabledProtocols.contains("TLSv1.3"))
         assertFalse(enabledProtocols.contains("TLSv1"))
         assertFalse(enabledProtocols.contains("TLSv1.1"))
+    }
+
+    @Test
+    fun `Tls12SocketFactory throws SslRequiredException for non-SSL socket`() {
+        val plainSocketFactory =
+            object : SSLSocketFactory() {
+                override fun getDefaultCipherSuites() = emptyArray<String>()
+
+                override fun getSupportedCipherSuites() = emptyArray<String>()
+
+                override fun createSocket() = Socket()
+
+                override fun createSocket(
+                    s: Socket?,
+                    host: String?,
+                    port: Int,
+                    autoClose: Boolean,
+                ) = Socket()
+
+                override fun createSocket(
+                    host: String?,
+                    port: Int,
+                ) = Socket()
+
+                override fun createSocket(
+                    host: String?,
+                    port: Int,
+                    localHost: InetAddress?,
+                    localPort: Int,
+                ) = Socket()
+
+                override fun createSocket(
+                    host: InetAddress?,
+                    port: Int,
+                ) = Socket()
+
+                override fun createSocket(
+                    address: InetAddress?,
+                    port: Int,
+                    localAddress: InetAddress?,
+                    localPort: Int,
+                ) = Socket()
+            }
+        val factory = Tls12SocketFactory(plainSocketFactory)
+        assertThrows<SslRequiredException> {
+            factory.createSocket()
+        }
     }
 }
