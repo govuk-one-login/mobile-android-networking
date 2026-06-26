@@ -1,6 +1,7 @@
 package uk.gov.android.network.client
 
 import io.ktor.client.engine.android.AndroidEngineConfig
+import java.net.InetAddress
 import java.net.Socket
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
@@ -83,19 +84,19 @@ internal class Tls12SocketFactory(
     override fun createSocket(
         host: String?,
         port: Int,
-        localHost: java.net.InetAddress?,
+        localHost: InetAddress?,
         localPort: Int,
     ): Socket = delegate.createSocket(host, port, localHost, localPort).enforceTls12()
 
     override fun createSocket(
-        host: java.net.InetAddress?,
+        host: InetAddress?,
         port: Int,
     ): Socket = delegate.createSocket(host, port).enforceTls12()
 
     override fun createSocket(
-        address: java.net.InetAddress?,
+        address: InetAddress?,
         port: Int,
-        localAddress: java.net.InetAddress?,
+        localAddress: InetAddress?,
         localPort: Int,
     ): Socket = delegate.createSocket(address, port, localAddress, localPort).enforceTls12()
 

@@ -34,6 +34,8 @@ import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.X509TrustManager
 
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient
@@ -263,8 +265,8 @@ class KtorHttpClient
  *   against localhost.
  */
 internal fun createKtorAndroidEngine(
-    trustManager: javax.net.ssl.X509TrustManager? = null,
-    hostnameVerifier: javax.net.ssl.HostnameVerifier? = null,
+    trustManager: X509TrustManager? = null,
+    hostnameVerifier: HostnameVerifier? = null,
 ): HttpClientEngine =
     Android.create {
         configureSslManagerMinTls12(trustManager, hostnameVerifier)
