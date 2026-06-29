@@ -34,6 +34,8 @@ import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.X509TrustManager
 
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient
@@ -51,13 +53,17 @@ class KtorHttpClient
             )
         private var authenticationProvider: AuthenticationProvider? = null
 
+        /**
+         * Production constructor. Uses [createKtorAndroidEngine] to enforce TLS 1.2+ on all
+         * Android versions, including 10–14 where the platform does not restrict it.
+         */
         constructor(
             userAgentGenerator: UserAgentGenerator,
             logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
         ) : this(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
-            ktorClientEngine = Android.create(),
+            ktorClientEngine = createKtorAndroidEngine(),
         )
 
         private fun makeHttpClient(
@@ -248,4 +254,20 @@ class KtorHttpClient
             const val AUTH_HEADER_KEY = "Authorization"
             const val AUTH_HEADER_VALUE = "Bearer "
         }
+    }
+
+/**
+ * Creates a Ktor [Android] engine with TLS 1.2+ enforcement via [configureSslManagerMinTls12].
+ *
+ * @param trustManager Optional custom trust manager. Intended only for testing with
+ *   self-signed certificates (e.g. MockWebServer).
+ * @param hostnameVerifier Optional custom hostname verifier. Intended only for testing
+ *   against localhost.
+ */
+internal fun createKtorAndroidEngine(
+    trustManager: X509TrustManager? = null,
+    hostnameVerifier: HostnameVerifier? = null,
+): HttpClientEngine =
+    Android.create {
+        configureSslManagerMinTls12(trustManager, hostnameVerifier)
     }
