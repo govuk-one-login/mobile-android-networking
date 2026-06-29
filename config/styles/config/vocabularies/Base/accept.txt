@@ -1,3 +1,5 @@
+[Aa]ction
+[Cc]ommit
 (?i)Coroutine
 (?i)Coroutines
 (?i)Detekt
