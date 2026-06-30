@@ -10,13 +10,16 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
  *
  * Supports appending authentication, attestation, and DPoP headers to requests.
  *
+ * To parse JSON responses to a custom response type, use [NetworkServiceJsonExt.makeRequest].
+ *
  * @sample networkServiceSample
+ * @sample networkServiceParseResponseSample
  *
  * @see [RequestConfigBuilder]
  */
 interface NetworkService {
     /**
-     * Make an HTTP request
+     * Make an HTTP request and return the raw response body.
      *
      * @sample networkServiceSample
      *
