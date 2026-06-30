@@ -47,6 +47,10 @@ android {
         enable = true
     }
 
+    packaging {
+        resources.excludes += "META-INF/LICENSE*"
+    }
+
     testOptions {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
         animationsDisabled = true
@@ -96,6 +100,9 @@ dependencies {
 
     testRuntimeOnly(libs.junit.jupiter.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
+
+    testFixturesImplementation(platform(libs.junit.bom))
+    testFixturesImplementation(libs.junit.jupiter)
 
     listOf(
         libs.ext.junit,

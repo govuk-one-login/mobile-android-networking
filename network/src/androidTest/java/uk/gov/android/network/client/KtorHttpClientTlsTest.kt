@@ -145,7 +145,8 @@ class KtorHttpClientTlsTest {
                             sslManager = { connection ->
                                 connection.sslSocketFactory =
                                     clientCerts.sslSocketFactory()
-                                connection.hostnameVerifier = { _, _ -> true }
+                                connection.hostnameVerifier =
+                                    HostnameVerifier { _, _ -> true }
                             }
                         },
                 )

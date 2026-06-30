@@ -16,9 +16,11 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
+import io.ktor.client.request.request
 import io.ktor.client.request.setBody
+import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
@@ -28,14 +30,19 @@ import uk.gov.android.network.BuildConfig
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
-import uk.gov.android.network.auth.AuthenticationResponse.Failure
-import uk.gov.android.network.auth.AuthenticationResponse.Success
+import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.HttpStatusCodeExtensions.TransportError
+import uk.gov.android.network.client.headers.toAuthorisationHeader
+import uk.gov.android.network.client.v2.GenericHttpResponse
+import uk.gov.android.network.client.v2.GenericResponseException
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.X509TrustManager
+import io.ktor.http.ContentType as KtorContentType
+import uk.gov.android.network.api.v2.ApiRequest as ApiRequestV2
+import uk.gov.android.network.client.v2.GenericHttpClient as GenericHttpClientV2
 
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient
@@ -44,7 +51,8 @@ class KtorHttpClient
         userAgentGenerator: UserAgentGenerator,
         logger: KtorLogger,
         ktorClientEngine: HttpClientEngine,
-    ) : GenericHttpClient {
+    ) : GenericHttpClient,
+        GenericHttpClientV2 {
         private val httpClient: HttpClient =
             makeHttpClient(
                 userAgentGenerator = userAgentGenerator,
@@ -110,6 +118,50 @@ class KtorHttpClient
             }
         }
 
+        override suspend fun request(request: ApiRequestV2): GenericHttpResponse =
+            try {
+                httpClient
+                    .request {
+                        url(request.url)
+                        method =
+                            when (request) {
+                                is ApiRequestV2.Get -> HttpMethod.Get
+                                is ApiRequestV2.Post<*>,
+                                is ApiRequestV2.FormUrlEncoded,
+                                -> HttpMethod.Post
+                            }
+
+                        headers {
+                            request.headers.forEach { (key, value) ->
+                                append(key, value)
+                            }
+                        }
+
+                        if (request is ApiRequestV2.Post<*>) {
+                            setBody(request.body)
+                            if (request.contentType != null) {
+                                contentType(request.contentType.toKtorContentType())
+                            }
+                        }
+
+                        if (request is ApiRequestV2.FormUrlEncoded) {
+                            setBody(
+                                FormDataContent(
+                                    Parameters.build {
+                                        request.params.forEach { (key, value) ->
+                                            append(key, value)
+                                        }
+                                    },
+                                ),
+                            )
+                        }
+                    }
+            } catch (e: ResponseException) {
+                throw GenericResponseException.fromKtorResponseException(e)
+            }.let { response ->
+                GenericHttpResponse.fromKtorHttpResponse(response)
+            }
+
         override fun setAuthenticationProvider(provider: AuthenticationProvider) {
             this.authenticationProvider = provider
         }
@@ -125,13 +177,13 @@ class KtorHttpClient
                         Exception("Service Token Provider not initialised"),
                     )
 
-                is Failure ->
+                is AuthenticationResponse.Failure ->
                     ApiResponse.Failure(
                         0,
                         serviceTokenResponse.error,
                     )
 
-                is Success -> {
+                is AuthenticationResponse.Success -> {
                     val authorisedApiRequest = authoriseRequest(apiRequest, serviceTokenResponse)
                     makeRequest(authorisedApiRequest)
                 }
@@ -139,10 +191,10 @@ class KtorHttpClient
 
         private fun authoriseRequest(
             apiRequest: ApiRequest,
-            serviceTokenResponse: Success,
+            serviceTokenResponse: AuthenticationResponse.Success,
         ): ApiRequest {
             val authorisationHeader =
-                Pair(AUTH_HEADER_KEY, AUTH_HEADER_VALUE + serviceTokenResponse.bearerToken)
+                serviceTokenResponse.toAuthorisationHeader()
             return when (apiRequest) {
                 is ApiRequest.FormUrlEncoded ->
                     apiRequest.copy(headers = apiRequest.headers + authorisationHeader)
@@ -160,14 +212,6 @@ class KtorHttpClient
                 is ApiRequest.Get -> makeGetRequest(apiRequest)
                 is ApiRequest.Post<*> -> makePostRequest(apiRequest)
                 is ApiRequest.FormUrlEncoded -> makeFormRequest(apiRequest)
-            }
-
-        private fun mapContentType(contentType: uk.gov.android.network.client.ContentType?): ContentType? =
-            when (contentType) {
-                uk.gov.android.network.client.ContentType.APPLICATION_JSON ->
-                    ContentType.Application.Json
-
-                else -> null
             }
 
         private suspend fun makeGetRequest(apiRequest: ApiRequest.Get): ApiResponse =
@@ -201,7 +245,7 @@ class KtorHttpClient
                                 append(header.first, header.second)
                             }
                         }
-                        mapContentType(apiRequest.contentType)?.let {
+                        apiRequest.contentType?.toKtorContentType()?.let {
                             contentType(it)
                         }
                         setBody(apiRequest.body)
@@ -251,8 +295,6 @@ class KtorHttpClient
 
         companion object {
             private const val NON_SUCCESS_MESSAGE = "Non-success response received: "
-            const val AUTH_HEADER_KEY = "Authorization"
-            const val AUTH_HEADER_VALUE = "Bearer "
         }
     }
 
@@ -270,4 +312,9 @@ internal fun createKtorAndroidEngine(
 ): HttpClientEngine =
     Android.create {
         configureSslManagerMinTls12(trustManager, hostnameVerifier)
+    }
+
+internal fun ContentType.toKtorContentType(): KtorContentType =
+    when (this) {
+        ContentType.APPLICATION_JSON -> KtorContentType.Application.Json
     }
