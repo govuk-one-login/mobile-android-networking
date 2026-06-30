@@ -7,7 +7,7 @@ kotlinSerializationPlugin = "2.3.21"
 ktor = "3.5.0"
 mockitoCore = "5.23.0"
 mockitoKotlin = "6.3.0"
-mockwebserver = "5.3.2"
+mockwebserver = "5.4.0"
 androidXTestOrchestrator = "1.6.1"
 kotlin = "2.3.21"
 
