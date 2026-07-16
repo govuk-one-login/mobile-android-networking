@@ -25,3 +25,4 @@ jobs:
         with:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          accept_android_licences: true
