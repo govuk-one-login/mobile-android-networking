@@ -37,7 +37,7 @@ val apkConfig by rootProject.extra(
 val emulatorConfig by rootProject.extra(
     EmulatorConfig(
         systemImageSources = setOf(SystemImageSource.GOOGLE_ATD),
-        androidApiLevels = setOf(35),
+        androidApiLevels = setOf(33),
         deviceFilters = setOf("Pixel XL"),
     )
 )
