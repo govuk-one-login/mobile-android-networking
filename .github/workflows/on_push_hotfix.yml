@@ -33,3 +33,4 @@ jobs:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          ACCEPT_ANDROID_LICENCES: true
