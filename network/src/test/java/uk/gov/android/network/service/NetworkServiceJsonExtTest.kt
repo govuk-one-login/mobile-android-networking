@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v2.expectFailure
-import uk.gov.android.network.api.v2.expectSuccess
+import uk.gov.android.network.api.v2.ApiResponseAssertions.expectFailure
+import uk.gov.android.network.api.v2.ApiResponseAssertions.expectSuccess
 import uk.gov.android.network.client.v2.GenericHttpResponse
 import uk.gov.android.network.client.v2.StubHttpClient
 import uk.gov.android.network.service.NetworkServiceJsonExt.makeRequest
