@@ -11,6 +11,13 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 object NetworkServiceJsonExt {
     /**
+     * Default JSON decoder for decoding network responses
+     */
+    val jsonDecoder = Json {
+        ignoreUnknownKeys = true
+    }
+
+    /**
      * Make an HTTP request and parse the JSON response
      *
      * @sample networkServiceParseResponseSample
@@ -34,7 +41,7 @@ object NetworkServiceJsonExt {
 
         val parsed =
             try {
-                Json.decodeFromString<T>(success.response)
+                jsonDecoder.decodeFromString<T>(success.response)
             } catch (e: IllegalArgumentException) {
                 return ApiResponse.Failure(
                     error = ApiResponseException("Failed to parse response body as ${T::class}", e),

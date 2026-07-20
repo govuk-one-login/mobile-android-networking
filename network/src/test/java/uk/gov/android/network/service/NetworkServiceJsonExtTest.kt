@@ -31,6 +31,21 @@ class NetworkServiceJsonExtTest {
         }
 
     @Test
+    fun `given valid json response with unknown key, makeRequest returns parsed object`() =
+        runTest {
+            httpClient.response = GenericHttpResponse(
+                status = 200,
+                body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
+            )
+
+            val result = networkService.makeRequest<TestData>(request)
+
+            val success = result.expectSuccess()
+            assertEquals(TestData("Test", "Hello"), success.response)
+            assertEquals(200, success.status)
+        }
+
+    @Test
     fun `given upstream failure, makeRequest returns failure`() =
         runTest {
             httpClient.exception = IOException("connection failed")
