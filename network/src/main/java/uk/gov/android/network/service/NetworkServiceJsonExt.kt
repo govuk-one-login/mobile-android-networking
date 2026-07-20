@@ -29,6 +29,7 @@ object NetworkServiceJsonExt {
      */
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,
+        json: Json = jsonDecoder,
         noinline configure: RequestConfigBuilder.() -> Unit = {},
     ): ApiResponse<T, NetworkingException> {
         val response = makeRequest(apiRequest, configure)
@@ -41,7 +42,7 @@ object NetworkServiceJsonExt {
 
         val parsed =
             try {
-                jsonDecoder.decodeFromString<T>(success.response)
+                json.decodeFromString<T>(success.response)
             } catch (e: IllegalArgumentException) {
                 return ApiResponse.Failure(
                     error = ApiResponseException("Failed to parse response body as ${T::class}", e),
