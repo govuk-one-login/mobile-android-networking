@@ -34,7 +34,7 @@ class ApiRequestException(
 ) : NetworkingException(message, cause)
 
 /**
- * The server returned a non-success (3xx, 4xx, 5xx) response
+ * The server returned a non-success (3xx, 4xx, 5xx) response or the response body was unusable
  */
 class ApiResponseException(
     message: String,
