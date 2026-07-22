@@ -17,6 +17,12 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
  *
  * @see [RequestConfigBuilder]
  */
+@Deprecated(
+    "Migrate to v2",
+    replaceWith = ReplaceWith(
+        "uk.gov.android.network.service.v2.NetworkService",
+    )
+)
 interface NetworkService {
     /**
      * Make an HTTP request and return the raw response body.

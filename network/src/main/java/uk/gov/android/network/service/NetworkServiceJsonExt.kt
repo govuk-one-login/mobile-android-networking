@@ -9,6 +9,13 @@ import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.service.NetworkServiceJsonExt.makeRequest
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
+@Deprecated(
+    "Migrate to v2",
+    replaceWith = ReplaceWith(
+        "NetworkServiceTypedSuccessExt",
+        "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt"
+    )
+)
 object NetworkServiceJsonExt {
     /**
      * Default JSON decoder for decoding network responses
@@ -27,6 +34,13 @@ object NetworkServiceJsonExt {
 
      * @return ApiResponse<T, NetworkingException> The API response or error.
      */
+    @Deprecated(
+        "Migrate to NetworkServiceTypedSuccessExt.makeRequest",
+        replaceWith = ReplaceWith(
+            "makeRequest<T>(apiRequest, configure)",
+            "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest"
+        )
+    )
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,
         json: Json = jsonDecoder,

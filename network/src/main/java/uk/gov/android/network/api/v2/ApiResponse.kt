@@ -3,6 +3,13 @@ package uk.gov.android.network.api.v2
 /**
  * The result of an [ApiRequest]
  */
+@Deprecated(
+    "Migrate to v3",
+    replaceWith = ReplaceWith(
+        "ApiResponse",
+        "uk.gov.android.network.api.v3.ApiResponse"
+    )
+)
 sealed interface ApiResponse<out T, out E : Exception> {
     /**
      * @property response the response body

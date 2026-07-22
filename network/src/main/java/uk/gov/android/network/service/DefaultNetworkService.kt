@@ -28,6 +28,12 @@ import uk.gov.android.network.util.NetworkingResult
  *
  * @sample defaultNetworkServiceSample
  */
+@Deprecated(
+    "Migrate to v2",
+    replaceWith = ReplaceWith(
+        "uk.gov.android.network.service.v2.DefaultNetworkService",
+    )
+)
 class DefaultNetworkService(
     private val httpClient: GenericHttpClient,
 ) : NetworkService {
