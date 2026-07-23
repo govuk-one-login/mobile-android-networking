@@ -10,7 +10,7 @@ import uk.gov.android.network.service.NetworkServiceJsonExt.makeRequest
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 @Deprecated(
-    "Migrate to v2",
+    "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
     replaceWith = ReplaceWith(
         "NetworkServiceTypedSuccessExt",
         "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt"
@@ -35,7 +35,8 @@ object NetworkServiceJsonExt {
      * @return ApiResponse<T, NetworkingException> The API response or error.
      */
     @Deprecated(
-        "Migrate to NetworkServiceTypedSuccessExt.makeRequest",
+        "Migrate to NetworkServiceTypedSuccessExt.makeRequest. " +
+                "To be removed on 23rd September 2026 (DCMAW-21647)",
         replaceWith = ReplaceWith(
             "makeRequest<T>(apiRequest, configure)",
             "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest"

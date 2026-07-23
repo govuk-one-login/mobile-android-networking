@@ -4,7 +4,7 @@ package uk.gov.android.network.api.v2
  * The result of an [ApiRequest]
  */
 @Deprecated(
-    "Migrate to v3",
+    "Migrate to v3. To be removed on 23rd September 2026 (DCMAW-21647)",
     replaceWith = ReplaceWith(
         "ApiResponse",
         "uk.gov.android.network.api.v3.ApiResponse"
