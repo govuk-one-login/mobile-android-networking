@@ -24,7 +24,7 @@ object NetworkServiceTypedSuccessExt {
      * @param json The JSON decoder to parse responses with
      * @param configure Configure extra behaviour such as authentication, attestation and DPoP
 
-     * @return ApiResponse<T, NetworkingException> The API response or error.
+     * @return ApiResponse<T, String, NetworkingException> The API response or error.
      */
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,
