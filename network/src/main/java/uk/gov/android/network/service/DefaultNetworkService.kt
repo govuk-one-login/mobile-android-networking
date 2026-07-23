@@ -1,23 +1,16 @@
 package uk.gov.android.network.service
 
-import kotlinx.io.IOException
-import kotlinx.serialization.SerializationException
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v2.ApiResponse
-import uk.gov.android.network.api.v2.withHeaders
+import uk.gov.android.network.api.v2.ApiResponse as ApiResponseV2
+import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
-import uk.gov.android.network.client.config.RequestConfig
 import uk.gov.android.network.client.config.RequestConfigBuilder
-import uk.gov.android.network.client.headers.AttestationHeaderReader
-import uk.gov.android.network.client.headers.AuthorisationHeaderReader
-import uk.gov.android.network.client.headers.RefreshDPoPHeaderReader
 import uk.gov.android.network.client.v2.GenericHttpClient
-import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.service.v2.DefaultNetworkService as DefaultNetworkServiceV2
+import uk.gov.android.network.service.v2.NetworkService as NetworkServiceV2
 import uk.gov.android.network.dpop.DPoPProvider
-import uk.gov.android.network.http.Header
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
-import uk.gov.android.network.util.NetworkingResult
 
 /**
  * Default [NetworkService] implementation.
@@ -28,127 +21,41 @@ import uk.gov.android.network.util.NetworkingResult
  *
  * @sample defaultNetworkServiceSample
  */
+@Deprecated(
+    "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
+    replaceWith = ReplaceWith(
+        "uk.gov.android.network.service.v2.DefaultNetworkService",
+    )
+)
 class DefaultNetworkService(
-    private val httpClient: GenericHttpClient,
+    private val delegate: DefaultNetworkServiceV2
 ) : NetworkService {
-    private var attestationHeaderReader = AttestationHeaderReader(null)
-    private var authorisationHeaderReader = AuthorisationHeaderReader(null)
-    private var refreshDPoPHeaderReader = RefreshDPoPHeaderReader(null)
+    constructor(
+        httpClient: GenericHttpClient
+    ) : this(
+        DefaultNetworkServiceV2(httpClient)
+    )
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit,
-    ): ApiResponse<String, NetworkingException> {
-        val config = RequestConfigBuilder().apply { configure() }.build()
+    ): ApiResponseV2<String, NetworkingException> =
+        delegate.makeRequest(apiRequest, configure)
+            .toApiResponseV2()
 
-        val extraHeaders =
-            when (val result = buildExtraHeaders(config)) {
-                is NetworkingResult.Failure -> {
-                    return ApiResponse.Failure(result.exception)
-                }
-                is NetworkingResult.Success -> result.value
-            }
+    fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) =
+        delegate.setAuthenticationProvider(authenticationProvider)
 
-        val apiRequest = apiRequest.withHeaders(extraHeaders)
+    fun setClientAttestationProvider(clientAttestationProvider: ClientAttestationProvider?) =
+        delegate.setClientAttestationProvider(clientAttestationProvider)
 
-        val response =
-            try {
-                httpClient.request(apiRequest)
-            } catch (exception: SerializationException) {
-                return exception.toApiRequestFailure()
-            } catch (exception: GenericResponseException) {
-                // Unsuccessful (3XX, 4XX, 5XX) response
-                return exception.toApiResponseFailure()
-            } catch (exception: IOException) {
-                return exception.toTransportFailure()
-            }
+    fun setDPoPProvider(dpopProvider: DPoPProvider?) =
+        delegate.setDPoPProvider(dpopProvider)
 
-        // Successful (1XX or 2XX) response
-        return ApiResponse.Success(
-            response = response.body,
-            status = response.status,
-        )
+    private fun NetworkServiceV2.RawApiResponse.toApiResponseV2() = when (this) {
+        is ApiResponse.Failure<String, NetworkingException> -> ApiResponseV2.Failure(error, status)
+        is ApiResponse.Success<String> -> ApiResponseV2.Success(body, status)
     }
-
-    fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) {
-        authorisationHeaderReader = AuthorisationHeaderReader(authenticationProvider)
-    }
-
-    fun setClientAttestationProvider(clientAttestationProvider: ClientAttestationProvider?) {
-        attestationHeaderReader = AttestationHeaderReader(clientAttestationProvider)
-    }
-
-    fun setDPoPProvider(dpopProvider: DPoPProvider?) {
-        refreshDPoPHeaderReader = RefreshDPoPHeaderReader(dpopProvider)
-    }
-
-    private suspend fun buildExtraHeaders(config: RequestConfig): NetworkingResult<List<Header>> {
-        val attestationHeaders =
-            if (config.attestation) {
-                when (val result = attestationHeaderReader.getHeaders()) {
-                    is NetworkingResult.Failure -> return NetworkingResult.Failure(result.exception)
-                    is NetworkingResult.Success -> result.value
-                }
-            } else {
-                emptyList()
-            }
-
-        val authHeader =
-            if (config.authentication != null) {
-                when (
-                    val result = authorisationHeaderReader.getHeader(config.authentication)
-                ) {
-                    is NetworkingResult.Failure -> return NetworkingResult.Failure(result.exception)
-                    is NetworkingResult.Success -> result.value
-                }
-            } else {
-                null
-            }
-
-        val refreshDPoPHeader =
-            if (config.refreshDPoP) {
-                when (val result = refreshDPoPHeaderReader.getHeader()) {
-                    is NetworkingResult.Failure -> return NetworkingResult.Failure(result.exception)
-                    is NetworkingResult.Success -> result.value
-                }
-            } else {
-                null
-            }
-
-        return NetworkingResult.Success(
-            attestationHeaders +
-                listOfNotNull(
-                    authHeader,
-                    refreshDPoPHeader,
-                ),
-        )
-    }
-
-    private fun Exception.toTransportFailure(): ApiResponse.Failure<TransportException> =
-        ApiResponse.Failure(
-            TransportException(this),
-            null,
-        )
-
-    private fun GenericResponseException.toApiResponseFailure(): ApiResponse.Failure<ApiResponseException> =
-        ApiResponse.Failure(
-            status = response.status,
-            error =
-                ApiResponseException(
-                    "API responded with ${response.status}",
-                    this,
-                ),
-        )
-
-    private fun SerializationException.toApiRequestFailure(): ApiResponse.Failure<ApiRequestException> =
-        ApiResponse.Failure(
-            status = null,
-            error =
-                ApiRequestException(
-                    "Serialization failed",
-                    this,
-                ),
-        )
 }
 
 @ExcludeFromJacocoGeneratedReport

@@ -1,4 +1,4 @@
-package uk.gov.android.network.service
+package uk.gov.android.network.service.v2
 
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v2.ApiResponse
-import uk.gov.android.network.api.v2.ApiResponseAssertions.expectFailure
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.attestation.TestClientAttestationProvider
 import uk.gov.android.network.attestation.clientAttestationFailure
 import uk.gov.android.network.auth.TestAuthenticationProvider
@@ -18,6 +18,10 @@ import uk.gov.android.network.client.v2.TestHttpResponse
 import uk.gov.android.network.client.v2.TestResponseException
 import uk.gov.android.network.dpop.TestDPoPProvider
 import uk.gov.android.network.dpop.dpopFailure
+import uk.gov.android.network.service.ApiRequestException
+import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.ServiceException
+import uk.gov.android.network.service.TransportException
 import kotlin.jvm.java
 
 class DefaultNetworkServiceTest {
@@ -29,17 +33,17 @@ class DefaultNetworkServiceTest {
     private val dpopProvider = TestDPoPProvider()
 
     @Test
-    fun `given client returns response, makeRequest returns success with body and status`() =
+    fun `given client returns success response, makeRequest returns success with body and status`() =
         runTest {
             httpClient.response = TestHttpResponse.success
 
             val result = networkService.makeRequest(request)
 
-            assertEquals(ApiResponse.Success("success", status = 200), result)
+            assertEquals(ApiResponse.Success(status = 200, body = "success"), result)
         }
 
     @Test
-    fun `given client throws ResponseExceptionWrapper, makeRequest returns API response failure`() =
+    fun `given client throws GenericResponseException, makeRequest returns API response failure`() =
         runTest {
             httpClient.exception = TestResponseException.internalServerError
 
@@ -48,6 +52,7 @@ class DefaultNetworkServiceTest {
             val failure = result.expectFailure()
             assertInstanceOf(ApiResponseException::class.java, failure.error)
             assertEquals(500, failure.status)
+            assertEquals("error", failure.body)
         }
 
     @Test

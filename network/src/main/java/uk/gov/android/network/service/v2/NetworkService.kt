@@ -1,8 +1,14 @@
-package uk.gov.android.network.service
+package uk.gov.android.network.service.v2
 
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v2.ApiResponse
+import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.client.config.RequestConfigBuilder
+import uk.gov.android.network.service.ApiRequestException
+import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.ConfigurationException
+import uk.gov.android.network.service.NetworkingException
+import uk.gov.android.network.service.ServiceException
+import uk.gov.android.network.service.TransportException
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 /**
@@ -10,20 +16,18 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
  *
  * Supports appending authentication, attestation, and DPoP headers to requests.
  *
- * To parse JSON responses to a custom response type, use [NetworkServiceJsonExt.makeRequest].
+ * To parse JSON responses to a custom response type, use [NetworkServiceTypedSuccessExt.makeRequest].
  *
  * @sample networkServiceSample
- * @sample networkServiceParseResponseSample
+ * @sample networkServiceParseSuccessSample
+ * @sample networkServiceParseFailureSample
  *
  * @see [RequestConfigBuilder]
  */
-@Deprecated(
-    "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
-    replaceWith = ReplaceWith(
-        "uk.gov.android.network.service.v2.NetworkService",
-    )
-)
 interface NetworkService {
+
+    typealias RawApiResponse = ApiResponse<String, String, NetworkingException>
+
     /**
      * Make an HTTP request and return the raw response body.
      *
@@ -32,13 +36,14 @@ interface NetworkService {
      * @param apiRequest The base API request
      * @param configure Configure extra behaviour such as authentication, attestation and DPoP
 
-     * @return ApiResponse<String, NetworkingException> The API response or error.
+     * @return ApiResponse<String, String, NetworkingException> The API response or error.
      *   Successful responses include the raw response body
      */
     suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit = { },
-    ): ApiResponse<String, NetworkingException>
+    ): RawApiResponse
+
 }
 
 @ExcludeFromJacocoGeneratedReport
@@ -65,6 +70,7 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
         }
         is ApiResponse.Failure -> {
             when (response.error) {
+                is ApiRequestException,
                 is ApiResponseException,
                 is ConfigurationException,
                 is ServiceException,
