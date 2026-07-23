@@ -8,8 +8,8 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.client.v2.GenericHttpClient
 import uk.gov.android.network.service.v2.DefaultNetworkService as DefaultNetworkServiceV2
-import uk.gov.android.network.service.v2.NetworkService as NetworkServiceV2
 import uk.gov.android.network.dpop.DPoPProvider
+import uk.gov.android.network.service.v2.NetworkServiceResponse
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 /**
@@ -52,7 +52,7 @@ class DefaultNetworkService(
     fun setDPoPProvider(dpopProvider: DPoPProvider?) =
         delegate.setDPoPProvider(dpopProvider)
 
-    private fun NetworkServiceV2.RawApiResponse.toApiResponseV2() = when (this) {
+    private fun NetworkServiceResponse.toApiResponseV2() = when (this) {
         is ApiResponse.Failure<String, NetworkingException> -> ApiResponseV2.Failure(error, status)
         is ApiResponse.Success<String> -> ApiResponseV2.Success(body, status)
     }
