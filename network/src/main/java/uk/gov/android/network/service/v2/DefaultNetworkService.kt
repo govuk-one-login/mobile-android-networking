@@ -18,6 +18,7 @@ import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.TransportException
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.network.util.NetworkingResult
@@ -41,7 +42,7 @@ class DefaultNetworkService(
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit,
-    ): NetworkService.RawApiResponse {
+    ): NetworkServiceResponse {
         val config = RequestConfigBuilder().apply { configure() }.build()
 
         val extraHeaders =

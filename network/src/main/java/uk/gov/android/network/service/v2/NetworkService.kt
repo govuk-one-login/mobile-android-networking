@@ -25,9 +25,6 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
  * @see [RequestConfigBuilder]
  */
 interface NetworkService {
-
-    typealias RawApiResponse = ApiResponse<String, String, NetworkingException>
-
     /**
      * Make an HTTP request and return the raw response body.
      *
@@ -42,8 +39,7 @@ interface NetworkService {
     suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit = { },
-    ): RawApiResponse
-
+    ): NetworkServiceResponse
 }
 
 @ExcludeFromJacocoGeneratedReport
