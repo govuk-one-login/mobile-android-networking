@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.android.network.attestation.TestClientAttestationProvider
 import uk.gov.android.network.attestation.clientAttestationFailure
 import uk.gov.android.network.attestation.clientAttestationSuccess
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.expectFailure
@@ -34,7 +35,9 @@ class AttestationHeaderReaderTest {
 
             val result = headerReader.getHeaders()
 
-            assertInstanceOf(ServiceException::class.java, result.expectFailure())
+            val failure = result.expectFailure()
+            assertInstanceOf(ServiceException::class.java, failure)
+            assertInstanceOf(ClientAttestationException::class.java, failure)
         }
 
     @Test
