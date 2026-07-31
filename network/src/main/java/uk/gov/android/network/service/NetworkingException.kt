@@ -6,7 +6,7 @@ package uk.gov.android.network.service
  * 'Networking' refers to the name of this library, rather than the type of error.
  */
 abstract class NetworkingException(
-    message: String? = null,
+    message: String,
     cause: Throwable? = null,
 ) : Exception(message, cause)
 
@@ -46,4 +46,4 @@ class ApiResponseException(
  */
 class TransportException(
     cause: Throwable?,
-) : NetworkingException(cause = cause)
+) : NetworkingException("Network transport error", cause = cause)
