@@ -20,6 +20,7 @@ import uk.gov.android.network.dpop.TestDPoPProvider
 import uk.gov.android.network.dpop.dpopFailure
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.service.TransportException
 import kotlin.jvm.java
@@ -137,7 +138,7 @@ class DefaultNetworkServiceTest {
                 }
 
             val failure = result.expectFailure()
-            assertInstanceOf(ServiceException::class.java, failure.error)
+            assertInstanceOf(ClientAttestationException::class.java, failure.error)
         }
 
     @Test

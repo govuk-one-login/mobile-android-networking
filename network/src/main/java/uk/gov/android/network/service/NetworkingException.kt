@@ -19,11 +19,21 @@ class ConfigurationException(
 
 /**
  * The service that received the request failed before sending it to the server
+ *
+ * @see [ClientAttestationException]
  */
 open class ServiceException(
     message: String,
     cause: Throwable?,
 ) : NetworkingException(message, cause)
+
+/**
+ * The service failed to fetch the client attestation needed to make the request
+ */
+class ClientAttestationException(
+    message: String,
+    cause: Throwable?,
+): ServiceException(message, cause)
 
 /**
  * The request wasn't configured properly

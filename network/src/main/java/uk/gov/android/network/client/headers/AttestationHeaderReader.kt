@@ -3,8 +3,8 @@ package uk.gov.android.network.client.headers
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.attestation.ClientAttestationResponse
 import uk.gov.android.network.http.Header
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ConfigurationException
-import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.NetworkingResult
 
 private const val ATTESTATION_HEADER_KEY = "OAuth-Client-Attestation"
@@ -34,7 +34,7 @@ internal class AttestationHeaderReader(
 
     private fun ClientAttestationResponse.Failure.attestationFailure() =
         NetworkingResult.Failure<List<Header>>(
-            ServiceException(
+            ClientAttestationException(
                 "Attestation provider failed to fetch client attestation",
                 error,
             ),
