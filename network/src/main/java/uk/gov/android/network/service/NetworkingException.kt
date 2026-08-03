@@ -6,7 +6,7 @@ package uk.gov.android.network.service
  * 'Networking' refers to the name of this library, rather than the type of error.
  */
 abstract class NetworkingException(
-    message: String,
+    override val message: String,
     cause: Throwable? = null,
 ) : Exception(message, cause)
 
