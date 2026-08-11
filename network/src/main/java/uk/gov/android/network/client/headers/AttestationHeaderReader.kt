@@ -36,7 +36,8 @@ internal class AttestationHeaderReader(
         NetworkingResult.Failure<List<Header>>(
             ClientAttestationException(
                 "Attestation provider failed to fetch client attestation",
-                error,
+                reason = reason,
+                cause = error,
             ),
         )
 }

@@ -1,5 +1,7 @@
 package uk.gov.android.network.service
 
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
+
 /**
  * Base class for all errors resulting from an API request.
  *
@@ -32,6 +34,7 @@ open class ServiceException(
  */
 class ClientAttestationException(
     message: String,
+    val reason: ClientAttestationErrorReason,
     cause: Throwable?,
 ): ServiceException(message, cause)
 

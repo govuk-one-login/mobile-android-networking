@@ -2,9 +2,11 @@ package uk.gov.android.network.service.v2
 
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.ServiceException
@@ -66,6 +68,13 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
         }
         is ApiResponse.Failure -> {
             when (response.error) {
+                is ClientAttestationException -> when (response.error.reason) {
+                    ClientAttestationErrorReason.APP_CHECK_FAILED,
+                    ClientAttestationErrorReason.INTERMITTENT,
+                    ClientAttestationErrorReason.GENERIC -> {
+                        // Handle client attestation errors
+                    }
+                }
                 is ApiRequestException,
                 is ApiResponseException,
                 is ConfigurationException,

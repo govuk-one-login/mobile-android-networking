@@ -6,6 +6,8 @@ package uk.gov.android.network.attestation
  * @param response the response to return from [getClientAttestation].
  * @see clientAttestationSuccess
  * @see clientAttestationFailure
+ * @see clientAttestationAppCheckFailure
+ * @see clientAttestationIntermittentFailure
  */
 class TestClientAttestationProvider(
     var response: ClientAttestationResponse = clientAttestationSuccess,
