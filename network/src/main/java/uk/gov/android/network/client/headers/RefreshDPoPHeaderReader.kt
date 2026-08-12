@@ -4,6 +4,7 @@ import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.dpop.DPoPResponse
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.ConfigurationException
+import uk.gov.android.network.service.DPoPException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.NetworkingResult
 
@@ -33,7 +34,7 @@ internal class RefreshDPoPHeaderReader(
 
     private fun DPoPResponse.Failure.dpopFailure() =
         NetworkingResult.Failure<Header>(
-            ServiceException(
+            DPoPException(
                 "DPoP provider failed to fetch refresh DPoP proof",
                 error,
             ),

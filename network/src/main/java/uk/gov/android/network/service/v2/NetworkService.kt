@@ -6,8 +6,10 @@ import uk.gov.android.network.attestation.ClientAttestationErrorReason
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.AuthenticationProviderException
 import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ConfigurationException
+import uk.gov.android.network.service.DPoPException
 import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.service.TransportException
@@ -68,6 +70,13 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
         }
         is ApiResponse.Failure -> {
             when (response.error) {
+                // Received a failure or unusable response
+                is ApiResponseException -> {}
+
+                // Connection problem
+                is TransportException -> {}
+
+                // NetworkService failed to make the request
                 is ClientAttestationException -> when (response.error.reason) {
                     ClientAttestationErrorReason.APP_CHECK_FAILED,
                     ClientAttestationErrorReason.INTERMITTENT,
@@ -75,14 +84,15 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
                         // Handle client attestation errors
                     }
                 }
-                is ApiRequestException,
-                is ApiResponseException,
-                is ConfigurationException,
-                is ServiceException,
-                is TransportException,
-                -> {
-                    // Handle any errors
-                }
+                is AuthenticationProviderException,
+                is DPoPException,
+                is ServiceException -> {}
+
+                // NetworkService wasn't configured properly
+                is ConfigurationException -> {}
+
+                // Request wasn't configured properly
+                is ApiRequestException -> {}
             }
         }
     }
