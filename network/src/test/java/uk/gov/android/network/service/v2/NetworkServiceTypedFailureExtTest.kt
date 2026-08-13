@@ -5,7 +5,7 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
@@ -49,7 +49,7 @@ class NetworkServiceTypedFailureExtTest {
             val failure = result.expectFailure()
             assertEquals(FailureData(123), failure.body)
             assertEquals(failureStatus, failure.status)
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
         }
 
     @Test
@@ -66,7 +66,7 @@ class NetworkServiceTypedFailureExtTest {
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
                 failure.error.message,
             )
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
         }
 
     @Test
@@ -83,7 +83,7 @@ class NetworkServiceTypedFailureExtTest {
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
                 failure.error.message,
             )
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
         }
 
     @Test
@@ -96,7 +96,7 @@ class NetworkServiceTypedFailureExtTest {
             val failure = result.expectFailure()
             assertNull(failure.body)
             assertNull(failure.status)
-            assertInstanceOf(TransportException::class.java, failure.error)
+            assertInstanceOf<TransportException>(failure.error)
         }
 
     @Test
@@ -124,7 +124,7 @@ class NetworkServiceTypedFailureExtTest {
 
             val failure = result.expectFailure()
             assertNull(failure.body)
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
         }
 
     @Test

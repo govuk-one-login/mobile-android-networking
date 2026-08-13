@@ -1,15 +1,12 @@
 package uk.gov.android.network.api.v2
 
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 
 object ApiResponseAssertions {
-    fun ApiResponse<*, *>.expectFailure(): ApiResponse.Failure<*> = assertInstanceOf(
-    ApiResponse.Failure::class.java,
-    this,
-    )
+    fun ApiResponse<*, *>.expectFailure(): ApiResponse.Failure<*> =
+        assertInstanceOf<ApiResponse.Failure<*>>(this)
 
     fun <T> ApiResponse<T, *>.expectSuccess(): ApiResponse.Success<T> {
-        assertInstanceOf(ApiResponse.Success::class.java, this)
-        return this as ApiResponse.Success<T>
+        return assertInstanceOf<ApiResponse.Success<T>>(this)
     }
 }

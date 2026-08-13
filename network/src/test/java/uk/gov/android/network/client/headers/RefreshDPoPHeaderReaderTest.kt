@@ -2,7 +2,7 @@ package uk.gov.android.network.client.headers
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.dpop.TestDPoPProvider
 import uk.gov.android.network.dpop.dpopFailure
@@ -24,7 +24,7 @@ class RefreshDPoPHeaderReaderTest {
 
             val result = headerReader.getHeader()
 
-            assertInstanceOf(ConfigurationException::class.java, result.expectFailure())
+            assertInstanceOf<ConfigurationException>(result.expectFailure())
         }
 
     @Test
@@ -34,8 +34,8 @@ class RefreshDPoPHeaderReaderTest {
 
             val result = headerReader.getHeader()
 
-            assertInstanceOf(ServiceException::class.java, result.expectFailure())
-            assertInstanceOf(DPoPException::class.java, result.expectFailure())
+            assertInstanceOf<ServiceException>(result.expectFailure())
+            assertInstanceOf<DPoPException>(result.expectFailure())
         }
 
     @Test

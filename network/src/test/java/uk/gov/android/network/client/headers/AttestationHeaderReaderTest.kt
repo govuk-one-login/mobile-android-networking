@@ -2,7 +2,7 @@ package uk.gov.android.network.client.headers
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.attestation.TestClientAttestationProvider
 import uk.gov.android.network.attestation.clientAttestationFailure
@@ -12,7 +12,6 @@ import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.expectFailure
 import uk.gov.android.network.util.expectSuccess
-import kotlin.jvm.java
 
 class AttestationHeaderReaderTest {
     private val provider = TestClientAttestationProvider()
@@ -25,7 +24,7 @@ class AttestationHeaderReaderTest {
 
             val result = headerReader.getHeaders()
 
-            assertInstanceOf(ConfigurationException::class.java, result.expectFailure())
+            assertInstanceOf<ConfigurationException>(result.expectFailure())
         }
 
     @Test
@@ -36,8 +35,8 @@ class AttestationHeaderReaderTest {
             val result = headerReader.getHeaders()
 
             val failure = result.expectFailure()
-            assertInstanceOf(ServiceException::class.java, failure)
-            assertInstanceOf(ClientAttestationException::class.java, failure)
+            assertInstanceOf<ServiceException>(failure)
+            assertInstanceOf<ClientAttestationException>(failure)
         }
 
     @Test

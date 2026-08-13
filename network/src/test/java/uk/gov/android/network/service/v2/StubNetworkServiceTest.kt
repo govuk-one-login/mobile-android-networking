@@ -2,7 +2,7 @@ package uk.gov.android.network.service.v2
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
@@ -63,7 +63,7 @@ class StubNetworkServiceTest {
             val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
             assertEquals(500, failure.status)
             assertEquals("error", failure.body)
         }
@@ -76,7 +76,7 @@ class StubNetworkServiceTest {
             val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
             assertEquals(403, failure.status)
             assertEquals("forbidden", failure.body)
         }
@@ -91,7 +91,7 @@ class StubNetworkServiceTest {
             val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
-            assertInstanceOf(ApiResponseException::class.java, failure.error)
+            assertInstanceOf<ApiResponseException>(failure.error)
             assertEquals(404, failure.status)
             assertEquals("not found", failure.body)
         }
@@ -104,7 +104,7 @@ class StubNetworkServiceTest {
             val result = networkService.makeRequest(request)
 
             val failure = result.expectFailure()
-            assertInstanceOf(TransportException::class.java, failure.error)
+            assertInstanceOf<TransportException>(failure.error)
             assertNull(failure.status)
         }
 
@@ -133,7 +133,7 @@ class StubNetworkServiceTest {
             }
 
             val failure = result.expectFailure()
-            assertInstanceOf(ConfigurationException::class.java, failure.error)
+            assertInstanceOf<ConfigurationException>(failure.error)
         }
 
     @Test
@@ -147,7 +147,7 @@ class StubNetworkServiceTest {
             }
 
             val failure = result.expectFailure()
-            assertInstanceOf(ConfigurationException::class.java, failure.error)
+            assertInstanceOf<ConfigurationException>(failure.error)
         }
 
     @Test
@@ -161,7 +161,7 @@ class StubNetworkServiceTest {
             }
 
             val failure = result.expectFailure()
-            assertInstanceOf(ConfigurationException::class.java, failure.error)
+            assertInstanceOf<ConfigurationException>(failure.error)
         }
 
     @Test
