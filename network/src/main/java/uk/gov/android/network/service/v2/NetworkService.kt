@@ -71,10 +71,10 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
         is ApiResponse.Failure -> {
             when (response.error) {
                 // Received a failure or unusable response
-                is ApiResponseException -> {}
+                is ApiResponseException -> Unit
 
                 // Connection problem
-                is TransportException -> {}
+                is TransportException -> Unit
 
                 // NetworkService failed to make the request
                 is ClientAttestationException -> when (response.error.reason) {
@@ -86,13 +86,13 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
                 }
                 is AuthenticationProviderException,
                 is DPoPException,
-                is ServiceException -> {}
+                is ServiceException -> Unit
 
                 // NetworkService wasn't configured properly
-                is ConfigurationException -> {}
+                is ConfigurationException -> Unit
 
                 // Request wasn't configured properly
-                is ApiRequestException -> {}
+                is ApiRequestException -> Unit
             }
         }
     }
