@@ -23,6 +23,7 @@ sealed class ClientAttestationResponse {
      * @param error the exception that caused the failure
      */
     data class Failure(
+        val reason: ClientAttestationErrorReason,
         val error: Exception,
     ) : ClientAttestationResponse()
 }

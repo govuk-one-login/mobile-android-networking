@@ -8,6 +8,7 @@ import uk.gov.android.network.dpop.TestDPoPProvider
 import uk.gov.android.network.dpop.dpopFailure
 import uk.gov.android.network.dpop.dpopSuccess
 import uk.gov.android.network.service.ConfigurationException
+import uk.gov.android.network.service.DPoPException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.expectFailure
 import uk.gov.android.network.util.expectSuccess
@@ -34,6 +35,7 @@ class RefreshDPoPHeaderReaderTest {
             val result = headerReader.getHeader()
 
             assertInstanceOf(ServiceException::class.java, result.expectFailure())
+            assertInstanceOf(DPoPException::class.java, result.expectFailure())
         }
 
     @Test

@@ -8,6 +8,7 @@ import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
 import uk.gov.android.network.auth.authenticationSuccess
 import uk.gov.android.network.client.config.RequestConfig
+import uk.gov.android.network.service.AuthenticationProviderException
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.expectFailure
@@ -36,6 +37,7 @@ class AuthorisationHeaderReaderTest {
             val result = headerReader.getHeader(authConfig)
 
             assertInstanceOf(ServiceException::class.java, result.expectFailure())
+            assertInstanceOf(AuthenticationProviderException::class.java, result.expectFailure())
         }
 
     @Test

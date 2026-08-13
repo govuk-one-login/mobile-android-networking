@@ -4,6 +4,7 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.config.RequestConfig
 import uk.gov.android.network.http.Header
+import uk.gov.android.network.service.AuthenticationProviderException
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.NetworkingResult
@@ -35,7 +36,7 @@ internal class AuthorisationHeaderReader(
 
     private fun AuthenticationResponse.Failure.authenticationFailure() =
         NetworkingResult.Failure<Header>(
-            ServiceException(
+            AuthenticationProviderException(
                 "Authentication provider failed to fetch service token",
                 error,
             ),

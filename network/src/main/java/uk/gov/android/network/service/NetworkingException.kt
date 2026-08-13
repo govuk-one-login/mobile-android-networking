@@ -1,5 +1,10 @@
 package uk.gov.android.network.service
 
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
+import uk.gov.android.network.attestation.ClientAttestationProvider
+import uk.gov.android.network.auth.AuthenticationProvider
+import uk.gov.android.network.dpop.DPoPProvider
+
 /**
  * Base class for all errors resulting from an API request.
  *
@@ -20,7 +25,9 @@ class ConfigurationException(
 /**
  * The service that received the request failed before sending it to the server
  *
+ * @see [AuthenticationProviderException]
  * @see [ClientAttestationException]
+ * @see [DPoPException]
  */
 open class ServiceException(
     message: String,
@@ -28,9 +35,36 @@ open class ServiceException(
 ) : NetworkingException(message, cause)
 
 /**
+ * The service failed to get the access token needed to make the request.
+ *
+ * This exception is *not* emitted for 401 unauthorized or 403 forbidden status codes, which
+ * you should handle through [ApiResponseException].
+ *
+ * @see [AuthenticationProvider]
+ */
+class AuthenticationProviderException(
+    message: String,
+    cause: Throwable?,
+): ServiceException(message, cause)
+
+/**
  * The service failed to fetch the client attestation needed to make the request
+ *
+ * @see [ClientAttestationProvider]
  */
 class ClientAttestationException(
+    message: String,
+    val reason: ClientAttestationErrorReason,
+    cause: Throwable?,
+): ServiceException(message, cause)
+
+/**
+ * The service failed to generate the demonstrating proof-of-possession (DPoP) needed
+ * to make the request.
+ *
+ * @see [DPoPProvider]
+ */
+class DPoPException(
     message: String,
     cause: Throwable?,
 ): ServiceException(message, cause)
@@ -57,3 +91,4 @@ class ApiResponseException(
 class TransportException(
     cause: Throwable?,
 ) : NetworkingException("Network transport error", cause = cause)
+
