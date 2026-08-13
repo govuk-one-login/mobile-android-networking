@@ -2,7 +2,7 @@ package uk.gov.android.network.client.headers
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
@@ -26,7 +26,7 @@ class AuthorisationHeaderReaderTest {
 
             val result = headerReader.getHeader(authConfig)
 
-            assertInstanceOf(ConfigurationException::class.java, result.expectFailure())
+            assertInstanceOf<ConfigurationException>(result.expectFailure())
         }
 
     @Test
@@ -36,8 +36,8 @@ class AuthorisationHeaderReaderTest {
 
             val result = headerReader.getHeader(authConfig)
 
-            assertInstanceOf(ServiceException::class.java, result.expectFailure())
-            assertInstanceOf(AuthenticationProviderException::class.java, result.expectFailure())
+            assertInstanceOf<ServiceException>(result.expectFailure())
+            assertInstanceOf<AuthenticationProviderException>(result.expectFailure())
         }
 
     @Test

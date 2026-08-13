@@ -2,7 +2,7 @@ package uk.gov.android.network.auth
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
 
 class TestAuthenticationProviderTest {
@@ -44,7 +44,7 @@ class TestAuthenticationProviderTest {
 
             val result = provider.fetchBearerToken("wrong-scope")
 
-            assertInstanceOf(AuthenticationResponse.Failure::class.java, result)
+            assertInstanceOf<AuthenticationResponse.Failure>(result)
         }
 
     @Test
