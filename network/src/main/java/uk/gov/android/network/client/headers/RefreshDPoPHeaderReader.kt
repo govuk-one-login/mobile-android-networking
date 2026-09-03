@@ -5,6 +5,7 @@ import uk.gov.android.network.dpop.DPoPResponse
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.DPoPException
+import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.NetworkingResult
 
 private const val DPOP_HEADER_KEY = "DPoP"

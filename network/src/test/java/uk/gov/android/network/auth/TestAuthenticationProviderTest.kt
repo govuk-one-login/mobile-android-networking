@@ -2,8 +2,8 @@ package uk.gov.android.network.auth
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
+import org.junit.jupiter.api.Test
 
 class TestAuthenticationProviderTest {
     @Test

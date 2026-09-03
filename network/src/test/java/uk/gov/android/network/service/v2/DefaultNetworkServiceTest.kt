@@ -4,8 +4,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
+import org.junit.jupiter.api.Test
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure

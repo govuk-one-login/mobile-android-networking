@@ -10,6 +10,7 @@ import uk.gov.android.network.service.AuthenticationProviderException
 import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ConfigurationException
 import uk.gov.android.network.service.DPoPException
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.service.TransportException
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
@@ -76,19 +77,16 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
                 is TransportException -> Unit
 
                 // NetworkService failed to make the request
-                is ClientAttestationException ->
-                    when (response.error.reason) {
-                        ClientAttestationErrorReason.APP_CHECK_FAILED,
-                        ClientAttestationErrorReason.INTERMITTENT,
-                        ClientAttestationErrorReason.GENERIC,
-                        -> {
-                            // Handle client attestation errors
-                        }
+                is ClientAttestationException -> when (response.error.reason) {
+                    ClientAttestationErrorReason.APP_CHECK_FAILED,
+                    ClientAttestationErrorReason.INTERMITTENT,
+                    ClientAttestationErrorReason.GENERIC -> {
+                        // Handle client attestation errors
                     }
+                }
                 is AuthenticationProviderException,
                 is DPoPException,
-                is ServiceException,
-                -> Unit
+                is ServiceException -> Unit
 
                 // NetworkService wasn't configured properly
                 is ConfigurationException -> Unit

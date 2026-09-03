@@ -3,8 +3,8 @@ package uk.gov.android.network.service.v2
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v2.withHeaders
 import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.api.v2.withHeaders
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfig
@@ -18,6 +18,7 @@ import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.TransportException
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.network.util.NetworkingResult

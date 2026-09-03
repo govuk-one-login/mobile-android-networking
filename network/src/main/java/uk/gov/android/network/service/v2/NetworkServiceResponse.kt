@@ -9,3 +9,4 @@ import uk.gov.android.network.service.NetworkingException
  * @see [NetworkService.makeRequest]
  */
 typealias NetworkServiceResponse = ApiResponse<String, String, NetworkingException>
+

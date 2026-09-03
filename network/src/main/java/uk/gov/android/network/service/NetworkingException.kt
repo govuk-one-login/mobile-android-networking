@@ -45,7 +45,7 @@ open class ServiceException(
 class AuthenticationProviderException(
     message: String,
     cause: Throwable?,
-) : ServiceException(message, cause)
+): ServiceException(message, cause)
 
 /**
  * The service failed to fetch the client attestation needed to make the request
@@ -56,7 +56,7 @@ class ClientAttestationException(
     message: String,
     val reason: ClientAttestationErrorReason,
     cause: Throwable?,
-) : ServiceException(message, cause)
+): ServiceException(message, cause)
 
 /**
  * The service failed to generate the demonstrating proof-of-possession (DPoP) needed
@@ -67,7 +67,7 @@ class ClientAttestationException(
 class DPoPException(
     message: String,
     cause: Throwable?,
-) : ServiceException(message, cause)
+): ServiceException(message, cause)
 
 /**
  * The request wasn't configured properly
@@ -91,3 +91,4 @@ class ApiResponseException(
 class TransportException(
     cause: Throwable?,
 ) : NetworkingException("Network transport error", cause = cause)
+

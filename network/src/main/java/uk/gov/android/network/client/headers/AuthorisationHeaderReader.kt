@@ -6,6 +6,7 @@ import uk.gov.android.network.client.config.RequestConfig
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.AuthenticationProviderException
 import uk.gov.android.network.service.ConfigurationException
+import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.util.NetworkingResult
 
 private const val AUTH_HEADER_KEY = "Authorization"

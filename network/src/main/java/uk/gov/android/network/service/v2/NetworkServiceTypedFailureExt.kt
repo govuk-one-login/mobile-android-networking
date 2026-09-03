@@ -40,12 +40,11 @@ object NetworkServiceTypedFailureExt {
                 is ApiResponse.Failure<String, NetworkingException> -> response
             }
 
-        val body =
-            failure.body ?: return ApiResponse.Failure(
-                error = response.error,
-                status = response.status,
-                body = null,
-            )
+        val body = failure.body ?: return ApiResponse.Failure(
+            error = response.error,
+            status = response.status,
+            body = null,
+        )
 
         val parsed =
             try {

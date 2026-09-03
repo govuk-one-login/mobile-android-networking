@@ -5,9 +5,9 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectSuccess
@@ -54,10 +54,10 @@ class NetworkServiceTypedSuccessExtTest {
             // First check that our custom Json is stricter
             assertTrue(
                 customStrictJson.configuration.ignoreUnknownKeys !=
-                    JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys,
+                        JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys
             )
             givenSuccessResponse(
-                body = """{"subject":"Test","message":"Hello","new":"Hello"}""",
+                body = """{"subject":"Test","message":"Hello","new":"Hello"}"""
             )
 
             val result = networkService.makeRequest<TestData>(request, json = customStrictJson)
@@ -104,15 +104,17 @@ class NetworkServiceTypedSuccessExtTest {
         }
 
     @Test
-    fun `sample runs`() =
-        runTest {
-            givenSuccessResponse()
-            networkServiceParseSuccessSample(request, networkService)
-        }
+    fun `sample runs`() = runTest {
+        givenSuccessResponse()
+        networkServiceParseSuccessSample(request, networkService)
+    }
 
-    private fun givenSuccessResponse(body: String = """{"subject":"Test","message":"Hello"}""") {
+    private fun givenSuccessResponse(
+        body: String = """{"subject":"Test","message":"Hello"}"""
+    ) {
         httpClient.response =
             GenericHttpResponse(status = 200, body = body)
+
     }
 }
 
