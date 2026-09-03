@@ -36,7 +36,7 @@ object NetworkServiceJsonExt {
      */
     @Deprecated(
         "Migrate to NetworkServiceTypedSuccessExt.makeRequest. " +
-                "To be removed on 23rd September 2026 (DCMAW-21647)",
+            "To be removed on 23rd September 2026 (DCMAW-21647)",
         replaceWith = ReplaceWith(
             "makeRequest<T>(apiRequest, configure)",
             "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest"
@@ -45,7 +45,7 @@ object NetworkServiceJsonExt {
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,
         json: Json = jsonDecoder,
-        noinline configure: RequestConfigBuilder.() -> Unit = {},
+        noinline configure: RequestConfigBuilder.() -> Unit = {}
     ): ApiResponse<T, NetworkingException> {
         val response = makeRequest(apiRequest, configure)
 
@@ -61,13 +61,13 @@ object NetworkServiceJsonExt {
             } catch (e: IllegalArgumentException) {
                 return ApiResponse.Failure(
                     error = ApiResponseException("Failed to parse response body as ${T::class}", e),
-                    status = success.status,
+                    status = success.status
                 )
             }
 
         return ApiResponse.Success(
             response = parsed,
-            status = response.status,
+            status = response.status
         )
     }
 }
@@ -75,13 +75,10 @@ object NetworkServiceJsonExt {
 @ExcludeFromJacocoGeneratedReport
 internal suspend fun networkServiceParseResponseSample(
     request: ApiRequest,
-    networkService: NetworkService,
+    networkService: NetworkService
 ) {
     @Serializable
-    data class CustomResponse(
-        val subject: String,
-        val message: String,
-    )
+    data class CustomResponse(val subject: String, val message: String)
 
     val response =
         networkService.makeRequest<CustomResponse>(request)
@@ -92,6 +89,7 @@ internal suspend fun networkServiceParseResponseSample(
             val (subject, message) = response.response
             Log.d("demo", "subject: $subject; message: $message")
         }
+
         else -> { }
     }
 }

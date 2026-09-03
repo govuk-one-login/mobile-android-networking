@@ -7,8 +7,6 @@ package uk.gov.android.network.dpop
  * @see dpopSuccess
  * @see dpopFailure
  */
-class TestDPoPProvider(
-    var response: DPoPResponse = dpopSuccess,
-) : DPoPProvider {
+class TestDPoPProvider(var response: DPoPResponse = dpopSuccess) : DPoPProvider {
     override suspend fun getRefreshDPoP(): DPoPResponse = response
 }

@@ -12,18 +12,14 @@ sealed class ClientAttestationResponse {
      * @param clientAttestation the client attestation JWT
      * @param attestationPop the client attestation proof of possession JWT
      */
-    data class Success(
-        val clientAttestation: String,
-        val attestationPop: String,
-    ) : ClientAttestationResponse()
+    data class Success(val clientAttestation: String, val attestationPop: String) :
+        ClientAttestationResponse()
 
     /**
      * A failed client attestation result.
      *
      * @param error the exception that caused the failure
      */
-    data class Failure(
-        val reason: ClientAttestationErrorReason,
-        val error: Exception,
-    ) : ClientAttestationResponse()
+    data class Failure(val reason: ClientAttestationErrorReason, val error: Exception) :
+        ClientAttestationResponse()
 }

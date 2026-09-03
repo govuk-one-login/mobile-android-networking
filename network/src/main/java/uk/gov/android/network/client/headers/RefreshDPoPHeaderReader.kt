@@ -10,9 +10,7 @@ import uk.gov.android.network.util.NetworkingResult
 
 private const val DPOP_HEADER_KEY = "DPoP"
 
-internal class RefreshDPoPHeaderReader(
-    internal val dpopProvider: DPoPProvider?,
-) {
+internal class RefreshDPoPHeaderReader(internal val dpopProvider: DPoPProvider?) {
     suspend fun getHeader(): NetworkingResult<Header> {
         val provider =
             this.dpopProvider ?: return missingProviderFailure()
@@ -27,18 +25,16 @@ internal class RefreshDPoPHeaderReader(
         return NetworkingResult.Success(header)
     }
 
-    private fun missingProviderFailure() =
-        NetworkingResult.Failure<Header>(
-            ConfigurationException("DPoPProvider not set"),
-        )
+    private fun missingProviderFailure() = NetworkingResult.Failure<Header>(
+        ConfigurationException("DPoPProvider not set")
+    )
 
-    private fun DPoPResponse.Failure.dpopFailure() =
-        NetworkingResult.Failure<Header>(
-            DPoPException(
-                "DPoP provider failed to fetch refresh DPoP proof",
-                error,
-            ),
+    private fun DPoPResponse.Failure.dpopFailure() = NetworkingResult.Failure<Header>(
+        DPoPException(
+            "DPoP provider failed to fetch refresh DPoP proof",
+            error
         )
+    )
 }
 
 internal fun DPoPResponse.Success.toDPoPHeader(): Header = Header(DPOP_HEADER_KEY, dpop)

@@ -3,6 +3,7 @@ package uk.gov.android.network.online
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
+import java.util.stream.Stream
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Named
 import org.junit.jupiter.api.Test
@@ -15,7 +16,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.util.stream.Stream
 
 class OnlineCheckerImplTest {
     private val connectivityManager: ConnectivityManager = mock()
@@ -53,61 +53,59 @@ class OnlineCheckerImplTest {
 
     companion object {
         @JvmStatic
-        fun getInvalidTransportTypes(): Stream<Arguments> =
-            Stream.of(
-                arguments(
-                    Named.named(
-                        "Transport: Bluetooth",
-                        NetworkCapabilities.TRANSPORT_BLUETOOTH,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: Low-Power Wireless Personal Area Network",
-                        NetworkCapabilities.TRANSPORT_LOWPAN,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: USB",
-                        NetworkCapabilities.TRANSPORT_USB,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: VPN",
-                        NetworkCapabilities.TRANSPORT_VPN,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: WiFi awareness",
-                        NetworkCapabilities.TRANSPORT_WIFI_AWARE,
-                    ),
-                ),
+        fun getInvalidTransportTypes(): Stream<Arguments> = Stream.of(
+            arguments(
+                Named.named(
+                    "Transport: Bluetooth",
+                    NetworkCapabilities.TRANSPORT_BLUETOOTH
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: Low-Power Wireless Personal Area Network",
+                    NetworkCapabilities.TRANSPORT_LOWPAN
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: USB",
+                    NetworkCapabilities.TRANSPORT_USB
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: VPN",
+                    NetworkCapabilities.TRANSPORT_VPN
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: WiFi awareness",
+                    NetworkCapabilities.TRANSPORT_WIFI_AWARE
+                )
             )
+        )
 
         @JvmStatic
-        fun getValidTransportTypes(): Stream<Arguments> =
-            Stream.of(
-                arguments(
-                    Named.named(
-                        "Transport: Cellular",
-                        NetworkCapabilities.TRANSPORT_CELLULAR,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: Ethernet",
-                        NetworkCapabilities.TRANSPORT_ETHERNET,
-                    ),
-                ),
-                arguments(
-                    Named.named(
-                        "Transport: WiFi",
-                        NetworkCapabilities.TRANSPORT_WIFI,
-                    ),
-                ),
+        fun getValidTransportTypes(): Stream<Arguments> = Stream.of(
+            arguments(
+                Named.named(
+                    "Transport: Cellular",
+                    NetworkCapabilities.TRANSPORT_CELLULAR
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: Ethernet",
+                    NetworkCapabilities.TRANSPORT_ETHERNET
+                )
+            ),
+            arguments(
+                Named.named(
+                    "Transport: WiFi",
+                    NetworkCapabilities.TRANSPORT_WIFI
+                )
             )
+        )
     }
 }

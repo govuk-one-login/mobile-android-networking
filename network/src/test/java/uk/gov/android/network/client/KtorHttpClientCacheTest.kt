@@ -22,35 +22,34 @@ class KtorHttpClientCacheTest {
      * without making additional network calls.
      */
     @Test
-    fun `cache stores response with max-age directive`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine {
-                            requestCount++
-                            respond(
-                                content = "cached response",
-                                status = HttpStatusCode.OK,
-                                headers =
-                                    headersOf(
-                                        HttpHeaders.ContentType to listOf("application/json"),
-                                        HttpHeaders.CacheControl to listOf("max-age=3600"),
-                                    ),
-                            )
-                        },
-                )
+    fun `cache stores response with max-age directive`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine {
+                        requestCount++
+                        respond(
+                            content = "cached response",
+                            status = HttpStatusCode.OK,
+                            headers =
+                                headersOf(
+                                    HttpHeaders.ContentType to listOf("application/json"),
+                                    HttpHeaders.CacheControl to listOf("max-age=3600")
+                                )
+                        )
+                    }
+            )
 
-            val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
-            val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
 
-            assertEquals(ApiResponse.Success("cached response"), response1)
-            assertEquals(ApiResponse.Success("cached response"), response2)
-            assertEquals(1, requestCount, "Should only make one network request due to caching")
-        }
+        assertEquals(ApiResponse.Success("cached response"), response1)
+        assertEquals(ApiResponse.Success("cached response"), response2)
+        assertEquals(1, requestCount, "Should only make one network request due to caching")
+    }
 
     /**
      * Tests that responses with Cache-Control: no-store are never cached.
@@ -58,35 +57,34 @@ class KtorHttpClientCacheTest {
      * even for identical URLs.
      */
     @Test
-    fun `cache respects no-store directive`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine {
-                            requestCount++
-                            respond(
-                                content = "response $requestCount",
-                                status = HttpStatusCode.OK,
-                                headers =
-                                    headersOf(
-                                        HttpHeaders.ContentType to listOf("application/json"),
-                                        HttpHeaders.CacheControl to listOf("no-store"),
-                                    ),
-                            )
-                        },
-                )
+    fun `cache respects no-store directive`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine {
+                        requestCount++
+                        respond(
+                            content = "response $requestCount",
+                            status = HttpStatusCode.OK,
+                            headers =
+                                headersOf(
+                                    HttpHeaders.ContentType to listOf("application/json"),
+                                    HttpHeaders.CacheControl to listOf("no-store")
+                                )
+                        )
+                    }
+            )
 
-            val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
-            val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
 
-            assertEquals(ApiResponse.Success("response 1"), response1)
-            assertEquals(ApiResponse.Success("response 2"), response2)
-            assertEquals(2, requestCount, "Should make two network requests (no caching)")
-        }
+        assertEquals(ApiResponse.Success("response 1"), response1)
+        assertEquals(ApiResponse.Success("response 2"), response2)
+        assertEquals(2, requestCount, "Should make two network requests (no caching)")
+    }
 
     /**
      * Tests ETag-based cache validation using conditional requests.
@@ -94,48 +92,47 @@ class KtorHttpClientCacheTest {
      * If content hasn't changed, server returns 304 Not Modified and cached content is used.
      */
     @Test
-    fun `cache validates with ETag`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine { request ->
-                            requestCount++
-                            if (request.headers[HttpHeaders.IfNoneMatch] == "\"abc123\"") {
-                                respond(
-                                    content = "",
-                                    status = HttpStatusCode.NotModified,
-                                    headers =
-                                        headersOf(
-                                            HttpHeaders.ETag,
-                                            "\"abc123\"",
-                                        ),
-                                )
-                            } else {
-                                respond(
-                                    content = "cached response",
-                                    status = HttpStatusCode.OK,
-                                    headers =
-                                        headersOf(
-                                            HttpHeaders.ContentType to listOf("application/json"),
-                                            HttpHeaders.CacheControl to listOf("no-cache"),
-                                            HttpHeaders.ETag to listOf("\"abc123\""),
-                                        ),
-                                )
-                            }
-                        },
-                )
+    fun `cache validates with ETag`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine { request ->
+                        requestCount++
+                        if (request.headers[HttpHeaders.IfNoneMatch] == "\"abc123\"") {
+                            respond(
+                                content = "",
+                                status = HttpStatusCode.NotModified,
+                                headers =
+                                    headersOf(
+                                        HttpHeaders.ETag,
+                                        "\"abc123\""
+                                    )
+                            )
+                        } else {
+                            respond(
+                                content = "cached response",
+                                status = HttpStatusCode.OK,
+                                headers =
+                                    headersOf(
+                                        HttpHeaders.ContentType to listOf("application/json"),
+                                        HttpHeaders.CacheControl to listOf("no-cache"),
+                                        HttpHeaders.ETag to listOf("\"abc123\"")
+                                    )
+                            )
+                        }
+                    }
+            )
 
-            val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
-            val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
 
-            assertEquals(ApiResponse.Success("cached response"), response1)
-            assertEquals(ApiResponse.Success("cached response"), response2)
-            assertEquals(2, requestCount, "Should make validation request with If-None-Match")
-        }
+        assertEquals(ApiResponse.Success("cached response"), response1)
+        assertEquals(ApiResponse.Success("cached response"), response2)
+        assertEquals(2, requestCount, "Should make validation request with If-None-Match")
+    }
 
     /**
      * Tests that responses without any cache-control headers are not cached.
@@ -143,35 +140,34 @@ class KtorHttpClientCacheTest {
      * for each call to avoid serving stale data.
      */
     @Test
-    fun `cache does not store responses without cache headers`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine {
-                            requestCount++
-                            respond(
-                                content = "response $requestCount",
-                                status = HttpStatusCode.OK,
-                                headers =
-                                    headersOf(
-                                        HttpHeaders.ContentType,
-                                        "application/json",
-                                    ),
-                            )
-                        },
-                )
+    fun `cache does not store responses without cache headers`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine {
+                        requestCount++
+                        respond(
+                            content = "response $requestCount",
+                            status = HttpStatusCode.OK,
+                            headers =
+                                headersOf(
+                                    HttpHeaders.ContentType,
+                                    "application/json"
+                                )
+                        )
+                    }
+            )
 
-            val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
-            val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
 
-            assertEquals(ApiResponse.Success("response 1"), response1)
-            assertEquals(ApiResponse.Success("response 2"), response2)
-            assertEquals(2, requestCount, "Should make two requests without cache headers")
-        }
+        assertEquals(ApiResponse.Success("response 1"), response1)
+        assertEquals(ApiResponse.Success("response 2"), response2)
+        assertEquals(2, requestCount, "Should make two requests without cache headers")
+    }
 
     /**
      * Tests that the cache correctly isolates entries by URL.
@@ -179,34 +175,33 @@ class KtorHttpClientCacheTest {
      * should not affect requests to different URLs.
      */
     @Test
-    fun `cache isolates different URLs`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine { request ->
-                            requestCount++
-                            respond(
-                                content = "response for ${request.url}",
-                                status = HttpStatusCode.OK,
-                                headers =
-                                    headersOf(
-                                        HttpHeaders.ContentType to listOf("application/json"),
-                                        HttpHeaders.CacheControl to listOf("max-age=3600"),
-                                    ),
-                            )
-                        },
-                )
+    fun `cache isolates different URLs`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine { request ->
+                        requestCount++
+                        respond(
+                            content = "response for ${request.url}",
+                            status = HttpStatusCode.OK,
+                            headers =
+                                headersOf(
+                                    HttpHeaders.ContentType to listOf("application/json"),
+                                    HttpHeaders.CacheControl to listOf("max-age=3600")
+                                )
+                        )
+                    }
+            )
 
-            client.makeRequest(ApiRequest.Get("https://api.example.com/data1"))
-            client.makeRequest(ApiRequest.Get("https://api.example.com/data2"))
-            client.makeRequest(ApiRequest.Get("https://api.example.com/data1"))
+        client.makeRequest(ApiRequest.Get("https://api.example.com/data1"))
+        client.makeRequest(ApiRequest.Get("https://api.example.com/data2"))
+        client.makeRequest(ApiRequest.Get("https://api.example.com/data1"))
 
-            assertEquals(2, requestCount, "Should cache each URL separately")
-        }
+        assertEquals(2, requestCount, "Should cache each URL separately")
+    }
 
     /**
      * Tests that responses with Cache-Control: private, max-age=3600 are cached locally.
@@ -214,33 +209,32 @@ class KtorHttpClientCacheTest {
      * and can be cached by the client (but not by shared/proxy caches).
      */
     @Test
-    fun `cache respects private directive`() =
-        runTest {
-            var requestCount = 0
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = userAgentGenerator,
-                    logger = KtorLogger.noOp,
-                    ktorClientEngine =
-                        MockEngine {
-                            requestCount++
-                            respond(
-                                content = "private response",
-                                status = HttpStatusCode.OK,
-                                headers =
-                                    headersOf(
-                                        HttpHeaders.ContentType to listOf("application/json"),
-                                        HttpHeaders.CacheControl to listOf("private, max-age=3600"),
-                                    ),
-                            )
-                        },
-                )
+    fun `cache respects private directive`() = runTest {
+        var requestCount = 0
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = userAgentGenerator,
+                logger = KtorLogger.noOp,
+                ktorClientEngine =
+                    MockEngine {
+                        requestCount++
+                        respond(
+                            content = "private response",
+                            status = HttpStatusCode.OK,
+                            headers =
+                                headersOf(
+                                    HttpHeaders.ContentType to listOf("application/json"),
+                                    HttpHeaders.CacheControl to listOf("private, max-age=3600")
+                                )
+                        )
+                    }
+            )
 
-            val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
-            val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
+        val response2 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
 
-            assertEquals(ApiResponse.Success("private response"), response1)
-            assertEquals(ApiResponse.Success("private response"), response2)
-            assertEquals(1, requestCount, "Should cache private responses locally")
-        }
+        assertEquals(ApiResponse.Success("private response"), response1)
+        assertEquals(ApiResponse.Success("private response"), response2)
+        assertEquals(1, requestCount, "Should cache private responses locally")
+    }
 }

@@ -21,14 +21,13 @@ class RequestConfigBuilder {
     fun withAuthentication(scope: String) {
         authentication =
             RequestConfig.Authentication(
-                scope = scope,
+                scope = scope
             )
     }
 
-    internal fun build(): RequestConfig =
-        RequestConfig(
-            refreshDPoP = withRefreshDPoP,
-            attestation = withAttestation,
-            authentication = authentication,
-        )
+    internal fun build(): RequestConfig = RequestConfig(
+        refreshDPoP = withRefreshDPoP,
+        attestation = withAttestation,
+        authentication = authentication
+    )
 }

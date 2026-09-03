@@ -3,8 +3,8 @@ package uk.gov.android.network.service.v2
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.api.v2.withHeaders
+import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfig
@@ -32,16 +32,14 @@ import uk.gov.android.network.util.NetworkingResult
  *
  * @sample defaultNetworkServiceSample
  */
-class DefaultNetworkService(
-    private val httpClient: GenericHttpClient,
-) : NetworkService {
+class DefaultNetworkService(private val httpClient: GenericHttpClient) : NetworkService {
     private var attestationHeaderReader = AttestationHeaderReader(null)
     private var authorisationHeaderReader = AuthorisationHeaderReader(null)
     private var refreshDPoPHeaderReader = RefreshDPoPHeaderReader(null)
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit,
+        configure: RequestConfigBuilder.() -> Unit
     ): NetworkServiceResponse {
         val config = RequestConfigBuilder().apply { configure() }.build()
 
@@ -50,6 +48,7 @@ class DefaultNetworkService(
                 is NetworkingResult.Failure -> {
                     return ApiResponse.Failure(result.exception)
                 }
+
                 is NetworkingResult.Success -> result.value
             }
 
@@ -70,7 +69,7 @@ class DefaultNetworkService(
         // Successful (1XX or 2XX) response
         return ApiResponse.Success(
             body = response.body,
-            status = response.status,
+            status = response.status
         )
     }
 
@@ -123,15 +122,15 @@ class DefaultNetworkService(
             attestationHeaders +
                 listOfNotNull(
                     authHeader,
-                    refreshDPoPHeader,
-                ),
+                    refreshDPoPHeader
+                )
         )
     }
 
     private fun Exception.toTransportFailure(): ApiResponse.Failure<String, TransportException> =
         ApiResponse.Failure(
             TransportException(this),
-            null,
+            null
         )
 
     private fun GenericResponseException.toApiResponseFailure(): ApiResponse.Failure<String, ApiResponseException> =
@@ -141,8 +140,8 @@ class DefaultNetworkService(
             error =
                 ApiResponseException(
                     "API responded with ${response.status}",
-                    this,
-                ),
+                    this
+                )
         )
 
     private fun SerializationException.toApiRequestFailure(): ApiResponse.Failure<String, ApiRequestException> =
@@ -152,8 +151,8 @@ class DefaultNetworkService(
             error =
                 ApiRequestException(
                     "Serialization failed",
-                    this,
-                ),
+                    this
+                )
         )
 }
 
@@ -163,7 +162,7 @@ internal suspend fun defaultNetworkServiceSample(
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
     clientAttestationProvider: ClientAttestationProvider,
-    dPoPProvider: DPoPProvider,
+    dPoPProvider: DPoPProvider
 ) {
     val networkService = DefaultNetworkService(httpClient)
 

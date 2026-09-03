@@ -22,10 +22,9 @@ private val TLS_12_AND_ABOVE = arrayOf("TLSv1.2", "TLSv1.3")
  *     Android 15 behaviour changes - Restricted TLS versions</a>
  */
 
-internal fun createTls12SSLContext(): SSLContext =
-    SSLContext.getInstance("TLSv1.2").apply {
-        init(null, null, null)
-    }
+internal fun createTls12SSLContext(): SSLContext = SSLContext.getInstance("TLSv1.2").apply {
+    init(null, null, null)
+}
 
 /**
  * Configures the [AndroidEngineConfig] SSL manager to enforce TLS 1.2+ via [Tls12SocketFactory].
@@ -39,7 +38,7 @@ internal fun createTls12SSLContext(): SSLContext =
  */
 internal fun AndroidEngineConfig.configureSslManagerMinTls12(
     trustManager: X509TrustManager? = null,
-    hostnameVerifier: HostnameVerifier? = null,
+    hostnameVerifier: HostnameVerifier? = null
 ) {
     sslManager = { connection ->
         val sslContext = createTls12SSLContext()
@@ -56,57 +55,44 @@ internal fun AndroidEngineConfig.configureSslManagerMinTls12(
  * they can still use TLS 1.0/1.1. The protocol must be explicitly restricted at the socket
  * level via [SSLSocket.setEnabledProtocols].
  */
-internal class Tls12SocketFactory(
-    private val delegate: SSLSocketFactory,
-) : SSLSocketFactory() {
+internal class Tls12SocketFactory(private val delegate: SSLSocketFactory) : SSLSocketFactory() {
     override fun getDefaultCipherSuites(): Array<String> = delegate.defaultCipherSuites
 
     override fun getSupportedCipherSuites(): Array<String> = delegate.supportedCipherSuites
 
     override fun createSocket(): Socket = delegate.createSocket().enforceTls12()
 
-    override fun createSocket(
-        s: Socket?,
-        host: String?,
-        port: Int,
-        autoClose: Boolean,
-    ): Socket = delegate.createSocket(s, host, port, autoClose).enforceTls12()
+    override fun createSocket(s: Socket?, host: String?, port: Int, autoClose: Boolean): Socket =
+        delegate.createSocket(s, host, port, autoClose).enforceTls12()
 
-    override fun createSocket(
-        host: String?,
-        port: Int,
-    ): Socket = delegate.createSocket(host, port).enforceTls12()
+    override fun createSocket(host: String?, port: Int): Socket =
+        delegate.createSocket(host, port).enforceTls12()
 
     override fun createSocket(
         host: String?,
         port: Int,
         localHost: InetAddress?,
-        localPort: Int,
+        localPort: Int
     ): Socket = delegate.createSocket(host, port, localHost, localPort).enforceTls12()
 
-    override fun createSocket(
-        host: InetAddress?,
-        port: Int,
-    ): Socket = delegate.createSocket(host, port).enforceTls12()
+    override fun createSocket(host: InetAddress?, port: Int): Socket =
+        delegate.createSocket(host, port).enforceTls12()
 
     override fun createSocket(
         address: InetAddress?,
         port: Int,
         localAddress: InetAddress?,
-        localPort: Int,
+        localPort: Int
     ): Socket = delegate.createSocket(address, port, localAddress, localPort).enforceTls12()
 
-    private fun Socket.enforceTls12(): Socket =
-        apply {
-            if (this !is SSLSocket) {
-                throw SslRequiredException(
-                    "Only SSL connections are permitted. Received ${this::class.simpleName}.",
-                )
-            }
-            enabledProtocols = supportedProtocols.filter { it in TLS_12_AND_ABOVE }.toTypedArray()
+    private fun Socket.enforceTls12(): Socket = apply {
+        if (this !is SSLSocket) {
+            throw SslRequiredException(
+                "Only SSL connections are permitted. Received ${this::class.simpleName}."
+            )
         }
+        enabledProtocols = supportedProtocols.filter { it in TLS_12_AND_ABOVE }.toTypedArray()
+    }
 }
 
-internal class SslRequiredException(
-    message: String,
-) : SSLException(message)
+internal class SslRequiredException(message: String) : SSLException(message)

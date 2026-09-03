@@ -4,8 +4,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.v2.ApiResponseAssertions.expectFailure
@@ -50,16 +50,15 @@ class DefaultNetworkServiceTest {
         }
 
     @Test
-    fun `given client throws io exception, makeRequest returns transport failure`() =
-        runTest {
-            httpClient.exception = IOException("connection failed")
+    fun `given client throws io exception, makeRequest returns transport failure`() = runTest {
+        httpClient.exception = IOException("connection failed")
 
-            val result = networkService.makeRequest(request)
+        val result = networkService.makeRequest(request)
 
-            val failure = result.expectFailure()
-            assertInstanceOf<TransportException>(failure.error)
-            assertEquals(null, failure.status)
-        }
+        val failure = result.expectFailure()
+        assertInstanceOf<TransportException>(failure.error)
+        assertEquals(null, failure.status)
+    }
 
     @Test
     fun `given client throws SerializationException, makeRequest returns request failure`() =
@@ -91,22 +90,21 @@ class DefaultNetworkServiceTest {
         }
 
     @Test
-    fun `given authentication configured, makeRequest appends authorisation header`() =
-        runTest {
-            networkService.setAuthenticationProvider(authProvider)
-            httpClient.response = TestHttpResponse.success
+    fun `given authentication configured, makeRequest appends authorisation header`() = runTest {
+        networkService.setAuthenticationProvider(authProvider)
+        httpClient.response = TestHttpResponse.success
 
-            networkService.makeRequest(request) {
-                withAuthentication(SCOPE)
-            }
-
-            assertEquals(
-                request.copy(
-                    headers = request.headers + ("Authorization" to "Bearer bearer-token"),
-                ),
-                httpClient.receivedRequest,
-            )
+        networkService.makeRequest(request) {
+            withAuthentication(SCOPE)
         }
+
+        assertEquals(
+            request.copy(
+                headers = request.headers + ("Authorization" to "Bearer bearer-token")
+            ),
+            httpClient.receivedRequest
+        )
+    }
 
     @Test
     fun `given authentication not configured, makeRequest does not add authorisation header`() =
@@ -135,27 +133,26 @@ class DefaultNetworkServiceTest {
         }
 
     @Test
-    fun `given attestation configured, makeRequest appends attestation headers`() =
-        runTest {
-            networkService.setClientAttestationProvider(attestationProvider)
-            httpClient.response = TestHttpResponse.success
+    fun `given attestation configured, makeRequest appends attestation headers`() = runTest {
+        networkService.setClientAttestationProvider(attestationProvider)
+        httpClient.response = TestHttpResponse.success
 
-            networkService.makeRequest(request) {
-                withAttestation = true
-            }
-
-            assertEquals(
-                request.copy(
-                    headers =
-                        request.headers +
-                            listOf(
-                                "OAuth-Client-Attestation" to "client-attestation-jwt",
-                                "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt",
-                            ),
-                ),
-                httpClient.receivedRequest,
-            )
+        networkService.makeRequest(request) {
+            withAttestation = true
         }
+
+        assertEquals(
+            request.copy(
+                headers =
+                    request.headers +
+                        listOf(
+                            "OAuth-Client-Attestation" to "client-attestation-jwt",
+                            "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt"
+                        )
+            ),
+            httpClient.receivedRequest
+        )
+    }
 
     @Test
     fun `given refreshDPoP configured and header reader fails, makeRequest returns failure`() =
@@ -174,22 +171,21 @@ class DefaultNetworkServiceTest {
         }
 
     @Test
-    fun `given refreshDPoP configured, makeRequest appends DPoP header`() =
-        runTest {
-            networkService.setDPoPProvider(dpopProvider)
-            httpClient.response = TestHttpResponse.success
+    fun `given refreshDPoP configured, makeRequest appends DPoP header`() = runTest {
+        networkService.setDPoPProvider(dpopProvider)
+        httpClient.response = TestHttpResponse.success
 
-            networkService.makeRequest(request) {
-                withRefreshDPoP = true
-            }
-
-            assertEquals(
-                request.copy(
-                    headers = request.headers + ("DPoP" to "dpop-proof-jwt"),
-                ),
-                httpClient.receivedRequest,
-            )
+        networkService.makeRequest(request) {
+            withRefreshDPoP = true
         }
+
+        assertEquals(
+            request.copy(
+                headers = request.headers + ("DPoP" to "dpop-proof-jwt")
+            ),
+            httpClient.receivedRequest
+        )
+    }
 
     companion object {
         private const val SCOPE = "scope"

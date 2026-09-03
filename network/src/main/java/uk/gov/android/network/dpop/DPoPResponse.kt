@@ -11,16 +11,12 @@ sealed class DPoPResponse {
      *
      * @param dpop the DPoP proof JWT
      */
-    data class Success(
-        val dpop: String,
-    ) : DPoPResponse()
+    data class Success(val dpop: String) : DPoPResponse()
 
     /**
      * A failed DPoP result.
      *
      * @param error the exception that caused the failure
      */
-    data class Failure(
-        val error: Exception,
-    ) : DPoPResponse()
+    data class Failure(val error: Exception) : DPoPResponse()
 }

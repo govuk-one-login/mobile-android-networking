@@ -5,9 +5,9 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectSuccess
@@ -25,16 +25,15 @@ class NetworkServiceTypedSuccessExtTest {
     private val customStrictJson = Json { ignoreUnknownKeys = false }
 
     @Test
-    fun `given valid json response, makeRequest returns parsed object`() =
-        runTest {
-            givenSuccessResponse()
+    fun `given valid json response, makeRequest returns parsed object`() = runTest {
+        givenSuccessResponse()
 
-            val result = networkService.makeRequest<TestData>(request)
+        val result = networkService.makeRequest<TestData>(request)
 
-            val success = result.expectSuccess()
-            assertEquals(TestData("Test", "Hello"), success.body)
-            assertEquals(200, success.status)
-        }
+        val success = result.expectSuccess()
+        assertEquals(TestData("Test", "Hello"), success.body)
+        assertEquals(200, success.status)
+    }
 
     @Test
     fun `given valid json response with unknown key, makeRequest returns parsed object`() =
@@ -49,59 +48,55 @@ class NetworkServiceTypedSuccessExtTest {
         }
 
     @Test
-    fun `when Json is provided, makeRequest uses the given implementation`() =
-        runTest {
-            // First check that our custom Json is stricter
-            assertTrue(
-                customStrictJson.configuration.ignoreUnknownKeys !=
-                        JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys
-            )
-            givenSuccessResponse(
-                body = """{"subject":"Test","message":"Hello","new":"Hello"}"""
-            )
+    fun `when Json is provided, makeRequest uses the given implementation`() = runTest {
+        // First check that our custom Json is stricter
+        assertTrue(
+            customStrictJson.configuration.ignoreUnknownKeys !=
+                JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys
+        )
+        givenSuccessResponse(
+            body = """{"subject":"Test","message":"Hello","new":"Hello"}"""
+        )
 
-            val result = networkService.makeRequest<TestData>(request, json = customStrictJson)
+        val result = networkService.makeRequest<TestData>(request, json = customStrictJson)
 
-            val failure = result.expectFailure()
-            assertInstanceOf<ApiResponseException>(failure.error)
-        }
-
-    @Test
-    fun `given upstream failure, makeRequest returns failure`() =
-        runTest {
-            httpClient.exception = IOException("connection failed")
-
-            val result = networkService.makeRequest<TestData>(request)
-
-            val failure = result.expectFailure()
-            assertInstanceOf<TransportException>(failure.error)
-        }
+        val failure = result.expectFailure()
+        assertInstanceOf<ApiResponseException>(failure.error)
+    }
 
     @Test
-    fun `given invalid json, makeRequest returns api response failure`() =
-        runTest {
-            givenSuccessResponse("not json")
+    fun `given upstream failure, makeRequest returns failure`() = runTest {
+        httpClient.exception = IOException("connection failed")
 
-            val result = networkService.makeRequest<TestData>(request)
+        val result = networkService.makeRequest<TestData>(request)
 
-            val failure = result.expectFailure()
-            assertInstanceOf<ApiResponseException>(failure.error)
-        }
+        val failure = result.expectFailure()
+        assertInstanceOf<TransportException>(failure.error)
+    }
 
     @Test
-    fun `given json with wrong structure, makeRequest returns api response failure`() =
-        runTest {
-            givenSuccessResponse("""{"unexpected":"structure"}""")
+    fun `given invalid json, makeRequest returns api response failure`() = runTest {
+        givenSuccessResponse("not json")
 
-            val result = networkService.makeRequest<TestData>(request)
+        val result = networkService.makeRequest<TestData>(request)
 
-            val failure = result.expectFailure()
-            assertEquals(
-                "Failed to parse response body as class uk.gov.android.network.service.v2.TestData",
-                failure.error.message,
-            )
-            assertInstanceOf<ApiResponseException>(failure.error)
-        }
+        val failure = result.expectFailure()
+        assertInstanceOf<ApiResponseException>(failure.error)
+    }
+
+    @Test
+    fun `given json with wrong structure, makeRequest returns api response failure`() = runTest {
+        givenSuccessResponse("""{"unexpected":"structure"}""")
+
+        val result = networkService.makeRequest<TestData>(request)
+
+        val failure = result.expectFailure()
+        assertEquals(
+            "Failed to parse response body as class uk.gov.android.network.service.v2.TestData",
+            failure.error.message
+        )
+        assertInstanceOf<ApiResponseException>(failure.error)
+    }
 
     @Test
     fun `sample runs`() = runTest {
@@ -109,17 +104,11 @@ class NetworkServiceTypedSuccessExtTest {
         networkServiceParseSuccessSample(request, networkService)
     }
 
-    private fun givenSuccessResponse(
-        body: String = """{"subject":"Test","message":"Hello"}"""
-    ) {
+    private fun givenSuccessResponse(body: String = """{"subject":"Test","message":"Hello"}""") {
         httpClient.response =
             GenericHttpResponse(status = 200, body = body)
-
     }
 }
 
 @Serializable
-private data class TestData(
-    val subject: String,
-    val message: String,
-)
+private data class TestData(val subject: String, val message: String)

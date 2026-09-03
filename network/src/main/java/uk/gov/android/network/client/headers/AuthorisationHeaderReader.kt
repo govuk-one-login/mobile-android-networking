@@ -13,7 +13,7 @@ private const val AUTH_HEADER_KEY = "Authorization"
 private const val AUTH_HEADER_VALUE = "Bearer"
 
 internal class AuthorisationHeaderReader(
-    internal val authenticationProvider: AuthenticationProvider?,
+    internal val authenticationProvider: AuthenticationProvider?
 ) {
     suspend fun getHeader(config: RequestConfig.Authentication): NetworkingResult<Header> {
         val authenticationProvider =
@@ -29,22 +29,20 @@ internal class AuthorisationHeaderReader(
         return NetworkingResult.Success(header)
     }
 
-    private fun missingProviderFailure() =
-        NetworkingResult.Failure<Header>(
-            ConfigurationException("AuthenticationProvider not set"),
-        )
+    private fun missingProviderFailure() = NetworkingResult.Failure<Header>(
+        ConfigurationException("AuthenticationProvider not set")
+    )
 
     private fun AuthenticationResponse.Failure.authenticationFailure() =
         NetworkingResult.Failure<Header>(
             AuthenticationProviderException(
                 "Authentication provider failed to fetch service token",
-                error,
-            ),
+                error
+            )
         )
 }
 
-internal fun AuthenticationResponse.Success.toAuthorisationHeader(): Header =
-    Header(
-        AUTH_HEADER_KEY,
-        "$AUTH_HEADER_VALUE $bearerToken",
-    )
+internal fun AuthenticationResponse.Success.toAuthorisationHeader(): Header = Header(
+    AUTH_HEADER_KEY,
+    "$AUTH_HEADER_VALUE $bearerToken"
+)

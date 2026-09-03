@@ -1,5 +1,10 @@
 package uk.gov.android.network.client
 
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.net.Socket
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -9,11 +14,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.useragent.UserAgentGeneratorStub
-import java.net.InetAddress
-import java.net.ServerSocket
-import java.net.Socket
-import javax.net.ssl.SSLSocket
-import javax.net.ssl.SSLSocketFactory
 
 class Tls12EnforcementTest {
     private val sslContext = createTls12SSLContext()
@@ -51,7 +51,7 @@ class Tls12EnforcementTest {
                 "localhost",
                 port,
                 InetAddress.getLoopbackAddress(),
-                0,
+                0
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -65,7 +65,7 @@ class Tls12EnforcementTest {
         val socket =
             socketFactory.createSocket(
                 InetAddress.getLoopbackAddress(),
-                port,
+                port
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -81,7 +81,7 @@ class Tls12EnforcementTest {
                 InetAddress.getLoopbackAddress(),
                 port,
                 InetAddress.getLoopbackAddress(),
-                0,
+                0
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -98,7 +98,7 @@ class Tls12EnforcementTest {
                 rawSocket,
                 "localhost",
                 port,
-                true,
+                true
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -118,16 +118,15 @@ class Tls12EnforcementTest {
     }
 
     @Test
-    fun `KtorHttpClient production constructor configures TLS correctly`() =
-        runTest {
-            // This exercises the secondary constructor path including the sslManager lambda
-            val client =
-                KtorHttpClient(
-                    userAgentGenerator = UserAgentGeneratorStub("test-agent"),
-                    logger = KtorLogger.noOp,
-                )
-            assertNotNull(client)
-        }
+    fun `KtorHttpClient production constructor configures TLS correctly`() = runTest {
+        // This exercises the secondary constructor path including the sslManager lambda
+        val client =
+            KtorHttpClient(
+                userAgentGenerator = UserAgentGeneratorStub("test-agent"),
+                logger = KtorLogger.noOp
+            )
+        assertNotNull(client)
+    }
 
     private fun assertOnlyTls12AndAbove(socket: SSLSocket) {
         val enabledProtocols = socket.enabledProtocols.toList()
@@ -150,31 +149,25 @@ class Tls12EnforcementTest {
                     s: Socket?,
                     host: String?,
                     port: Int,
-                    autoClose: Boolean,
+                    autoClose: Boolean
                 ) = Socket()
 
-                override fun createSocket(
-                    host: String?,
-                    port: Int,
-                ) = Socket()
+                override fun createSocket(host: String?, port: Int) = Socket()
 
                 override fun createSocket(
                     host: String?,
                     port: Int,
                     localHost: InetAddress?,
-                    localPort: Int,
+                    localPort: Int
                 ) = Socket()
 
-                override fun createSocket(
-                    host: InetAddress?,
-                    port: Int,
-                ) = Socket()
+                override fun createSocket(host: InetAddress?, port: Int) = Socket()
 
                 override fun createSocket(
                     address: InetAddress?,
                     port: Int,
                     localAddress: InetAddress?,
-                    localPort: Int,
+                    localPort: Int
                 ) = Socket()
             }
         val factory = Tls12SocketFactory(plainSocketFactory)

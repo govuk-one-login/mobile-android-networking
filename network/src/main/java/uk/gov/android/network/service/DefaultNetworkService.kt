@@ -7,8 +7,8 @@ import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.config.RequestConfigBuilder
 import uk.gov.android.network.client.v2.GenericHttpClient
-import uk.gov.android.network.service.v2.DefaultNetworkService as DefaultNetworkServiceV2
 import uk.gov.android.network.dpop.DPoPProvider
+import uk.gov.android.network.service.v2.DefaultNetworkService as DefaultNetworkServiceV2
 import uk.gov.android.network.service.v2.NetworkServiceResponse
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
@@ -24,12 +24,10 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 @Deprecated(
     "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
     replaceWith = ReplaceWith(
-        "uk.gov.android.network.service.v2.DefaultNetworkService",
+        "uk.gov.android.network.service.v2.DefaultNetworkService"
     )
 )
-class DefaultNetworkService(
-    private val delegate: DefaultNetworkServiceV2
-) : NetworkService {
+class DefaultNetworkService(private val delegate: DefaultNetworkServiceV2) : NetworkService {
     constructor(
         httpClient: GenericHttpClient
     ) : this(
@@ -38,10 +36,9 @@ class DefaultNetworkService(
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit,
-    ): ApiResponseV2<String, NetworkingException> =
-        delegate.makeRequest(apiRequest, configure)
-            .toApiResponseV2()
+        configure: RequestConfigBuilder.() -> Unit
+    ): ApiResponseV2<String, NetworkingException> = delegate.makeRequest(apiRequest, configure)
+        .toApiResponseV2()
 
     fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) =
         delegate.setAuthenticationProvider(authenticationProvider)
@@ -49,8 +46,7 @@ class DefaultNetworkService(
     fun setClientAttestationProvider(clientAttestationProvider: ClientAttestationProvider?) =
         delegate.setClientAttestationProvider(clientAttestationProvider)
 
-    fun setDPoPProvider(dpopProvider: DPoPProvider?) =
-        delegate.setDPoPProvider(dpopProvider)
+    fun setDPoPProvider(dpopProvider: DPoPProvider?) = delegate.setDPoPProvider(dpopProvider)
 
     private fun NetworkServiceResponse.toApiResponseV2() = when (this) {
         is ApiResponse.Failure<String, NetworkingException> -> ApiResponseV2.Failure(error, status)
@@ -64,7 +60,7 @@ internal suspend fun defaultNetworkServiceSample(
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
     clientAttestationProvider: ClientAttestationProvider,
-    dPoPProvider: DPoPProvider,
+    dPoPProvider: DPoPProvider
 ) {
     val networkService = DefaultNetworkService(httpClient)
 

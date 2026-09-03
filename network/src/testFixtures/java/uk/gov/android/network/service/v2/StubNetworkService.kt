@@ -1,5 +1,6 @@
 package uk.gov.android.network.service.v2
 
+import java.io.IOException
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.attestation.TestClientAttestationProvider
@@ -12,7 +13,6 @@ import uk.gov.android.network.client.v2.StubHttpClient
 import uk.gov.android.network.client.v2.TestHttpResponse
 import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.dpop.TestDPoPProvider
-import java.io.IOException
 
 /**
  * Test stub for [NetworkService].
@@ -23,9 +23,10 @@ import java.io.IOException
 class StubNetworkService(
     val httpClient: StubHttpClient = StubHttpClient(),
     val testAuthenticationProvider: TestAuthenticationProvider = TestAuthenticationProvider(),
-    val testClientAttestationProvider: TestClientAttestationProvider = TestClientAttestationProvider(),
-    val testDPoPProvider: TestDPoPProvider = TestDPoPProvider(),
-): NetworkService {
+    val testClientAttestationProvider: TestClientAttestationProvider =
+        TestClientAttestationProvider(),
+    val testDPoPProvider: TestDPoPProvider = TestDPoPProvider()
+) : NetworkService {
     private val delegate = DefaultNetworkService(httpClient).apply {
         setAuthenticationProvider(testAuthenticationProvider)
         setClientAttestationProvider(testClientAttestationProvider)
@@ -37,8 +38,7 @@ class StubNetworkService(
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
         configure: RequestConfigBuilder.() -> Unit
-    ): NetworkServiceResponse =
-        delegate.makeRequest(apiRequest, configure)
+    ): NetworkServiceResponse = delegate.makeRequest(apiRequest, configure)
 
     fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) {
         delegate.setAuthenticationProvider(authenticationProvider)
@@ -54,28 +54,23 @@ class StubNetworkService(
 
     fun setSuccessResponse(
         status: Int = TestHttpResponse.success.status,
-        body: String = TestHttpResponse.success.body,
+        body: String = TestHttpResponse.success.body
     ) = setSuccessResponse(
         GenericHttpResponse(status, body)
     )
 
-    fun setSuccessResponse(
-        response: GenericHttpResponse = TestHttpResponse.success
-    ) {
+    fun setSuccessResponse(response: GenericHttpResponse = TestHttpResponse.success) {
         httpClient.response = response
     }
 
-
     fun setFailureResponse(
         status: Int = TestHttpResponse.internalServerError.status,
-        body: String = TestHttpResponse.internalServerError.body,
+        body: String = TestHttpResponse.internalServerError.body
     ) = setFailureResponse(
         GenericHttpResponse(status, body)
     )
 
-    fun setFailureResponse(
-        response: GenericHttpResponse = TestHttpResponse.internalServerError
-    ) {
+    fun setFailureResponse(response: GenericHttpResponse = TestHttpResponse.internalServerError) {
         httpClient.exception = GenericResponseException(
             response,
             IllegalStateException("Status $response.status")

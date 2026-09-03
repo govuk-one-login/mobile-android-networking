@@ -2,8 +2,8 @@ package uk.gov.android.network.client.headers
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.auth.TestAuthenticationProvider
 import uk.gov.android.network.auth.authenticationFailure
 import uk.gov.android.network.auth.authenticationSuccess
@@ -20,39 +20,35 @@ class AuthorisationHeaderReaderTest {
     private val headerReader = AuthorisationHeaderReader(provider)
 
     @Test
-    fun `given provider is null, getHeader returns missing provider failure`() =
-        runTest {
-            val headerReader = AuthorisationHeaderReader(null)
+    fun `given provider is null, getHeader returns missing provider failure`() = runTest {
+        val headerReader = AuthorisationHeaderReader(null)
 
-            val result = headerReader.getHeader(authConfig)
+        val result = headerReader.getHeader(authConfig)
 
-            assertInstanceOf<ConfigurationException>(result.expectFailure())
-        }
-
-    @Test
-    fun `given provider returns failure, getHeader returns service failure`() =
-        runTest {
-            provider.response = authenticationFailure
-
-            val result = headerReader.getHeader(authConfig)
-
-            assertInstanceOf<ServiceException>(result.expectFailure())
-            assertInstanceOf<AuthenticationProviderException>(result.expectFailure())
-        }
+        assertInstanceOf<ConfigurationException>(result.expectFailure())
+    }
 
     @Test
-    fun `given provider returns success, getHeader returns authorisation header`() =
-        runTest {
-            val result = headerReader.getHeader(authConfig)
+    fun `given provider returns failure, getHeader returns service failure`() = runTest {
+        provider.response = authenticationFailure
 
-            assertEquals("Authorization" to "Bearer bearer-token", result.expectSuccess())
-        }
+        val result = headerReader.getHeader(authConfig)
+
+        assertInstanceOf<ServiceException>(result.expectFailure())
+        assertInstanceOf<AuthenticationProviderException>(result.expectFailure())
+    }
 
     @Test
-    fun `given successful auth response, toAuthorisationHeader formats bearer token`() =
-        runTest {
-            val result = authenticationSuccess.toAuthorisationHeader()
+    fun `given provider returns success, getHeader returns authorisation header`() = runTest {
+        val result = headerReader.getHeader(authConfig)
 
-            assertEquals("Authorization" to "Bearer bearer-token", result)
-        }
+        assertEquals("Authorization" to "Bearer bearer-token", result.expectSuccess())
+    }
+
+    @Test
+    fun `given successful auth response, toAuthorisationHeader formats bearer token`() = runTest {
+        val result = authenticationSuccess.toAuthorisationHeader()
+
+        assertEquals("Authorization" to "Bearer bearer-token", result)
+    }
 }
