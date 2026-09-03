@@ -11,18 +11,20 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 @Deprecated(
     "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
-    replaceWith = ReplaceWith(
-        "NetworkServiceTypedSuccessExt",
-        "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt"
-    )
+    replaceWith =
+        ReplaceWith(
+            "NetworkServiceTypedSuccessExt",
+            "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt",
+        ),
 )
 object NetworkServiceJsonExt {
     /**
      * Default JSON decoder for decoding network responses
      */
-    val jsonDecoder = Json {
-        ignoreUnknownKeys = true
-    }
+    val jsonDecoder =
+        Json {
+            ignoreUnknownKeys = true
+        }
 
     /**
      * Make an HTTP request and parse the JSON response
@@ -36,11 +38,12 @@ object NetworkServiceJsonExt {
      */
     @Deprecated(
         "Migrate to NetworkServiceTypedSuccessExt.makeRequest. " +
-                "To be removed on 23rd September 2026 (DCMAW-21647)",
-        replaceWith = ReplaceWith(
-            "makeRequest<T>(apiRequest, configure)",
-            "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest"
-        )
+            "To be removed on 23rd September 2026 (DCMAW-21647)",
+        replaceWith =
+            ReplaceWith(
+                "makeRequest<T>(apiRequest, configure)",
+                "uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest",
+            ),
     )
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,

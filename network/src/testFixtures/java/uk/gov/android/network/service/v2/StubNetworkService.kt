@@ -25,20 +25,20 @@ class StubNetworkService(
     val testAuthenticationProvider: TestAuthenticationProvider = TestAuthenticationProvider(),
     val testClientAttestationProvider: TestClientAttestationProvider = TestClientAttestationProvider(),
     val testDPoPProvider: TestDPoPProvider = TestDPoPProvider(),
-): NetworkService {
-    private val delegate = DefaultNetworkService(httpClient).apply {
-        setAuthenticationProvider(testAuthenticationProvider)
-        setClientAttestationProvider(testClientAttestationProvider)
-        setDPoPProvider(testDPoPProvider)
-    }
+) : NetworkService {
+    private val delegate =
+        DefaultNetworkService(httpClient).apply {
+            setAuthenticationProvider(testAuthenticationProvider)
+            setClientAttestationProvider(testClientAttestationProvider)
+            setDPoPProvider(testDPoPProvider)
+        }
 
     val receivedRequest: ApiRequest? get() = httpClient.receivedRequest
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit
-    ): NetworkServiceResponse =
-        delegate.makeRequest(apiRequest, configure)
+        configure: RequestConfigBuilder.() -> Unit,
+    ): NetworkServiceResponse = delegate.makeRequest(apiRequest, configure)
 
     fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) {
         delegate.setAuthenticationProvider(authenticationProvider)
@@ -56,30 +56,26 @@ class StubNetworkService(
         status: Int = TestHttpResponse.success.status,
         body: String = TestHttpResponse.success.body,
     ) = setSuccessResponse(
-        GenericHttpResponse(status, body)
+        GenericHttpResponse(status, body),
     )
 
-    fun setSuccessResponse(
-        response: GenericHttpResponse = TestHttpResponse.success
-    ) {
+    fun setSuccessResponse(response: GenericHttpResponse = TestHttpResponse.success) {
         httpClient.response = response
     }
-
 
     fun setFailureResponse(
         status: Int = TestHttpResponse.internalServerError.status,
         body: String = TestHttpResponse.internalServerError.body,
     ) = setFailureResponse(
-        GenericHttpResponse(status, body)
+        GenericHttpResponse(status, body),
     )
 
-    fun setFailureResponse(
-        response: GenericHttpResponse = TestHttpResponse.internalServerError
-    ) {
-        httpClient.exception = GenericResponseException(
-            response,
-            IllegalStateException("Status $response.status")
-        )
+    fun setFailureResponse(response: GenericHttpResponse = TestHttpResponse.internalServerError) {
+        httpClient.exception =
+            GenericResponseException(
+                response,
+                IllegalStateException("Status $response.status"),
+            )
     }
 
     fun setTransportException() {

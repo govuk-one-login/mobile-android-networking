@@ -19,9 +19,10 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
  */
 @Deprecated(
     "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
-    replaceWith = ReplaceWith(
-        "uk.gov.android.network.service.v2.NetworkService",
-    )
+    replaceWith =
+        ReplaceWith(
+            "uk.gov.android.network.service.v2.NetworkService",
+        ),
 )
 interface NetworkService {
     /**

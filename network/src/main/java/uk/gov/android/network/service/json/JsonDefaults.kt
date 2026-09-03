@@ -6,7 +6,8 @@ object JsonDefaults {
     /**
      * Default JSON decoder for decoding network responses
      */
-    val jsonDecoder = Json {
-        ignoreUnknownKeys = true
-    }
+    val jsonDecoder =
+        Json {
+            ignoreUnknownKeys = true
+        }
 }

@@ -5,9 +5,9 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v2.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v2.ApiResponseAssertions.expectSuccess
@@ -36,10 +36,11 @@ class NetworkServiceJsonExtTest {
     @Test
     fun `given valid json response with unknown key, makeRequest returns parsed object`() =
         runTest {
-            httpClient.response = GenericHttpResponse(
-                status = 200,
-                body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
-            )
+            httpClient.response =
+                GenericHttpResponse(
+                    status = 200,
+                    body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
+                )
 
             val result = networkService.makeRequest<TestData>(request)
 
@@ -54,12 +55,13 @@ class NetworkServiceJsonExtTest {
             // First check that our custom Json is stricter
             assertTrue(
                 customStrictJson.configuration.ignoreUnknownKeys !=
-                        NetworkServiceJsonExt.jsonDecoder.configuration.ignoreUnknownKeys
+                    NetworkServiceJsonExt.jsonDecoder.configuration.ignoreUnknownKeys,
             )
-            httpClient.response = GenericHttpResponse(
-                status = 200,
-                body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
-            )
+            httpClient.response =
+                GenericHttpResponse(
+                    status = 200,
+                    body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
+                )
 
             val result = networkService.makeRequest<TestData>(request, json = customStrictJson)
 

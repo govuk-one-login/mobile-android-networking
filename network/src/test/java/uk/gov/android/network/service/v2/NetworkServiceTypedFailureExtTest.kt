@@ -5,9 +5,9 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectSuccess
@@ -27,10 +27,11 @@ class NetworkServiceTypedFailureExtTest {
     @Test
     fun `given valid json response, makeRequest returns parsed success`() =
         runTest {
-            httpClient.response = GenericHttpResponse(
-                status = 200,
-                body = """{"subject":"Test","message":"Hello"}""",
-            )
+            httpClient.response =
+                GenericHttpResponse(
+                    status = 200,
+                    body = """{"subject":"Test","message":"Hello"}""",
+                )
 
             val result = networkService.makeRequest<SuccessData, FailureData>(request)
 
@@ -117,10 +118,11 @@ class NetworkServiceTypedFailureExtTest {
             val strictJson = Json { ignoreUnknownKeys = false }
             givenFailureResponse("""{"errorCode":123,"extra":"unknown"}""")
 
-            val result = networkService.makeRequest<SuccessData, FailureData>(
-                request,
-                json = strictJson,
-            )
+            val result =
+                networkService.makeRequest<SuccessData, FailureData>(
+                    request,
+                    json = strictJson,
+                )
 
             val failure = result.expectFailure()
             assertNull(failure.body)
@@ -128,23 +130,23 @@ class NetworkServiceTypedFailureExtTest {
         }
 
     @Test
-    fun `sample runs`() = runTest {
-        givenFailureResponse()
-        networkServiceParseFailureSample(request, networkService)
-    }
+    fun `sample runs`() =
+        runTest {
+            givenFailureResponse()
+            networkServiceParseFailureSample(request, networkService)
+        }
 
-    private fun givenFailureResponse(
-        body: String = """{"errorCode":123}""",
-    ) {
-        httpClient.exception = GenericResponseException(
-            response = GenericHttpResponse(
-                status = failureStatus,
-                body = body,
-            ),
-            cause = IllegalStateException("$failureStatus"),
-        )
+    private fun givenFailureResponse(body: String = """{"errorCode":123}""") {
+        httpClient.exception =
+            GenericResponseException(
+                response =
+                    GenericHttpResponse(
+                        status = failureStatus,
+                        body = body,
+                    ),
+                cause = IllegalStateException("$failureStatus"),
+            )
     }
-
 }
 
 @Serializable

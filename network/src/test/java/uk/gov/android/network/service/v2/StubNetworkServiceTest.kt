@@ -2,9 +2,9 @@ package uk.gov.android.network.service.v2
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectSuccess
@@ -112,10 +112,11 @@ class StubNetworkServiceTest {
     fun `given success response, httpClient receivedRequest matches the sent request`() =
         runTest {
             networkService.setSuccessResponse()
-            val postRequest = ApiRequest.Post(
-                url = "https://example.com/data",
-                body = "payload",
-            )
+            val postRequest =
+                ApiRequest.Post(
+                    url = "https://example.com/data",
+                    body = "payload",
+                )
 
             networkService.makeRequest(postRequest)
 
@@ -128,9 +129,10 @@ class StubNetworkServiceTest {
             networkService.setSuccessResponse()
             networkService.setAuthenticationProvider(null)
 
-            val result = networkService.makeRequest(request) {
-                withAuthentication("scope")
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withAuthentication("scope")
+                }
 
             val failure = result.expectFailure()
             assertInstanceOf<ConfigurationException>(failure.error)
@@ -142,9 +144,10 @@ class StubNetworkServiceTest {
             networkService.setSuccessResponse()
             networkService.setClientAttestationProvider(null)
 
-            val result = networkService.makeRequest(request) {
-                withAttestation = true
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withAttestation = true
+                }
 
             val failure = result.expectFailure()
             assertInstanceOf<ConfigurationException>(failure.error)
@@ -156,9 +159,10 @@ class StubNetworkServiceTest {
             networkService.setSuccessResponse()
             networkService.setDPoPProvider(null)
 
-            val result = networkService.makeRequest(request) {
-                withRefreshDPoP = true
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withRefreshDPoP = true
+                }
 
             val failure = result.expectFailure()
             assertInstanceOf<ConfigurationException>(failure.error)
@@ -169,9 +173,10 @@ class StubNetworkServiceTest {
         runTest {
             networkService.setSuccessResponse()
 
-            val result = networkService.makeRequest(request) {
-                withAuthentication("scope")
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withAuthentication("scope")
+                }
 
             result.expectSuccess()
         }
@@ -181,9 +186,10 @@ class StubNetworkServiceTest {
         runTest {
             networkService.setSuccessResponse()
 
-            val result = networkService.makeRequest(request) {
-                withAttestation = true
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withAttestation = true
+                }
 
             result.expectSuccess()
         }
@@ -193,9 +199,10 @@ class StubNetworkServiceTest {
         runTest {
             networkService.setSuccessResponse()
 
-            val result = networkService.makeRequest(request) {
-                withRefreshDPoP = true
-            }
+            val result =
+                networkService.makeRequest(request) {
+                    withRefreshDPoP = true
+                }
 
             result.expectSuccess()
         }

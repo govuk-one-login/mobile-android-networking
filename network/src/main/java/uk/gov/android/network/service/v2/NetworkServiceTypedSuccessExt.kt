@@ -13,7 +13,6 @@ import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeReque
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 
 object NetworkServiceTypedSuccessExt {
-
     /**
      * Make an HTTP request and parse the JSON response
      *

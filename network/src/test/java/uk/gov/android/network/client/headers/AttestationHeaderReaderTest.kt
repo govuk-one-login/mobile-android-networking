@@ -2,8 +2,8 @@ package uk.gov.android.network.client.headers
 
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.attestation.TestClientAttestationProvider
 import uk.gov.android.network.attestation.clientAttestationFailure
 import uk.gov.android.network.attestation.clientAttestationSuccess
