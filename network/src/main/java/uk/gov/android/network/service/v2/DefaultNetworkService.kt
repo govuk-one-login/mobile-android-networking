@@ -18,7 +18,6 @@ import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.http.Header
 import uk.gov.android.network.service.ApiRequestException
 import uk.gov.android.network.service.ApiResponseException
-import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.TransportException
 import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.network.util.NetworkingResult
@@ -133,7 +132,8 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
             null
         )
 
-    private fun GenericResponseException.toApiResponseFailure(): ApiResponse.Failure<String, ApiResponseException> =
+    private fun GenericResponseException.toApiResponseFailure():
+        ApiResponse.Failure<String, ApiResponseException> =
         ApiResponse.Failure(
             status = response.status,
             body = response.body,
@@ -144,7 +144,8 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
                 )
         )
 
-    private fun SerializationException.toApiRequestFailure(): ApiResponse.Failure<String, ApiRequestException> =
+    private fun SerializationException.toApiRequestFailure():
+        ApiResponse.Failure<String, ApiRequestException> =
         ApiResponse.Failure(
             status = null,
             body = null,
