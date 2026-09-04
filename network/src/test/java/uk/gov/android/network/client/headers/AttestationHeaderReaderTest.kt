@@ -44,9 +44,9 @@ class AttestationHeaderReaderTest {
         assertEquals(
             listOf(
                 "OAuth-Client-Attestation" to "client-attestation-jwt",
-                "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt"
+                "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt",
             ),
-            result.expectSuccess()
+            result.expectSuccess(),
         )
     }
 
@@ -57,9 +57,9 @@ class AttestationHeaderReaderTest {
         assertEquals(
             listOf(
                 "OAuth-Client-Attestation" to "client-attestation-jwt",
-                "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt"
+                "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt",
             ),
-            result
+            result,
         )
     }
 }

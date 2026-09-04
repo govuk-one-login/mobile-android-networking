@@ -28,7 +28,7 @@ class NetworkServiceTypedFailureExtTest {
     fun `given valid json response, makeRequest returns parsed success`() = runTest {
         httpClient.response = GenericHttpResponse(
             status = 200,
-            body = """{"subject":"Test","message":"Hello"}"""
+            body = """{"subject":"Test","message":"Hello"}""",
         )
 
         val result = networkService.makeRequest<SuccessData, FailureData>(request)
@@ -62,7 +62,7 @@ class NetworkServiceTypedFailureExtTest {
             assertEquals(failureStatus, failure.status)
             assertEquals(
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
-                failure.error.message
+                failure.error.message,
             )
             assertInstanceOf<ApiResponseException>(failure.error)
         }
@@ -79,7 +79,7 @@ class NetworkServiceTypedFailureExtTest {
             assertEquals(failureStatus, failure.status)
             assertEquals(
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
-                failure.error.message
+                failure.error.message,
             )
             assertInstanceOf<ApiResponseException>(failure.error)
         }
@@ -115,7 +115,7 @@ class NetworkServiceTypedFailureExtTest {
 
             val result = networkService.makeRequest<SuccessData, FailureData>(
                 request,
-                json = strictJson
+                json = strictJson,
             )
 
             val failure = result.expectFailure()
@@ -133,9 +133,9 @@ class NetworkServiceTypedFailureExtTest {
         httpClient.exception = GenericResponseException(
             response = GenericHttpResponse(
                 status = failureStatus,
-                body = body
+                body = body,
             ),
-            cause = IllegalStateException("$failureStatus")
+            cause = IllegalStateException("$failureStatus"),
         )
     }
 }

@@ -37,10 +37,10 @@ class KtorHttpClientCacheTest {
                             headers =
                                 headersOf(
                                     HttpHeaders.ContentType to listOf("application/json"),
-                                    HttpHeaders.CacheControl to listOf("max-age=3600")
-                                )
+                                    HttpHeaders.CacheControl to listOf("max-age=3600"),
+                                ),
                         )
-                    }
+                    },
             )
 
         val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
@@ -72,10 +72,10 @@ class KtorHttpClientCacheTest {
                             headers =
                                 headersOf(
                                     HttpHeaders.ContentType to listOf("application/json"),
-                                    HttpHeaders.CacheControl to listOf("no-store")
-                                )
+                                    HttpHeaders.CacheControl to listOf("no-store"),
+                                ),
                         )
-                    }
+                    },
             )
 
         val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
@@ -108,8 +108,8 @@ class KtorHttpClientCacheTest {
                                 headers =
                                     headersOf(
                                         HttpHeaders.ETag,
-                                        "\"abc123\""
-                                    )
+                                        "\"abc123\"",
+                                    ),
                             )
                         } else {
                             respond(
@@ -119,11 +119,11 @@ class KtorHttpClientCacheTest {
                                     headersOf(
                                         HttpHeaders.ContentType to listOf("application/json"),
                                         HttpHeaders.CacheControl to listOf("no-cache"),
-                                        HttpHeaders.ETag to listOf("\"abc123\"")
-                                    )
+                                        HttpHeaders.ETag to listOf("\"abc123\""),
+                                    ),
                             )
                         }
-                    }
+                    },
             )
 
         val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
@@ -155,10 +155,10 @@ class KtorHttpClientCacheTest {
                             headers =
                                 headersOf(
                                     HttpHeaders.ContentType,
-                                    "application/json"
-                                )
+                                    "application/json",
+                                ),
                         )
-                    }
+                    },
             )
 
         val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))
@@ -190,10 +190,10 @@ class KtorHttpClientCacheTest {
                             headers =
                                 headersOf(
                                     HttpHeaders.ContentType to listOf("application/json"),
-                                    HttpHeaders.CacheControl to listOf("max-age=3600")
-                                )
+                                    HttpHeaders.CacheControl to listOf("max-age=3600"),
+                                ),
                         )
-                    }
+                    },
             )
 
         client.makeRequest(ApiRequest.Get("https://api.example.com/data1"))
@@ -224,10 +224,10 @@ class KtorHttpClientCacheTest {
                             headers =
                                 headersOf(
                                     HttpHeaders.ContentType to listOf("application/json"),
-                                    HttpHeaders.CacheControl to listOf("private, max-age=3600")
-                                )
+                                    HttpHeaders.CacheControl to listOf("private, max-age=3600"),
+                                ),
                         )
-                    }
+                    },
             )
 
         val response1 = client.makeRequest(ApiRequest.Get("https://api.example.com/data"))

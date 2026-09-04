@@ -110,7 +110,7 @@ class StubNetworkServiceTest {
         networkService.setSuccessResponse()
         val postRequest = ApiRequest.Post(
             url = "https://example.com/data",
-            body = "payload"
+            body = "payload",
         )
 
         networkService.makeRequest(postRequest)

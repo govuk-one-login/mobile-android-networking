@@ -47,7 +47,7 @@ class AuthenticationProviderException(message: String, cause: Throwable?) :
 class ClientAttestationException(
     message: String,
     val reason: ClientAttestationErrorReason,
-    cause: Throwable?
+    cause: Throwable?,
 ) : ServiceException(message, cause)
 
 /**

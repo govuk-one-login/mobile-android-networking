@@ -37,14 +37,14 @@ class KtorAuthHttpClientTest {
                 respond(
                     content = expectedResultString,
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine
+                ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
         val newMockAuthenticationProvider =
@@ -54,16 +54,16 @@ class KtorAuthHttpClientTest {
             ApiRequest.Post(
                 url = url,
                 body = body,
-                contentType = contentType
+                contentType = contentType,
             ),
-            expectedScope
+            expectedScope,
         )
         assertEquals(expectedScope, newMockAuthenticationProvider.spyScope)
         assertEquals(mockEngine.requestHistory.size, 1)
         val headers = mockEngine.requestHistory.first().headers
         assertEquals(
             headers[AUTH_HEADER_KEY],
-            AUTH_HEADER_VALUE + expectedBearerToken
+            AUTH_HEADER_VALUE + expectedBearerToken,
         )
     }
 
@@ -81,14 +81,14 @@ class KtorAuthHttpClientTest {
                 respond(
                     content = expectedResultString,
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine
+                ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
         val mockAuthenticationProvider =
@@ -99,9 +99,9 @@ class KtorAuthHttpClientTest {
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
+                    contentType = contentType,
                 ),
-                expectedScope
+                expectedScope,
             )
         assertEquals(expectedResponse, actualResponse)
         assertEquals(expectedScope, mockAuthenticationProvider.spyScope)
@@ -109,7 +109,7 @@ class KtorAuthHttpClientTest {
         val headers = mockEngine.requestHistory.first().headers
         assertEquals(
             headers[AUTH_HEADER_KEY],
-            AUTH_HEADER_VALUE + expectedBearerToken
+            AUTH_HEADER_VALUE + expectedBearerToken,
         )
     }
 
@@ -125,16 +125,16 @@ class KtorAuthHttpClientTest {
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
+                    contentType = contentType,
                 ),
-                expectedScope
+                expectedScope,
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
         assertEquals(0, failureResponse.status)
         assertEquals(
             "Service Token Provider not initialised",
-            failureResponse.error.localizedMessage
+            failureResponse.error.localizedMessage,
         )
     }
 
@@ -153,9 +153,9 @@ class KtorAuthHttpClientTest {
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
+                    contentType = contentType,
                 ),
-                expectedScope
+                expectedScope,
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
@@ -174,14 +174,14 @@ class KtorAuthHttpClientTest {
                 respond(
                     content = expectedResultString,
                     status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json")
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
                 )
             }
         sut =
             KtorHttpClient(
                 userAgentGenerator = userAgentGenerator,
                 logger = KtorLogger.noOp,
-                ktorClientEngine = mockEngine
+                ktorClientEngine = mockEngine,
             )
         val expectedBearerToken = "ExpectedBearerToken"
         val newMockAuthenticationProvider =
@@ -190,16 +190,16 @@ class KtorAuthHttpClientTest {
         sut.makeAuthorisedRequest(
             ApiRequest.FormUrlEncoded(
                 url = url,
-                params = listOf(Pair("key", "value"))
+                params = listOf(Pair("key", "value")),
             ),
-            expectedScope
+            expectedScope,
         )
         assertEquals(expectedScope, newMockAuthenticationProvider.spyScope)
         assertEquals(mockEngine.requestHistory.size, 1)
         val headers = mockEngine.requestHistory.first().headers
         assertEquals(
             headers[AUTH_HEADER_KEY],
-            AUTH_HEADER_VALUE + expectedBearerToken
+            AUTH_HEADER_VALUE + expectedBearerToken,
         )
     }
 }

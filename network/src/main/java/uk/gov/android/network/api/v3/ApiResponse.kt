@@ -28,6 +28,6 @@ sealed interface ApiResponse<out T, out F, out E : Exception> {
     data class Failure<F, E : Exception>(
         val error: E,
         val status: Int? = null,
-        val body: F? = null
+        val body: F? = null,
     ) : ApiResponse<Nothing, F, E>
 }

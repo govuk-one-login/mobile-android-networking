@@ -33,9 +33,9 @@ class KtorHttpClientTest {
                         respond(
                             content = expectedResultString,
                             status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
 
         val actualResponse = sut.makeRequest(ApiRequest.Get(url))
@@ -55,9 +55,9 @@ class KtorHttpClientTest {
                         respond(
                             content = errorString,
                             status = HttpStatusCode.Unauthorized,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse = sut.makeRequest(ApiRequest.Get(url))
         assert(actualResponse is ApiResponse.Failure)
@@ -77,7 +77,7 @@ class KtorHttpClientTest {
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
-                    }
+                    },
             )
         val actualResponse = sut.makeRequest(ApiRequest.Get(url))
         assert(actualResponse is ApiResponse.Failure)
@@ -102,17 +102,17 @@ class KtorHttpClientTest {
                         respond(
                             content = expectedResultString,
                             status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
-                )
+                    contentType = contentType,
+                ),
             )
         assertEquals(expectedResponse, actualResponse)
     }
@@ -132,17 +132,17 @@ class KtorHttpClientTest {
                         respond(
                             content = expectedResultString,
                             status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.Post(
                     url = url,
                     body = null,
-                    contentType = contentType
-                )
+                    contentType = contentType,
+                ),
             )
         assertEquals(expectedResponse, actualResponse)
     }
@@ -162,17 +162,17 @@ class KtorHttpClientTest {
                         respond(
                             content = errorString,
                             status = HttpStatusCode.Unauthorized,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
-                )
+                    contentType = contentType,
+                ),
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
@@ -193,15 +193,15 @@ class KtorHttpClientTest {
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
-                )
+                    contentType = contentType,
+                ),
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
@@ -224,17 +224,17 @@ class KtorHttpClientTest {
                         respond(
                             content = expectedResultString,
                             status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.Post(
                     url = url,
                     body = body,
-                    contentType = contentType
-                )
+                    contentType = contentType,
+                ),
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
@@ -256,16 +256,16 @@ class KtorHttpClientTest {
                         respond(
                             content = expectedResultString,
                             status = HttpStatusCode.OK,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.FormUrlEncoded(
                     url = url,
-                    params = listOf(Pair("key", "value"))
-                )
+                    params = listOf(Pair("key", "value")),
+                ),
             )
         assertEquals(expectedResponse, actualResponse)
     }
@@ -283,16 +283,16 @@ class KtorHttpClientTest {
                         respond(
                             content = errorString,
                             status = HttpStatusCode.Unauthorized,
-                            headers = headersOf(HttpHeaders.ContentType, "application/json")
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
                         )
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.FormUrlEncoded(
                     url = url,
-                    params = listOf(Pair("key", "value"))
-                )
+                    params = listOf(Pair("key", "value")),
+                ),
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure
@@ -311,14 +311,14 @@ class KtorHttpClientTest {
                 ktorClientEngine =
                     MockEngine {
                         throw IllegalStateException(errorMessage)
-                    }
+                    },
             )
         val actualResponse =
             sut.makeRequest(
                 ApiRequest.FormUrlEncoded(
                     url = url,
-                    params = listOf(Pair("key", "value"))
-                )
+                    params = listOf(Pair("key", "value")),
+                ),
             )
         assert(actualResponse is ApiResponse.Failure)
         val failureResponse = actualResponse as ApiResponse.Failure

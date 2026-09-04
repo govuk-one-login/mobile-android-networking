@@ -10,7 +10,7 @@ package uk.gov.android.network.auth
  */
 class TestAuthenticationProvider(
     var response: AuthenticationResponse = authenticationSuccess,
-    var expectedScope: String? = null
+    var expectedScope: String? = null,
 ) : AuthenticationProvider {
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
         if (expectedScope != null && scope != expectedScope) {

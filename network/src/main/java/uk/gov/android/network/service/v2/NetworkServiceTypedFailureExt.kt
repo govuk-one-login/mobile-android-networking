@@ -30,7 +30,7 @@ object NetworkServiceTypedFailureExt {
     suspend inline fun <reified T, reified F> NetworkService.makeRequest(
         apiRequest: ApiRequest,
         json: Json = JsonDefaults.jsonDecoder,
-        noinline configure: RequestConfigBuilder.() -> Unit = {}
+        noinline configure: RequestConfigBuilder.() -> Unit = {},
     ): ApiResponse<T, F, NetworkingException> {
         val response = makeRequest<T>(apiRequest, json, configure)
 
@@ -43,7 +43,7 @@ object NetworkServiceTypedFailureExt {
         val body = failure.body ?: return ApiResponse.Failure(
             error = response.error,
             status = response.status,
-            body = null
+            body = null,
         )
 
         val parsed =
@@ -53,14 +53,14 @@ object NetworkServiceTypedFailureExt {
                 return ApiResponse.Failure(
                     error = ApiResponseException("Failed to parse response body as ${F::class}", e),
                     status = failure.status,
-                    body = null
+                    body = null,
                 )
             }
 
         return ApiResponse.Failure(
             error = response.error,
             body = parsed,
-            status = response.status
+            status = response.status,
         )
     }
 }
@@ -68,7 +68,7 @@ object NetworkServiceTypedFailureExt {
 @ExcludeFromJacocoGeneratedReport
 internal suspend fun networkServiceParseFailureSample(
     request: ApiRequest,
-    networkService: NetworkService
+    networkService: NetworkService,
 ) {
     @Serializable
     @ExcludeFromJacocoGeneratedReport
