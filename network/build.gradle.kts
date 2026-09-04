@@ -21,7 +21,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -61,7 +61,7 @@ android {
                     setOf(
                         TestLogEvent.FAILED,
                         TestLogEvent.PASSED,
-                        TestLogEvent.SKIPPED
+                        TestLogEvent.SKIPPED,
                     )
             }
         }
@@ -81,7 +81,7 @@ dependencies {
         libs.ktor.client.core,
         libs.ktor.client.contentnegotiation,
         libs.ktor.client.logging,
-        libs.ktor.serialization.kotlinx.json
+        libs.ktor.serialization.kotlinx.json,
     ).forEach { dependency ->
         implementation(dependency)
     }
@@ -93,7 +93,7 @@ dependencies {
         libs.ktor.client.mock,
         libs.mockito.core,
         libs.mockito.kotlin,
-        libs.kotlinx.coroutines.test
+        libs.kotlinx.coroutines.test,
     ).forEach { dependency ->
         testImplementation(dependency)
     }
@@ -109,7 +109,7 @@ dependencies {
         libs.espresso.core,
         libs.mockwebserver,
         libs.okhttp.tls,
-        libs.kotlinx.coroutines.test
+        libs.kotlinx.coroutines.test,
     ).forEach { dependency ->
         androidTestImplementation(dependency)
     }
@@ -120,12 +120,12 @@ dependencies {
 mavenPublishingConfig {
     mavenConfigBlock {
         name.set(
-            "Mobile Android Networking"
+            "Mobile Android Networking",
         )
         description.set(
             """
             A Gradle module with support for API calls including certificate pinning to AWS and setting user agent
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 }

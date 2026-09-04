@@ -42,7 +42,7 @@ interface NetworkService {
      */
     suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit = { }
+        configure: RequestConfigBuilder.() -> Unit = { },
     ): NetworkServiceResponse
 }
 
@@ -53,8 +53,8 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
             url = "https://example.gov.uk",
             headers =
                 listOf(
-                    "x-example" to "example header"
-                )
+                    "x-example" to "example header",
+                ),
         )
 
     val response =
@@ -81,14 +81,16 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
                 is ClientAttestationException -> when (response.error.reason) {
                     ClientAttestationErrorReason.APP_CHECK_FAILED,
                     ClientAttestationErrorReason.INTERMITTENT,
-                    ClientAttestationErrorReason.GENERIC -> {
+                    ClientAttestationErrorReason.GENERIC,
+                    -> {
                         // Handle client attestation errors
                     }
                 }
 
                 is AuthenticationProviderException,
                 is DPoPException,
-                is ServiceException -> Unit
+                is ServiceException,
+                -> Unit
 
                 // NetworkService wasn't configured properly
                 is ConfigurationException -> Unit

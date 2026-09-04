@@ -4,12 +4,12 @@ object TestHttpResponse {
     val success =
         GenericHttpResponse(
             200,
-            "success"
+            "success",
         )
 
     val internalServerError =
         GenericHttpResponse(
             500,
-            "error"
+            "error",
         )
 }

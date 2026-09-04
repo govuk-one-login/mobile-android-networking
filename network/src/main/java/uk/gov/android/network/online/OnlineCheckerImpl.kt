@@ -8,7 +8,7 @@ class OnlineCheckerImpl(private val connectivityManager: ConnectivityManager) : 
         arrayOf(
             NetworkCapabilities.TRANSPORT_CELLULAR,
             NetworkCapabilities.TRANSPORT_WIFI,
-            NetworkCapabilities.TRANSPORT_ETHERNET
+            NetworkCapabilities.TRANSPORT_ETHERNET,
         )
 
     /**
@@ -18,7 +18,7 @@ class OnlineCheckerImpl(private val connectivityManager: ConnectivityManager) : 
      */
     override fun isOnline(): Boolean = connectivityManager
         .getNetworkCapabilities(
-            connectivityManager.activeNetwork
+            connectivityManager.activeNetwork,
         )?.let { networkCapabilities ->
             applicableTransportTypes.any { transportType ->
                 networkCapabilities.hasTransport(transportType)

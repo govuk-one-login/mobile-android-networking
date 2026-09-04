@@ -14,7 +14,7 @@ data class GenericHttpResponse(val status: Int, val body: String) {
         internal suspend fun fromKtorHttpResponse(httpResponse: HttpResponse): GenericHttpResponse =
             GenericHttpResponse(
                 status = httpResponse.status.value,
-                body = httpResponse.body()
+                body = httpResponse.body(),
             )
     }
 }

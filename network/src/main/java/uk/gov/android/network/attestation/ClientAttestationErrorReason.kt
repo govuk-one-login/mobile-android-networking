@@ -19,5 +19,5 @@ enum class ClientAttestationErrorReason {
     /**
      * All the other unspecified errors
      */
-    GENERIC
+    GENERIC,
 }

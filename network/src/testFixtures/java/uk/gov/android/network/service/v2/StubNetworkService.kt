@@ -25,7 +25,7 @@ class StubNetworkService(
     val testAuthenticationProvider: TestAuthenticationProvider = TestAuthenticationProvider(),
     val testClientAttestationProvider: TestClientAttestationProvider =
         TestClientAttestationProvider(),
-    val testDPoPProvider: TestDPoPProvider = TestDPoPProvider()
+    val testDPoPProvider: TestDPoPProvider = TestDPoPProvider(),
 ) : NetworkService {
     private val delegate = DefaultNetworkService(httpClient).apply {
         setAuthenticationProvider(testAuthenticationProvider)
@@ -37,7 +37,7 @@ class StubNetworkService(
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit
+        configure: RequestConfigBuilder.() -> Unit,
     ): NetworkServiceResponse = delegate.makeRequest(apiRequest, configure)
 
     fun setAuthenticationProvider(authenticationProvider: AuthenticationProvider?) {
@@ -54,9 +54,9 @@ class StubNetworkService(
 
     fun setSuccessResponse(
         status: Int = TestHttpResponse.success.status,
-        body: String = TestHttpResponse.success.body
+        body: String = TestHttpResponse.success.body,
     ) = setSuccessResponse(
-        GenericHttpResponse(status, body)
+        GenericHttpResponse(status, body),
     )
 
     fun setSuccessResponse(response: GenericHttpResponse = TestHttpResponse.success) {
@@ -65,15 +65,15 @@ class StubNetworkService(
 
     fun setFailureResponse(
         status: Int = TestHttpResponse.internalServerError.status,
-        body: String = TestHttpResponse.internalServerError.body
+        body: String = TestHttpResponse.internalServerError.body,
     ) = setFailureResponse(
-        GenericHttpResponse(status, body)
+        GenericHttpResponse(status, body),
     )
 
     fun setFailureResponse(response: GenericHttpResponse = TestHttpResponse.internalServerError) {
         httpClient.exception = GenericResponseException(
             response,
-            IllegalStateException("Status $response.status")
+            IllegalStateException("Status $response.status"),
         )
     }
 

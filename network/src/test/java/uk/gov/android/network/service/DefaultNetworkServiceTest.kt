@@ -100,9 +100,9 @@ class DefaultNetworkServiceTest {
 
         assertEquals(
             request.copy(
-                headers = request.headers + ("Authorization" to "Bearer bearer-token")
+                headers = request.headers + ("Authorization" to "Bearer bearer-token"),
             ),
-            httpClient.receivedRequest
+            httpClient.receivedRequest,
         )
     }
 
@@ -147,10 +147,10 @@ class DefaultNetworkServiceTest {
                     request.headers +
                         listOf(
                             "OAuth-Client-Attestation" to "client-attestation-jwt",
-                            "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt"
-                        )
+                            "OAuth-Client-Attestation-PoP" to "attestation-pop-jwt",
+                        ),
             ),
-            httpClient.receivedRequest
+            httpClient.receivedRequest,
         )
     }
 
@@ -181,9 +181,9 @@ class DefaultNetworkServiceTest {
 
         assertEquals(
             request.copy(
-                headers = request.headers + ("DPoP" to "dpop-proof-jwt")
+                headers = request.headers + ("DPoP" to "dpop-proof-jwt"),
             ),
-            httpClient.receivedRequest
+            httpClient.receivedRequest,
         )
     }
 

@@ -52,10 +52,10 @@ class NetworkServiceTypedSuccessExtTest {
         // First check that our custom Json is stricter
         assertTrue(
             customStrictJson.configuration.ignoreUnknownKeys !=
-                JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys
+                JsonDefaults.jsonDecoder.configuration.ignoreUnknownKeys,
         )
         givenSuccessResponse(
-            body = """{"subject":"Test","message":"Hello","new":"Hello"}"""
+            body = """{"subject":"Test","message":"Hello","new":"Hello"}""",
         )
 
         val result = networkService.makeRequest<TestData>(request, json = customStrictJson)
@@ -93,7 +93,7 @@ class NetworkServiceTypedSuccessExtTest {
         val failure = result.expectFailure()
         assertEquals(
             "Failed to parse response body as class uk.gov.android.network.service.v2.TestData",
-            failure.error.message
+            failure.error.message,
         )
         assertInstanceOf<ApiResponseException>(failure.error)
     }

@@ -80,13 +80,13 @@ class KtorHttpClientTlsTest {
                 ktorClientEngine =
                     createKtorAndroidEngine(
                         trustManager = clientCerts.trustManager,
-                        hostnameVerifier = HostnameVerifier { _, _ -> true }
-                    )
+                        hostnameVerifier = HostnameVerifier { _, _ -> true },
+                    ),
             )
 
         val response =
             client.makeRequest(
-                ApiRequest.Get("https://localhost:${server.port}/test")
+                ApiRequest.Get("https://localhost:${server.port}/test"),
             )
 
         assertTrue("Expected failure but got: $response", response is ApiResponse.Failure)
@@ -94,7 +94,7 @@ class KtorHttpClientTlsTest {
         assertTrue(
             "Expected SSL-related exception but got: ${failure.error}",
             failure.error is SSLException ||
-                failure.error.cause is SSLException
+                failure.error.cause is SSLException,
         )
     }
 
@@ -111,18 +111,18 @@ class KtorHttpClientTlsTest {
                 ktorClientEngine =
                     createKtorAndroidEngine(
                         trustManager = clientCerts.trustManager,
-                        hostnameVerifier = HostnameVerifier { _, _ -> true }
-                    )
+                        hostnameVerifier = HostnameVerifier { _, _ -> true },
+                    ),
             )
 
         val response =
             client.makeRequest(
-                ApiRequest.Get("https://localhost:${server.port}/test")
+                ApiRequest.Get("https://localhost:${server.port}/test"),
             )
 
         assertTrue(
             "Expected success but got: $response",
-            response is ApiResponse.Success<*>
+            response is ApiResponse.Success<*>,
         )
     }
 
@@ -145,17 +145,17 @@ class KtorHttpClientTlsTest {
                             connection.hostnameVerifier =
                                 HostnameVerifier { _, _ -> true }
                         }
-                    }
+                    },
             )
 
         val response =
             client.makeRequest(
-                ApiRequest.Get("https://localhost:${server.port}/test")
+                ApiRequest.Get("https://localhost:${server.port}/test"),
             )
 
         assertTrue(
             "Expected success (proving TLS 1.1 works without enforcement) but got: $response",
-            response is ApiResponse.Success<*>
+            response is ApiResponse.Success<*>,
         )
     }
 
@@ -164,7 +164,7 @@ class KtorHttpClientTlsTest {
         sslContext.init(
             arrayOf(serverCerts.keyManager),
             arrayOf(serverCerts.trustManager),
-            null
+            null,
         )
         val delegate = sslContext.socketFactory
         return object : SSLSocketFactory() {
@@ -185,7 +185,7 @@ class KtorHttpClientTlsTest {
                 host: String?,
                 port: Int,
                 localHost: InetAddress?,
-                localPort: Int
+                localPort: Int,
             ) = (delegate.createSocket(host, port, localHost, localPort) as SSLSocket)
                 .restrictToTls11()
 
@@ -196,7 +196,7 @@ class KtorHttpClientTlsTest {
                 address: InetAddress?,
                 port: Int,
                 localAddress: InetAddress?,
-                localPort: Int
+                localPort: Int,
             ) = (delegate.createSocket(address, port, localAddress, localPort) as SSLSocket)
                 .restrictToTls11()
 

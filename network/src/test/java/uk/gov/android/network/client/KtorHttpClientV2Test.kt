@@ -26,7 +26,7 @@ class KtorHttpClientV2Test {
     private fun createClient(engine: MockEngine = mockEngine): GenericHttpClient = KtorHttpClient(
         userAgentGenerator = userAgentGenerator,
         logger = KtorLogger.noOp,
-        ktorClientEngine = engine
+        ktorClientEngine = engine,
     )
 
     @Test
@@ -65,8 +65,8 @@ class KtorHttpClientV2Test {
             client.request(
                 ApiRequest.Post(
                     url = URL,
-                    body = REQUEST_BODY
-                )
+                    body = REQUEST_BODY,
+                ),
             )
 
         assertEquals(201, response.status)
@@ -81,8 +81,8 @@ class KtorHttpClientV2Test {
             ApiRequest.Post(
                 url = URL,
                 body = REQUEST_BODY,
-                contentType = ContentType.APPLICATION_JSON
-            )
+                contentType = ContentType.APPLICATION_JSON,
+            ),
         )
 
         val sentRequest = mockEngine.requestHistory.first()
@@ -98,8 +98,8 @@ class KtorHttpClientV2Test {
                 ApiRequest.Post(
                     url = URL,
                     body = SerializableBody(title = "title", body = "body"),
-                    contentType = ContentType.APPLICATION_JSON
-                )
+                    contentType = ContentType.APPLICATION_JSON,
+                ),
             )
 
         assertEquals(200, response.status)
@@ -115,8 +115,8 @@ class KtorHttpClientV2Test {
                 ApiRequest.Post(
                     url = URL,
                     body = NonSerializableBody(title = "title", body = "body"),
-                    contentType = ContentType.APPLICATION_JSON
-                )
+                    contentType = ContentType.APPLICATION_JSON,
+                ),
             )
         }
     }
@@ -135,8 +135,8 @@ class KtorHttpClientV2Test {
                     ApiRequest.Post(
                         url = URL,
                         body = REQUEST_BODY,
-                        contentType = ContentType.APPLICATION_JSON
-                    )
+                        contentType = ContentType.APPLICATION_JSON,
+                    ),
                 )
             }
 
@@ -151,8 +151,8 @@ class KtorHttpClientV2Test {
             client.request(
                 ApiRequest.FormUrlEncoded(
                     url = URL,
-                    params = listOf("key" to "value")
-                )
+                    params = listOf("key" to "value"),
+                ),
             )
 
         assertEquals(200, response.status)
@@ -166,8 +166,8 @@ class KtorHttpClientV2Test {
         client.request(
             ApiRequest.FormUrlEncoded(
                 url = URL,
-                params = listOf("field" to "value")
-            )
+                params = listOf("field" to "value"),
+            ),
         )
 
         val sentRequest = mockEngine.requestHistory.first()
@@ -181,14 +181,14 @@ class KtorHttpClientV2Test {
         client.request(
             ApiRequest.FormUrlEncoded(
                 url = URL,
-                params = listOf("field" to "value")
-            )
+                params = listOf("field" to "value"),
+            ),
         )
 
         val sentRequest = mockEngine.requestHistory.first()
         assertEquals(
             "application/x-www-form-urlencoded; charset=UTF-8",
-            sentRequest.body.contentType?.toString()
+            sentRequest.body.contentType?.toString(),
         )
     }
 
@@ -203,8 +203,8 @@ class KtorHttpClientV2Test {
                 client.request(
                     ApiRequest.FormUrlEncoded(
                         url = URL,
-                        params = listOf("key" to "value")
-                    )
+                        params = listOf("key" to "value"),
+                    ),
                 )
             }
 
@@ -218,8 +218,8 @@ class KtorHttpClientV2Test {
         client.request(
             ApiRequest.Get(
                 url = URL,
-                headers = listOf("X-Custom" to "value")
-            )
+                headers = listOf("X-Custom" to "value"),
+            ),
         )
 
         val sentRequest = mockEngine.requestHistory.first()

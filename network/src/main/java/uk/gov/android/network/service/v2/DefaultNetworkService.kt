@@ -38,7 +38,7 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit
+        configure: RequestConfigBuilder.() -> Unit,
     ): NetworkServiceResponse {
         val config = RequestConfigBuilder().apply { configure() }.build()
 
@@ -68,7 +68,7 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
         // Successful (1XX or 2XX) response
         return ApiResponse.Success(
             body = response.body,
-            status = response.status
+            status = response.status,
         )
     }
 
@@ -121,15 +121,15 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
             attestationHeaders +
                 listOfNotNull(
                     authHeader,
-                    refreshDPoPHeader
-                )
+                    refreshDPoPHeader,
+                ),
         )
     }
 
     private fun Exception.toTransportFailure(): ApiResponse.Failure<String, TransportException> =
         ApiResponse.Failure(
             TransportException(this),
-            null
+            null,
         )
 
     private fun GenericResponseException.toApiResponseFailure():
@@ -140,8 +140,8 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
             error =
                 ApiResponseException(
                     "API responded with ${response.status}",
-                    this
-                )
+                    this,
+                ),
         )
 
     private fun SerializationException.toApiRequestFailure():
@@ -152,8 +152,8 @@ class DefaultNetworkService(private val httpClient: GenericHttpClient) : Network
             error =
                 ApiRequestException(
                     "Serialization failed",
-                    this
-                )
+                    this,
+                ),
         )
 }
 
@@ -163,7 +163,7 @@ internal suspend fun defaultNetworkServiceSample(
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
     clientAttestationProvider: ClientAttestationProvider,
-    dPoPProvider: DPoPProvider
+    dPoPProvider: DPoPProvider,
 ) {
     val networkService = DefaultNetworkService(httpClient)
 
