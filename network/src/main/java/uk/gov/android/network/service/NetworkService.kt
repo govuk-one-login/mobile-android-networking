@@ -20,7 +20,7 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 @Deprecated(
     "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
     replaceWith = ReplaceWith(
-        "uk.gov.android.network.service.v2.NetworkService",
+        "uk.gov.android.network.service.v2.NetworkService"
     )
 )
 interface NetworkService {
@@ -37,7 +37,7 @@ interface NetworkService {
      */
     suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit = { },
+        configure: RequestConfigBuilder.() -> Unit = { }
     ): ApiResponse<String, NetworkingException>
 }
 
@@ -48,8 +48,8 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
             url = "https://example.gov.uk",
             headers =
                 listOf(
-                    "x-example" to "example header",
-                ),
+                    "x-example" to "example header"
+                )
         )
 
     val response =
@@ -63,12 +63,13 @@ internal suspend fun networkServiceSample(networkService: NetworkService) {
         is ApiResponse.Success -> {
             // Parse the response
         }
+
         is ApiResponse.Failure -> {
             when (response.error) {
                 is ApiResponseException,
                 is ConfigurationException,
                 is ServiceException,
-                is TransportException,
+                is TransportException
                 -> {
                     // Handle any errors
                 }

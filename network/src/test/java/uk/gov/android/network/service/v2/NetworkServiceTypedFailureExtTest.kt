@@ -5,9 +5,9 @@ import kotlinx.io.IOException
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectFailure
 import uk.gov.android.network.api.v3.ApiResponseAssertions.expectSuccess
@@ -25,32 +25,30 @@ class NetworkServiceTypedFailureExtTest {
     private val failureStatus = 500
 
     @Test
-    fun `given valid json response, makeRequest returns parsed success`() =
-        runTest {
-            httpClient.response = GenericHttpResponse(
-                status = 200,
-                body = """{"subject":"Test","message":"Hello"}""",
-            )
+    fun `given valid json response, makeRequest returns parsed success`() = runTest {
+        httpClient.response = GenericHttpResponse(
+            status = 200,
+            body = """{"subject":"Test","message":"Hello"}"""
+        )
 
-            val result = networkService.makeRequest<SuccessData, FailureData>(request)
+        val result = networkService.makeRequest<SuccessData, FailureData>(request)
 
-            val success = result.expectSuccess()
-            assertEquals(SuccessData("Test", "Hello"), success.body)
-            assertEquals(200, success.status)
-        }
+        val success = result.expectSuccess()
+        assertEquals(SuccessData("Test", "Hello"), success.body)
+        assertEquals(200, success.status)
+    }
 
     @Test
-    fun `given failure response with valid json, makeRequest returns parsed failure`() =
-        runTest {
-            givenFailureResponse()
+    fun `given failure response with valid json, makeRequest returns parsed failure`() = runTest {
+        givenFailureResponse()
 
-            val result = networkService.makeRequest<SuccessData, FailureData>(request)
+        val result = networkService.makeRequest<SuccessData, FailureData>(request)
 
-            val failure = result.expectFailure()
-            assertEquals(FailureData(123), failure.body)
-            assertEquals(failureStatus, failure.status)
-            assertInstanceOf<ApiResponseException>(failure.error)
-        }
+        val failure = result.expectFailure()
+        assertEquals(FailureData(123), failure.body)
+        assertEquals(failureStatus, failure.status)
+        assertInstanceOf<ApiResponseException>(failure.error)
+    }
 
     @Test
     fun `given failure response with unparseable json, makeRequest returns failure with null response`() =
@@ -64,7 +62,7 @@ class NetworkServiceTypedFailureExtTest {
             assertEquals(failureStatus, failure.status)
             assertEquals(
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
-                failure.error.message,
+                failure.error.message
             )
             assertInstanceOf<ApiResponseException>(failure.error)
         }
@@ -81,35 +79,33 @@ class NetworkServiceTypedFailureExtTest {
             assertEquals(failureStatus, failure.status)
             assertEquals(
                 "Failed to parse response body as class uk.gov.android.network.service.v2.FailureData",
-                failure.error.message,
+                failure.error.message
             )
             assertInstanceOf<ApiResponseException>(failure.error)
         }
 
     @Test
-    fun `given transport failure, makeRequest returns failure with null response`() =
-        runTest {
-            httpClient.exception = IOException("connection failed")
+    fun `given transport failure, makeRequest returns failure with null response`() = runTest {
+        httpClient.exception = IOException("connection failed")
 
-            val result = networkService.makeRequest<SuccessData, FailureData>(request)
+        val result = networkService.makeRequest<SuccessData, FailureData>(request)
 
-            val failure = result.expectFailure()
-            assertNull(failure.body)
-            assertNull(failure.status)
-            assertInstanceOf<TransportException>(failure.error)
-        }
+        val failure = result.expectFailure()
+        assertNull(failure.body)
+        assertNull(failure.status)
+        assertInstanceOf<TransportException>(failure.error)
+    }
 
     @Test
-    fun `given failure response with unknown key, makeRequest returns parsed failure`() =
-        runTest {
-            givenFailureResponse("""{"errorCode":123,"extra":"unknown"}""")
+    fun `given failure response with unknown key, makeRequest returns parsed failure`() = runTest {
+        givenFailureResponse("""{"errorCode":123,"extra":"unknown"}""")
 
-            val result = networkService.makeRequest<SuccessData, FailureData>(request)
+        val result = networkService.makeRequest<SuccessData, FailureData>(request)
 
-            val failure = result.expectFailure()
-            assertEquals(FailureData(123), failure.body)
-            assertEquals(failureStatus, failure.status)
-        }
+        val failure = result.expectFailure()
+        assertEquals(FailureData(123), failure.body)
+        assertEquals(failureStatus, failure.status)
+    }
 
     @Test
     fun `when Json is provided, makeRequest uses the given implementation for failure parsing`() =
@@ -119,7 +115,7 @@ class NetworkServiceTypedFailureExtTest {
 
             val result = networkService.makeRequest<SuccessData, FailureData>(
                 request,
-                json = strictJson,
+                json = strictJson
             )
 
             val failure = result.expectFailure()
@@ -133,27 +129,19 @@ class NetworkServiceTypedFailureExtTest {
         networkServiceParseFailureSample(request, networkService)
     }
 
-    private fun givenFailureResponse(
-        body: String = """{"errorCode":123}""",
-    ) {
+    private fun givenFailureResponse(body: String = """{"errorCode":123}""") {
         httpClient.exception = GenericResponseException(
             response = GenericHttpResponse(
                 status = failureStatus,
-                body = body,
+                body = body
             ),
-            cause = IllegalStateException("$failureStatus"),
+            cause = IllegalStateException("$failureStatus")
         )
     }
-
 }
 
 @Serializable
-private data class SuccessData(
-    val subject: String,
-    val message: String,
-)
+private data class SuccessData(val subject: String, val message: String)
 
 @Serializable
-private data class FailureData(
-    val errorCode: Int,
-)
+private data class FailureData(val errorCode: Int)

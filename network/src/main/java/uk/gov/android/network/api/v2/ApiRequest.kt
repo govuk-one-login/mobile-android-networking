@@ -15,7 +15,7 @@ sealed interface ApiRequest {
      */
     data class Get(
         override val url: String,
-        override val headers: List<Pair<String, String>> = emptyList(),
+        override val headers: List<Pair<String, String>> = emptyList()
     ) : ApiRequest
 
     /**
@@ -28,7 +28,7 @@ sealed interface ApiRequest {
         override val url: String,
         val body: T?,
         override val headers: List<Pair<String, String>> = emptyList(),
-        val contentType: ContentType? = null,
+        val contentType: ContentType? = null
     ) : ApiRequest
 
     /**
@@ -42,7 +42,7 @@ sealed interface ApiRequest {
     data class FormUrlEncoded(
         override val url: String,
         override val headers: List<Pair<String, String>> = emptyList(),
-        val params: List<Pair<String, String>>,
+        val params: List<Pair<String, String>>
     ) : ApiRequest
 }
 

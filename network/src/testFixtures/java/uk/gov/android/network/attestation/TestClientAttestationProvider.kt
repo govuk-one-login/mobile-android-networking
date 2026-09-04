@@ -10,7 +10,7 @@ package uk.gov.android.network.attestation
  * @see clientAttestationIntermittentFailure
  */
 class TestClientAttestationProvider(
-    var response: ClientAttestationResponse = clientAttestationSuccess,
+    var response: ClientAttestationResponse = clientAttestationSuccess
 ) : ClientAttestationProvider {
     override suspend fun getClientAttestation(): ClientAttestationResponse = response
 }

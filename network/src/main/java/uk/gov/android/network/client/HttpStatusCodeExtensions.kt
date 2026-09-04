@@ -9,4 +9,5 @@ internal object HttpStatusCodeExtensions {
         get() = HttpStatusCode(0, "Transport error")
 }
 
-internal fun ResponseException.mapToApiException(): ApiResponseException = ApiResponseException(this.message ?: "")
+internal fun ResponseException.mapToApiException(): ApiResponseException =
+    ApiResponseException(this.message ?: "")

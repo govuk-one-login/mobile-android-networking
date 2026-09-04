@@ -11,7 +11,7 @@ private const val ATTESTATION_HEADER_KEY = "OAuth-Client-Attestation"
 private const val ATTESTATION_POP_HEADER_KEY = "OAuth-Client-Attestation-PoP"
 
 internal class AttestationHeaderReader(
-    internal val clientAttestationProvider: ClientAttestationProvider?,
+    internal val clientAttestationProvider: ClientAttestationProvider?
 ) {
     suspend fun getHeaders(): NetworkingResult<List<Header>> {
         val provider =
@@ -27,23 +27,21 @@ internal class AttestationHeaderReader(
         return NetworkingResult.Success(headers)
     }
 
-    private fun missingProviderFailure() =
-        NetworkingResult.Failure<List<Header>>(
-            ConfigurationException("ClientAttestationProvider not set"),
-        )
+    private fun missingProviderFailure() = NetworkingResult.Failure<List<Header>>(
+        ConfigurationException("ClientAttestationProvider not set")
+    )
 
     private fun ClientAttestationResponse.Failure.attestationFailure() =
         NetworkingResult.Failure<List<Header>>(
             ClientAttestationException(
                 "Attestation provider failed to fetch client attestation",
                 reason = reason,
-                cause = error,
-            ),
+                cause = error
+            )
         )
 }
 
-internal fun ClientAttestationResponse.Success.toAttestationHeaders(): List<Header> =
-    listOf(
-        Header(ATTESTATION_HEADER_KEY, clientAttestation),
-        Header(ATTESTATION_POP_HEADER_KEY, attestationPop),
-    )
+internal fun ClientAttestationResponse.Success.toAttestationHeaders(): List<Header> = listOf(
+    Header(ATTESTATION_HEADER_KEY, clientAttestation),
+    Header(ATTESTATION_POP_HEADER_KEY, attestationPop)
+)

@@ -15,10 +15,7 @@ sealed interface ApiResponse<out T, out F, out E : Exception> {
      * @property body the response body
      * @param T the success response body type
      */
-    data class Success<T>(
-        val status: Int,
-        val body: T,
-    ) : ApiResponse<T, Nothing, Nothing>
+    data class Success<T>(val status: Int, val body: T) : ApiResponse<T, Nothing, Nothing>
 
     /**
      * @property error the cause of the failure
@@ -31,6 +28,6 @@ sealed interface ApiResponse<out T, out F, out E : Exception> {
     data class Failure<F, E : Exception>(
         val error: E,
         val status: Int? = null,
-        val body: F? = null,
+        val body: F? = null
     ) : ApiResponse<Nothing, F, E>
 }

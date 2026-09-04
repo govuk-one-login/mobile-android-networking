@@ -23,7 +23,7 @@ class UserAgentUtilTest {
                 MODEL,
                 SDK_VERSION,
                 CLIENT_NAME,
-                CLIENT_VERSION,
+                CLIENT_VERSION
             )
         val actualUserAgent = UserAgentUtil.buildAgent(userAgent)
 
