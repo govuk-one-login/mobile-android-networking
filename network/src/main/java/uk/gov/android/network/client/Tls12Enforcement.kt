@@ -38,7 +38,7 @@ internal fun createTls12SSLContext(): SSLContext = SSLContext.getInstance("TLSv1
  */
 internal fun AndroidEngineConfig.configureSslManagerMinTls12(
     trustManager: X509TrustManager? = null,
-    hostnameVerifier: HostnameVerifier? = null
+    hostnameVerifier: HostnameVerifier? = null,
 ) {
     sslManager = { connection ->
         val sslContext = createTls12SSLContext()
@@ -72,7 +72,7 @@ internal class Tls12SocketFactory(private val delegate: SSLSocketFactory) : SSLS
         host: String?,
         port: Int,
         localHost: InetAddress?,
-        localPort: Int
+        localPort: Int,
     ): Socket = delegate.createSocket(host, port, localHost, localPort).enforceTls12()
 
     override fun createSocket(host: InetAddress?, port: Int): Socket =
@@ -82,13 +82,13 @@ internal class Tls12SocketFactory(private val delegate: SSLSocketFactory) : SSLS
         address: InetAddress?,
         port: Int,
         localAddress: InetAddress?,
-        localPort: Int
+        localPort: Int,
     ): Socket = delegate.createSocket(address, port, localAddress, localPort).enforceTls12()
 
     private fun Socket.enforceTls12(): Socket = apply {
         if (this !is SSLSocket) {
             throw SslRequiredException(
-                "Only SSL connections are permitted. Received ${this::class.simpleName}."
+                "Only SSL connections are permitted. Received ${this::class.simpleName}.",
             )
         }
         enabledProtocols = supportedProtocols.filter { it in TLS_12_AND_ABOVE }.toTypedArray()

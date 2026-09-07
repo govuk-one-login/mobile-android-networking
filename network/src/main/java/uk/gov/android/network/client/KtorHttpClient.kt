@@ -50,14 +50,14 @@ class KtorHttpClient
 constructor(
     userAgentGenerator: UserAgentGenerator,
     logger: KtorLogger,
-    ktorClientEngine: HttpClientEngine
+    ktorClientEngine: HttpClientEngine,
 ) : GenericHttpClient,
     GenericHttpClientV2 {
     private val httpClient: HttpClient =
         makeHttpClient(
             userAgentGenerator = userAgentGenerator,
             logger = logger,
-            ktorClientEngine = ktorClientEngine
+            ktorClientEngine = ktorClientEngine,
         )
     private var authenticationProvider: AuthenticationProvider? = null
 
@@ -67,17 +67,17 @@ constructor(
      */
     constructor(
         userAgentGenerator: UserAgentGenerator,
-        logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp
+        logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
     ) : this(
         userAgentGenerator = userAgentGenerator,
         logger = logger,
-        ktorClientEngine = createKtorAndroidEngine()
+        ktorClientEngine = createKtorAndroidEngine(),
     )
 
     private fun makeHttpClient(
         userAgentGenerator: UserAgentGenerator,
         logger: KtorLogger,
-        ktorClientEngine: HttpClientEngine
+        ktorClientEngine: HttpClientEngine,
     ): HttpClient {
         return HttpClient(ktorClientEngine) {
             expectSuccess = true
@@ -94,7 +94,7 @@ constructor(
                         ignoreUnknownKeys = true
                         isLenient = true
                         explicitNulls = false
-                    }
+                    },
                 )
             }
 
@@ -127,7 +127,7 @@ constructor(
                         is ApiRequestV2.Get -> HttpMethod.Get
 
                         is ApiRequestV2.Post<*>,
-                        is ApiRequestV2.FormUrlEncoded
+                        is ApiRequestV2.FormUrlEncoded,
                         -> HttpMethod.Post
                     }
 
@@ -151,8 +151,8 @@ constructor(
                                 request.params.forEach { (key, value) ->
                                     append(key, value)
                                 }
-                            }
-                        )
+                            },
+                        ),
                     )
                 }
             }
@@ -171,13 +171,13 @@ constructor(
             null ->
                 ApiResponse.Failure(
                     0,
-                    Exception("Service Token Provider not initialised")
+                    Exception("Service Token Provider not initialised"),
                 )
 
             is AuthenticationResponse.Failure ->
                 ApiResponse.Failure(
                     0,
-                    serviceTokenResponse.error
+                    serviceTokenResponse.error,
                 )
 
             is AuthenticationResponse.Success -> {
@@ -188,7 +188,7 @@ constructor(
 
     private fun authoriseRequest(
         apiRequest: ApiRequest,
-        serviceTokenResponse: AuthenticationResponse.Success
+        serviceTokenResponse: AuthenticationResponse.Success,
     ): ApiRequest {
         val authorisationHeader =
             serviceTokenResponse.toAuthorisationHeader()
@@ -270,8 +270,8 @@ constructor(
                             apiRequest.params.forEach {
                                 append(it.first, it.second)
                             }
-                        }
-                    )
+                        },
+                    ),
                 )
             }
 
@@ -301,7 +301,7 @@ constructor(
  */
 internal fun createKtorAndroidEngine(
     trustManager: X509TrustManager? = null,
-    hostnameVerifier: HostnameVerifier? = null
+    hostnameVerifier: HostnameVerifier? = null,
 ): HttpClientEngine = Android.create {
     configureSslManagerMinTls12(trustManager, hostnameVerifier)
 }

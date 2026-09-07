@@ -4,6 +4,6 @@ object TestResponseException {
     val internalServerError =
         GenericResponseException(
             response = TestHttpResponse.internalServerError,
-            cause = IllegalStateException("response exception")
+            cause = IllegalStateException("response exception"),
         )
 }

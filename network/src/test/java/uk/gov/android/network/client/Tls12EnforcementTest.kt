@@ -51,7 +51,7 @@ class Tls12EnforcementTest {
                 "localhost",
                 port,
                 InetAddress.getLoopbackAddress(),
-                0
+                0,
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -65,7 +65,7 @@ class Tls12EnforcementTest {
         val socket =
             socketFactory.createSocket(
                 InetAddress.getLoopbackAddress(),
-                port
+                port,
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -81,7 +81,7 @@ class Tls12EnforcementTest {
                 InetAddress.getLoopbackAddress(),
                 port,
                 InetAddress.getLoopbackAddress(),
-                0
+                0,
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -98,7 +98,7 @@ class Tls12EnforcementTest {
                 rawSocket,
                 "localhost",
                 port,
-                true
+                true,
             ) as SSLSocket
         assertOnlyTls12AndAbove(socket)
         socket.close()
@@ -123,7 +123,7 @@ class Tls12EnforcementTest {
         val client =
             KtorHttpClient(
                 userAgentGenerator = UserAgentGeneratorStub("test-agent"),
-                logger = KtorLogger.noOp
+                logger = KtorLogger.noOp,
             )
         assertNotNull(client)
     }
@@ -149,7 +149,7 @@ class Tls12EnforcementTest {
                     s: Socket?,
                     host: String?,
                     port: Int,
-                    autoClose: Boolean
+                    autoClose: Boolean,
                 ) = Socket()
 
                 override fun createSocket(host: String?, port: Int) = Socket()
@@ -158,7 +158,7 @@ class Tls12EnforcementTest {
                     host: String?,
                     port: Int,
                     localHost: InetAddress?,
-                    localPort: Int
+                    localPort: Int,
                 ) = Socket()
 
                 override fun createSocket(host: InetAddress?, port: Int) = Socket()
@@ -167,7 +167,7 @@ class Tls12EnforcementTest {
                     address: InetAddress?,
                     port: Int,
                     localAddress: InetAddress?,
-                    localPort: Int
+                    localPort: Int,
                 ) = Socket()
             }
         val factory = Tls12SocketFactory(plainSocketFactory)

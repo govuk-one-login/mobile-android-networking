@@ -17,7 +17,7 @@ class ApiRequestWithHeadersTest {
 
         assertEquals(
             ApiRequest.Get(url = url, headers = listOf(header1, header2, header3)),
-            result
+            result,
         )
     }
 
@@ -29,7 +29,7 @@ class ApiRequestWithHeadersTest {
 
         assertEquals(
             ApiRequest.Post(url = url, body = "body", headers = listOf(header1, header2, header3)),
-            result
+            result,
         )
     }
 
@@ -38,7 +38,7 @@ class ApiRequestWithHeadersTest {
         val request = ApiRequest.FormUrlEncoded(
             url = url,
             headers = listOf(header1),
-            params = listOf("key" to "val")
+            params = listOf("key" to "val"),
         )
 
         val result = request.withHeaders(listOf(header2, header3))
@@ -47,9 +47,9 @@ class ApiRequestWithHeadersTest {
             ApiRequest.FormUrlEncoded(
                 url = url,
                 headers = listOf(header1, header2, header3),
-                params = listOf("key" to "val")
+                params = listOf("key" to "val"),
             ),
-            result
+            result,
         )
     }
 
@@ -61,7 +61,7 @@ class ApiRequestWithHeadersTest {
 
         assertEquals(
             ApiRequest.Get(url = url, headers = listOf(header1, header1)),
-            result
+            result,
         )
     }
 }

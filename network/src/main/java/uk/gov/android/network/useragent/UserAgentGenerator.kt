@@ -13,7 +13,7 @@ class UserAgentGeneratorImpl : UserAgentGenerator {
     override fun setUserAgent(userAgent: UserAgent) {
         val agent =
             UserAgentUtil.buildAgent(
-                userAgent
+                userAgent,
             )
         userAgentString = agent
     }

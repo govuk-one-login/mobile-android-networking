@@ -11,17 +11,17 @@ import io.ktor.client.plugins.ResponseException
 class GenericResponseException(val response: GenericHttpResponse, cause: IllegalStateException) :
     IllegalStateException(
         cause.message,
-        cause
+        cause,
     ) {
     companion object {
         internal suspend fun fromKtorResponseException(
-            exception: ResponseException
+            exception: ResponseException,
         ): GenericResponseException = GenericResponseException(
             response =
                 GenericHttpResponse.fromKtorHttpResponse(
-                    httpResponse = exception.response
+                    httpResponse = exception.response,
                 ),
-            cause = exception
+            cause = exception,
         )
     }
 }

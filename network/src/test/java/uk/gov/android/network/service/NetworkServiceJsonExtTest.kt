@@ -38,7 +38,7 @@ class NetworkServiceJsonExtTest {
         runTest {
             httpClient.response = GenericHttpResponse(
                 status = 200,
-                body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent()
+                body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
             )
 
             val result = networkService.makeRequest<TestData>(request)
@@ -53,11 +53,11 @@ class NetworkServiceJsonExtTest {
         // First check that our custom Json is stricter
         assertTrue(
             customStrictJson.configuration.ignoreUnknownKeys !=
-                NetworkServiceJsonExt.jsonDecoder.configuration.ignoreUnknownKeys
+                NetworkServiceJsonExt.jsonDecoder.configuration.ignoreUnknownKeys,
         )
         httpClient.response = GenericHttpResponse(
             status = 200,
-            body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent()
+            body = """{"subject":"Test","message":"Hello","new":"Hello"}""".trimIndent(),
         )
 
         val result = networkService.makeRequest<TestData>(request, json = customStrictJson)

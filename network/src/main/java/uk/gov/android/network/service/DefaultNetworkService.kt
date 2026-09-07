@@ -24,19 +24,19 @@ import uk.gov.android.network.util.ExcludeFromJacocoGeneratedReport
 @Deprecated(
     "Migrate to v2. To be removed on 23rd September 2026 (DCMAW-21647)",
     replaceWith = ReplaceWith(
-        "uk.gov.android.network.service.v2.DefaultNetworkService"
-    )
+        "uk.gov.android.network.service.v2.DefaultNetworkService",
+    ),
 )
 class DefaultNetworkService(private val delegate: DefaultNetworkServiceV2) : NetworkService {
     constructor(
-        httpClient: GenericHttpClient
+        httpClient: GenericHttpClient,
     ) : this(
-        DefaultNetworkServiceV2(httpClient)
+        DefaultNetworkServiceV2(httpClient),
     )
 
     override suspend fun makeRequest(
         apiRequest: ApiRequest,
-        configure: RequestConfigBuilder.() -> Unit
+        configure: RequestConfigBuilder.() -> Unit,
     ): ApiResponseV2<String, NetworkingException> = delegate.makeRequest(apiRequest, configure)
         .toApiResponseV2()
 
@@ -60,7 +60,7 @@ internal suspend fun defaultNetworkServiceSample(
     httpClient: GenericHttpClient,
     authenticationProvider: AuthenticationProvider,
     clientAttestationProvider: ClientAttestationProvider,
-    dPoPProvider: DPoPProvider
+    dPoPProvider: DPoPProvider,
 ) {
     val networkService = DefaultNetworkService(httpClient)
 

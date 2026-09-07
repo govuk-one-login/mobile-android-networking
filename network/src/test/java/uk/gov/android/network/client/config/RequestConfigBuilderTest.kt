@@ -9,7 +9,7 @@ class RequestConfigBuilderTest {
         RequestConfig(
             refreshDPoP = false,
             attestation = false,
-            authentication = null
+            authentication = null,
         )
 
     @Test
@@ -46,9 +46,9 @@ class RequestConfigBuilderTest {
 
         assertEquals(
             defaultConfig.copy(
-                authentication = expectedAuthConfig
+                authentication = expectedAuthConfig,
             ),
-            config
+            config,
         )
     }
 }

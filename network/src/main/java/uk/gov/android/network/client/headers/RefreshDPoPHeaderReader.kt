@@ -26,14 +26,14 @@ internal class RefreshDPoPHeaderReader(internal val dpopProvider: DPoPProvider?)
     }
 
     private fun missingProviderFailure() = NetworkingResult.Failure<Header>(
-        ConfigurationException("DPoPProvider not set")
+        ConfigurationException("DPoPProvider not set"),
     )
 
     private fun DPoPResponse.Failure.dpopFailure() = NetworkingResult.Failure<Header>(
         DPoPException(
             "DPoP provider failed to fetch refresh DPoP proof",
-            error
-        )
+            error,
+        ),
     )
 }
 

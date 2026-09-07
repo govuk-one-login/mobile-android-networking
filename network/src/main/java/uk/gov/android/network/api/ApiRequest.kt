@@ -10,12 +10,12 @@ sealed class ApiRequest {
         val url: String,
         val body: T?,
         val headers: List<Pair<String, String>> = emptyList(),
-        val contentType: ContentType? = null
+        val contentType: ContentType? = null,
     ) : ApiRequest()
 
     data class FormUrlEncoded(
         val url: String,
         val headers: List<Pair<String, String>> = emptyList(),
-        val params: List<Pair<String, String>>
+        val params: List<Pair<String, String>>,
     ) : ApiRequest()
 }

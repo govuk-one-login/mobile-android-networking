@@ -29,7 +29,7 @@ object NetworkServiceTypedSuccessExt {
     suspend inline fun <reified T> NetworkService.makeRequest(
         apiRequest: ApiRequest,
         json: Json = JsonDefaults.jsonDecoder,
-        noinline configure: RequestConfigBuilder.() -> Unit = {}
+        noinline configure: RequestConfigBuilder.() -> Unit = {},
     ): ApiResponse<T, String, NetworkingException> {
         val response = makeRequest(apiRequest, configure)
 
@@ -49,13 +49,13 @@ object NetworkServiceTypedSuccessExt {
                     // Don't include the response in the failure result.
                     // Consumers may try to parse this response downstream and expect it to be a
                     // different shape to a successful response body.
-                    body = null
+                    body = null,
                 )
             }
 
         return ApiResponse.Success(
             body = parsed,
-            status = response.status
+            status = response.status,
         )
     }
 }
@@ -63,7 +63,7 @@ object NetworkServiceTypedSuccessExt {
 @ExcludeFromJacocoGeneratedReport
 internal suspend fun networkServiceParseSuccessSample(
     request: ApiRequest,
-    networkService: NetworkService
+    networkService: NetworkService,
 ) {
     @Serializable
     @ExcludeFromJacocoGeneratedReport
