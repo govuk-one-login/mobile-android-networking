@@ -9,11 +9,11 @@
 
 [//]: # (e.g. "- Create 'androidLibrary' Gradle module.")
 
-## JIRA ticket link:
+## JIRA ticket link
 
 - [DCMAW-REPLACE_ME](https://govukverify.atlassian.net/browse/DCMAW-REPLACE_ME)
 
-## Evidence of the change:
+## Evidence of the change
 
 [//]: # (Screenshots / uploaded videos go here)
 
