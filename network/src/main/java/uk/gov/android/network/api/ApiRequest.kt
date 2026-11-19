@@ -3,7 +3,7 @@ package uk.gov.android.network.api
 import uk.gov.android.network.client.ContentType
 
 @Deprecated(
-    message = "Migrate to V2. To be removed on 19th January 2027 (DCMAW-XXXXX).",
+    message = "Migrate to V2. To be removed on 19th January 2027 (DCMAW-24874).",
     replaceWith = ReplaceWith(
         "ApiRequest",
         "uk.gov.android.network.api.v2.ApiRequest",
