@@ -7,6 +7,13 @@ import uk.gov.android.network.auth.AuthenticationProvider
 /**
  * Contract for the generic HTTP client
  */
+@Deprecated(
+    message = "Migrate to NetworkService. To be removed on 19th January 2027 (DCMAW-24874).",
+    replaceWith = ReplaceWith(
+        "NetworkService",
+        "uk.gov.android.network.service.v2.NetworkService",
+    ),
+)
 interface GenericHttpClient {
     /**
      * Make the HTTP request
