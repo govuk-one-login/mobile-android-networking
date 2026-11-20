@@ -40,19 +40,34 @@ import uk.gov.android.network.client.headers.toAuthorisationHeader
 import uk.gov.android.network.client.v2.GenericHttpClient as GenericHttpClientV2
 import uk.gov.android.network.client.v2.GenericHttpResponse
 import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.client.v3.CachingRawHttpClient
+import uk.gov.android.network.client.v3.RawCacheConfig
+import uk.gov.android.network.client.v3.RawHttpClient
+import uk.gov.android.network.client.v3.RawHttpResponse
 import uk.gov.android.network.log.KtorLogger
 import uk.gov.android.network.log.KtorLoggerAdapter
 import uk.gov.android.network.useragent.UserAgentGenerator
 
 @Suppress("TooGenericExceptionCaught")
 class KtorHttpClient
-@VisibleForTesting
-constructor(
+internal constructor(
     userAgentGenerator: UserAgentGenerator,
     logger: KtorLogger,
     ktorClientEngine: HttpClientEngine,
+    rawCache: RawCacheConfig?,
 ) : GenericHttpClient,
-    GenericHttpClientV2 {
+    GenericHttpClientV2,
+    RawHttpClient {
+    /**
+     * Existing signature, unchanged. No raw cache, so behaviour is exactly as before.
+     */
+    @VisibleForTesting
+    constructor(
+        userAgentGenerator: UserAgentGenerator,
+        logger: KtorLogger,
+        ktorClientEngine: HttpClientEngine,
+    ) : this(userAgentGenerator, logger, ktorClientEngine, null)
+
     private val httpClient: HttpClient =
         makeHttpClient(
             userAgentGenerator = userAgentGenerator,
@@ -60,6 +75,21 @@ constructor(
             ktorClientEngine = ktorClientEngine,
         )
     private var authenticationProvider: AuthenticationProvider? = null
+
+    /**
+     * Separate Ktor client for [RawHttpClient] calls, sharing this client's engine (and so its
+     * TLS 1.2+ enforcement). It has its own persistent cache, so responses from the existing
+     * JSON API methods are never written to disk. Null unless a [RawCacheConfig] was supplied.
+     */
+    private val rawClient: CachingRawHttpClient? =
+        rawCache?.let {
+            CachingRawHttpClient.create(
+                engine = ktorClientEngine,
+                config = it,
+                userAgent = userAgentGenerator.getUserAgent(),
+                logger = logger,
+            )
+        }
 
     /**
      * Production constructor. Uses [createKtorAndroidEngine] to enforce TLS 1.2+ on all
@@ -72,6 +102,22 @@ constructor(
         userAgentGenerator = userAgentGenerator,
         logger = logger,
         ktorClientEngine = createKtorAndroidEngine(),
+    )
+
+    /**
+     * Production constructor that also enables the persistent [RawHttpClient] cache.
+     *
+     * @see RawCacheConfig
+     */
+    constructor(
+        userAgentGenerator: UserAgentGenerator,
+        rawCache: RawCacheConfig,
+        logger: KtorLogger = if (BuildConfig.DEBUG) KtorLogger.simple else KtorLogger.noOp,
+    ) : this(
+        userAgentGenerator = userAgentGenerator,
+        logger = logger,
+        ktorClientEngine = createKtorAndroidEngine(),
+        rawCache = rawCache,
     )
 
     private fun makeHttpClient(
@@ -160,6 +206,26 @@ constructor(
         throw GenericResponseException.fromKtorResponseException(e)
     }.let { response ->
         GenericHttpResponse.fromKtorHttpResponse(response)
+    }
+
+    /**
+     * @throws IllegalStateException if this client was created without a [RawCacheConfig]
+     * @see CachingRawHttpClient.get
+     */
+    override suspend fun get(
+        url: String,
+        headers: List<Pair<String, String>>,
+        forceRevalidation: Boolean,
+    ): RawHttpResponse = requireRawClient().get(url, headers, forceRevalidation)
+
+    /**
+     * @throws IllegalStateException if this client was created without a [RawCacheConfig]
+     * @see CachingRawHttpClient.cached
+     */
+    override suspend fun cached(url: String): RawHttpResponse? = requireRawClient().cached(url)
+
+    private fun requireRawClient(): CachingRawHttpClient = checkNotNull(rawClient) {
+        "Raw cache not configured. Create KtorHttpClient with a RawCacheConfig."
     }
 
     override fun setAuthenticationProvider(provider: AuthenticationProvider) {
