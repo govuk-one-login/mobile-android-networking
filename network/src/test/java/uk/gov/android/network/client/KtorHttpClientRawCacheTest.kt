@@ -32,7 +32,7 @@ class KtorHttpClientRawCacheTest {
     private val der =
         byteArrayOf(0x30, 0x82.toByte(), 0x01, 0xE1.toByte(), 0xFF.toByte(), 0x00, 0xC0.toByte())
 
-    private fun config() = RawCacheConfig(directory.toFile())
+    private fun config() = RawCacheConfig.Builder(directory.toFile()).build()
 
     private fun clientWith(engine: MockEngine) =
         KtorHttpClient(userAgent, KtorLogger.noOp, engine, config())

@@ -196,7 +196,7 @@ class CachingRawHttpClient internal constructor(
             logger: KtorLogger = KtorLogger.noOp,
         ): CachingRawHttpClient = create(
             engine = createKtorAndroidEngine(),
-            config = RawCacheConfig(cacheDirectory, timeouts),
+            config = RawCacheConfig.Builder(cacheDirectory).apply { this.timeouts = timeouts }.build(),
             userAgent = userAgent,
             logger = logger,
         )
